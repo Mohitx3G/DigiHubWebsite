@@ -112,10 +112,10 @@ function renderChrome(activeId) {
     navToggle.setAttribute("aria-expanded", "false");
   }));
 
-  // Footer auto-lists every legal document.
+  // Footer auto-lists every legal document, styled as buttons.
   const legalLinks = CONF.legal.map((d) =>
     `<a href="legal.html?doc=${encodeURIComponent(d.id)}">${esc(d.title)}</a>`
-  ).join(" · ");
+  ).join("");
 
   $("#footer").innerHTML = `
     <div class="wrap foot-inner">

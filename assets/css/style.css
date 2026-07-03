@@ -440,8 +440,18 @@ section.alt .card.feature { background: var(--bg); }
 footer { border-top: 1px solid var(--line); padding: 34px 0; margin-top: 30px; }
 .foot-inner { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
 footer, footer a { color: var(--muted); font-size: 0.88rem; }
-.foot-legal { margin-top: 8px; }
-.foot-legal a { color: var(--accent); }
+.foot-legal { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+.foot-legal a {
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-family: var(--font-display); font-weight: 600;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.foot-legal a:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
 .foot-contact { display: flex; flex-direction: column; gap: 6px; text-align: right; }
 
 /* ---------- legal pages (privacy / terms / etc.) ---------- */

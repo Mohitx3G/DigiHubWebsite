@@ -244,7 +244,7 @@ const LEGAL = [
   {
     id: "privacy",
     title: "Privacy Policy",
-    updated: "July 2, 2026",
+    updated: "July 3, 2026",
     intro: "This Privacy Policy explains what information DiGiHub collects when you use our Telegram bots (including DigiHub, Request Accepter Pro and any clone bots created through them), how we use it, and the choices you have.",
     sections: [
       {
@@ -255,13 +255,20 @@ const LEGAL = [
         ],
       },
       {
-        h: "2. Information we collect",
+        h: "2. Cookies and tracking",
+        body: [
+          "This website does not use cookies, analytics scripts or advertising trackers of any kind.",
+          "Our bots have no web dashboard either — every feature runs inside Telegram chat, so there is nothing outside Telegram that could set a cookie or track you across sites.",
+        ],
+      },
+      {
+        h: "3. Information we collect",
         body: [
           "When you interact with our bots, we collect and store:",
           { list: [
             "Your Telegram user ID, username and first name (provided by Telegram with every message).",
             "Bot tokens you connect to create a clone bot. Tokens are encrypted at rest and are never shown or shared in plain text.",
-            "Product listings you create: title, description, price, and the Telegram channel ID and message ID where the file is stored.",
+            "Content you create with the bot's modules: product listings, custom menus, form questions and answers, auto-reply keywords, coupon codes, and broadcast messages.",
             "Order and payment records: which product was bought, when, for how many Stars, and the Telegram payment identifiers needed for delivery and support.",
             "Deposit screenshots, if you submit one for a manual payment — these are forwarded to a private admin channel for verification.",
             "Basic usage data such as which menus you open, used to keep the bots reliable and to debug problems.",
@@ -269,7 +276,7 @@ const LEGAL = [
         ],
       },
       {
-        h: "3. What we do NOT collect",
+        h: "4. What we do NOT collect",
         body: [
           { list: [
             "Your files. Products stay in a private Telegram channel that you own. We store only the message ID and channel ID needed to forward a product after purchase.",
@@ -280,10 +287,17 @@ const LEGAL = [
         ],
       },
       {
-        h: "4. How we use your information",
+        h: "5. Legal basis for processing",
+        body: [
+          "We process the data above because it's necessary to provide the service you've asked for — running your bot, delivering products, and keeping accounts secure — which counts as our legitimate interest in operating the platform you signed up to use.",
+          "Where we rely on payment processing or fraud prevention, that's necessary to fulfil our side of the transaction and to comply with our own legal obligations.",
+        ],
+      },
+      {
+        h: "6. How we use your information",
         body: [
           { list: [
-            "To run the service: deliver products, manage your store or approval bot, and enforce plan limits.",
+            "To run the service: deliver products, power your bot's menus, forms, broadcasts and other modules, and enforce plan limits.",
             "To process payments and keep records of orders for support and dispute resolution.",
             "To send you service messages inside Telegram (order confirmations, subscription reminders).",
             "To prevent abuse, fraud and violations of our Terms & Conditions.",
@@ -292,42 +306,56 @@ const LEGAL = [
         ],
       },
       {
-        h: "5. Storage and security",
+        h: "7. Storage and security",
         body: [
-          "Data is stored in a PostgreSQL database on our servers. Clone bot tokens are encrypted at rest using Fernet symmetric encryption; nobody — including our team — can read them in plain text.",
+          "Data is stored in a PostgreSQL database on our own servers — we don't use a named third-party cloud data platform. Clone bot tokens are encrypted at rest using Fernet symmetric encryption; nobody — including our team — can read them in plain text.",
           "Files and screenshots live inside Telegram's own infrastructure (private channels), protected by Telegram's security. Access to our database and admin channels is restricted to the project administrators.",
         ],
       },
       {
-        h: "6. Third parties",
+        h: "8. Third parties",
         body: [
           "Our services are built on the official Telegram Bot API, so all activity also falls under Telegram's own Privacy Policy and Terms of Service.",
           "Payments in Telegram Stars are handled by Telegram. Manual deposits (for example UPI) are verified by our team from the screenshot you submit; we do not receive access to your bank or UPI account.",
         ],
       },
       {
-        h: "7. Data retention and deletion",
+        h: "9. Data retention and deletion",
         body: [
-          "We keep your data for as long as you use the service. If your subscription expires, your data is kept so you can resume where you left off.",
+          "We keep your account and store data for as long as you use the service. If your subscription expires, your data is kept so you can resume where you left off.",
+          "Internal system logs (automation logs, health alerts, admin audit trail) are purged automatically on a rolling basis, typically within 30–90 days, and are not user-facing data.",
           "You can request deletion of your account data (store, products metadata, clone bot tokens) at any time by contacting us on Telegram. We will delete it within 30 days, except records we must keep for fraud prevention or legal reasons.",
         ],
       },
       {
-        h: "8. Children",
+        h: "10. Your rights",
+        body: [
+          "Whoever you are and wherever you're contacting us from, you can ask us at any time to:",
+          { list: [
+            "Access a copy of the personal data we hold about you.",
+            "Correct any of it that's inaccurate or out of date.",
+            "Delete your data, as described in the section above.",
+            "Object to a specific use of your data that isn't necessary to run the service.",
+          ]},
+          "Send these requests on Telegram or by email (see Contact below) and we'll respond within 30 days.",
+        ],
+      },
+      {
+        h: "11. Children",
         body: [
           "Our services are not directed at children under 13 (or the minimum age required by Telegram in your country). We do not knowingly collect data from children.",
         ],
       },
       {
-        h: "9. Changes to this policy",
+        h: "12. Changes to this policy",
         body: [
           "We may update this policy as the service evolves. The 'Last updated' date at the top always reflects the current version. Significant changes will be announced in our Telegram channel.",
         ],
       },
       {
-        h: "10. Contact",
+        h: "13. Contact",
         body: [
-          "Questions about privacy? Message us on Telegram or email us — both are listed in the footer of this site.",
+          "Questions about privacy, or want to exercise any of the rights above? Message us on Telegram or email us — both are listed in the footer of this site.",
         ],
       },
     ],
