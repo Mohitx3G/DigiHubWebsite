@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — DiGiHub</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/admin.css" />
+  <link rel="icon" type="image/jpeg" href="assets/img/logo.jpg" />
+</head>
+<body data-page="admin">
+
+  <!-- Login view -->
+  <div id="login-view" class="login-wrap" hidden>
+    <form id="login-form" class="login-card">
+      <img src="assets/img/logo.jpg" alt="" class="login-logo" />
+      <h1>DiGiHub Admin</h1>
+      <p class="login-sub">Sign in to manage the website</p>
+      <label>Username
+        <input type="text" id="login-user" autocomplete="username" required />
+      </label>
+      <label>Password
+        <input type="password" id="login-pass" autocomplete="current-password" required />
+      </label>
+      <button type="submit" class="btn btn-gold">Sign in</button>
+      <p id="login-error" class="login-error" hidden>Wrong username or password.</p>
+    </form>
+  </div>
+
+  <!-- Panel view -->
+  <div id="panel-view" hidden>
+    <header class="admin-top">
+      <div class="admin-top-inner">
+        <span class="admin-brand"><img src="assets/img/logo.jpg" alt="" />DiGiHub Admin</span>
+        <nav class="admin-tabs" id="admin-tabs">
+          <button data-tab="site" class="active">Site</button>
+          <button data-tab="projects">Bots / Projects</button>
+          <button data-tab="legal">Legal pages</button>
+          <button data-tab="publish">Publish</button>
+        </nav>
+        <div class="admin-actions">
+          <button id="btn-save" class="btn btn-gold">💾 Save draft</button>
+          <a href="index.html" target="_blank" class="btn btn-ghost">👁 Preview site</a>
+          <button id="btn-logout" class="btn btn-ghost">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <div id="tab-content"></div>
+    </main>
+
+    <div id="toast" class="toast" hidden></div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

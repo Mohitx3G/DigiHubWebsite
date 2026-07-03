@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DiGiHub — Telegram bot platforms</title>
+  <meta name="description" content="Telegram bot platforms built to scale — DigiHub stores, auto join-request approval, and group management for large communities." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="DiGiHub — Telegram bot platforms" />
+  <meta property="og:description" content="Telegram bot platforms built to scale — store bots, approval bots and moderation tools." />
+  <meta property="og:image" content="assets/img/logo.jpg" />
+  <meta name="theme-color" content="#0E1621" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" type="image/jpeg" href="assets/img/logo.jpg" />
+</head>
+<body data-page="home">
+
+  <header id="nav" class="nav"></header>
+
+  <main>
+    <!-- Hero (rendered from SITE.hero in config.js) -->
+    <div id="home-hero" class="wrap hero"></div>
+
+    <!-- Features (rendered from SITE.features in config.js) -->
+    <section id="features">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow" id="features-eyebrow"></span>
+          <h2 id="features-title"></h2>
+        </div>
+        <div id="features-grid" class="grid cols-3"></div>
+      </div>
+    </section>
+
+    <!-- Projects (rendered from PROJECTS in config.js) -->
+    <section class="alt" id="projects">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">// Projects</span>
+          <h2>Everything we're building</h2>
+        </div>
+        <div id="projects-grid" class="grid cols-3"></div>
+      </div>
+    </section>
+
+    <!-- Highlights (rendered from SITE.highlights in config.js) -->
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">// How we build</span>
+          <h2>Engineered like infrastructure</h2>
+        </div>
+        <div id="highlights-grid" class="grid cols-3"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footer"></footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
