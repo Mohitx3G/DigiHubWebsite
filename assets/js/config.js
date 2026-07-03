@@ -27,8 +27,8 @@ const SITE = {
   hero: {
     eyebrow: "// Telegram bot platforms for admins",
     title: "One bot for your whole community — <span class='hl'>not just a store</span>.",
-    lead: "DigiHub gives admins a complete toolkit inside Telegram: sell digital products, collect member feedback, broadcast updates and auto-approve join requests — all from one branded bot you control.",
-    primaryBtn: { label: "See all modules", href: "#projects" },
+    lead: "DigiHub gives creators a complete toolkit inside Telegram — a store, custom menus, forms, auto-replies, broadcasts, coupons and channel-gated access — all running under your own bot, on your own brand.",
+    primaryBtn: { label: "See all modules", href: "#features" },
     ghostBtn: { label: "Try it on Telegram", href: "https://t.me/DigiHubProBot" },
     /* Telegram chat mockup shown beside the hero.
        side: "in" = bot message, "out" = user message.
@@ -45,29 +45,35 @@ const SITE = {
         { side: "in",  html: "✅ Payment received — here's your pack!<br />📎 notion-creator-pack.zip", time: "14:03" },
       ],
     },
-    /* Second, smaller mockup shown behind/left of the main one —
+    /* Second, smaller mockup shown left of the main one —
        proves the bot does more than sell. Set to null to hide it. */
     chatSecondary: {
       avatar: "<img src='assets/img/logo.jpg' alt='' />",
       botName: "DigiHub Admin",
       messages: [
-        { side: "in",  html: "📬 <b>New feedback</b><br />\"Loved the new pack, thanks!\" ⭐⭐⭐⭐⭐", time: "11:05",
-          buttons: ["↩️ Reply", "📋 All feedback"] },
-        { side: "out", html: "/broadcast New drop live today 🚀", time: "11:07" },
-        { side: "in",  html: "📣 Broadcasting to 1,842 members…<br />✅ Sent in 4s", time: "11:07" },
+        { side: "out", html: "/broadcast Flash sale today only 🔥", time: "11:05" },
+        { side: "in",  html: "📣 Broadcasting to segment <b>VIP buyers</b> (1,842)…<br />✅ Delivered in 4s", time: "11:05" },
+        { side: "in",  html: "🤖 Auto-reply active: \"delivery\" → instant answer sent to 12 customers today", time: "11:09" },
       ],
     },
   },
 
-  /* Homepage "Features" grid — shown right under the hero. */
+  /* Homepage "Features" grid — shown right under the hero.
+     This lists every real module the bot has, not just the store. */
   featuresEyebrow: "// Features",
   featuresTitle: "Everything you need to run your Telegram community",
   features: [
-    { icon: "🤖", title: "Your own clone bot", desc: "Every platform runs under your brand, with your own bot token from @BotFather — not ours." },
-    { icon: "🛍️", title: "Stars payments", desc: "Sell digital products with native Telegram Stars — no gateways, no cards, no country restrictions." },
-    { icon: "📬", title: "Feedback & broadcast", desc: "Collect feedback from members and send announcements to everyone at once, right from the same bot." },
-    { icon: "✅", title: "Auto join-request approval", desc: "Approve members automatically with smart delays, then welcome every one of them for you." },
-    { icon: "📦", title: "Channel-based storage", desc: "Products and files stay in your own private channel. We store only the message ID needed to deliver them." },
+    { icon: "🤖", title: "Your own clone bot", desc: "Every bot runs under your brand, with your own bot token from @BotFather — not ours." },
+    { icon: "🛍️", title: "Shop & Stars payments", desc: "Sell digital products with native Telegram Stars. Files stay in your channel, buyers get instant delivery." },
+    { icon: "🧭", title: "Menu builder", desc: "Build custom navigation pages with buttons linking to your shop, forms, links or channels — no coding." },
+    { icon: "📝", title: "Forms", desc: "Create conversational, multi-step forms. Customers can pause and resume anytime, progress bar included." },
+    { icon: "💬", title: "Auto-replies", desc: "Set keyword-triggered replies so common questions get answered instantly, day or night." },
+    { icon: "📣", title: "Broadcast", desc: "Send scheduled or one-off messages to your audience, with built-in cooldowns so you never look spammy." },
+    { icon: "🎯", title: "Customer segments", desc: "Target broadcasts to specific groups — like your top spenders — instead of messaging everyone." },
+    { icon: "🏷️", title: "Coupons", desc: "Create percentage or fixed discount codes, scoped to products or categories, with usage limits." },
+    { icon: "🔒", title: "Channel-gated access", desc: "Require customers to join your channel(s) before they can use the bot — grow your channel while you sell." },
+    { icon: "📊", title: "Dashboard & analytics", desc: "See orders, revenue and audience growth in one place, without digging through chat history." },
+    { icon: "🔔", title: "Smart notifications", desc: "Choose which events ping you — new orders, low stock, daily summaries — so you're never buried in alerts." },
     { icon: "🔐", title: "Encrypted at rest", desc: "Bot tokens are encrypted with Fernet — nobody, including us, can read them in plain text." },
   ],
 
@@ -93,14 +99,14 @@ const PROJECTS = [
     name: "DigiHub",
     emoji: "🛍️",
     status: "live",
-    short: "Shopify for Telegram. Sell digital products through your own clone bot — files stay in your channel, payments in Stars.",
+    short: "More than a store: menus, forms, broadcasts, auto-replies and coupons — all on your own branded bot, with Stars payments and instant delivery.",
     details: {
       botUsername: "@DigiHubProBot",
       botLink: "https://t.me/DigiHubProBot",
       eyebrow: "// DigiHub · live",
-      headline: "Your Telegram store, running on your own bot.",
-      sub: "DigiHub lets creators launch a personal storefront bot in minutes. Your products live in your private channel, your buyers pay in Telegram Stars, and DigiHub automates everything in between.",
-      ctaLabel: "Start selling — it's free",
+      headline: "Your whole Telegram toolkit, running on your own bot.",
+      sub: "DigiHub lets creators launch a fully-loaded bot in minutes — a store, custom menus, forms, auto-replies, broadcasts and coupons — all running under your own brand, with your files staying in your own private channel.",
+      ctaLabel: "Get started — it's free",
 
       chat: {
         avatar: "<img src='assets/img/logo.jpg' alt='' />",
@@ -114,12 +120,18 @@ const PROJECTS = [
       },
 
       features: [
-        { icon: "🤖", title: "Your own clone bot", desc: "Connect a bot token and get a fully branded store bot under your name — not ours. Buyers only ever see your brand." },
+        { icon: "🤖", title: "Your own clone bot", desc: "Connect a bot token and get a fully branded bot under your name — not ours. Your community only ever sees your brand." },
+        { icon: "🛍️", title: "Shop & Stars payments", desc: "Sell digital products with native Telegram Stars — files stay in your channel, buyers get instant delivery." },
+        { icon: "🧭", title: "Menu builder", desc: "Build custom navigation pages with buttons linking to your shop, forms, links or channels — no coding required." },
+        { icon: "📝", title: "Forms", desc: "Create conversational, multi-step forms. Customers can pause and resume anytime, with a visible progress bar." },
+        { icon: "💬", title: "Auto-replies", desc: "Set keyword-triggered replies so common questions get answered instantly, day or night." },
+        { icon: "📣", title: "Broadcast", desc: "Send scheduled or one-off messages to your audience, with built-in cooldowns so you never look spammy." },
+        { icon: "🎯", title: "Customer segments", desc: "Target broadcasts to specific groups — like your top spenders — instead of messaging everyone." },
+        { icon: "🏷️", title: "Coupons", desc: "Create percentage or fixed discount codes, scoped to products or categories, with usage limits." },
+        { icon: "🔒", title: "Channel-gated access", desc: "Require customers to join your channel(s) before they can use the bot — grow your channel while you sell." },
         { icon: "📦", title: "Channel-based storage", desc: "Products are stored in your private channel. We keep only message IDs — your files never sit on our servers." },
-        { icon: "⭐", title: "Telegram Stars payments", desc: "Native in-app payments. No gateways, no cards, no country restrictions. Money lands in your Telegram wallet." },
-        { icon: "⚡", title: "Instant delivery", desc: "Payment confirmed → product delivered in the same chat, in seconds, 24/7. No manual work, ever." },
+        { icon: "📊", title: "Dashboard & notifications", desc: "Track orders, revenue and audience growth inside the bot, and choose which events ping you." },
         { icon: "🔐", title: "Encrypted tokens", desc: "Bot tokens are encrypted at rest with Fernet. Nobody — including us — can read them in plain text." },
-        { icon: "📊", title: "Sales dashboard", desc: "Track orders, revenue and top products right inside the bot with clean inline menus. No spam, everything self-cleans." },
       ],
 
       steps: [
@@ -133,7 +145,7 @@ const PROJECTS = [
         { name: "Free",    price: "0",   unit: "⭐ / mo", tag: "",             perks: ["1 clone bot", "Up to 5 products", "Stars payments", "Instant delivery"] },
         { name: "Silver",  price: "99",  unit: "⭐ / mo", tag: "",             perks: ["1 clone bot", "25 products", "Sales stats", "Priority delivery queue"] },
         { name: "Gold",    price: "249", unit: "⭐ / mo", tag: "Most popular", perks: ["3 clone bots", "Unlimited products", "Full dashboard", "Broadcast to buyers"] },
-        { name: "Elite",   price: "499", unit: "⭐ / mo", tag: "",             perks: ["10 clone bots", "Unlimited everything", "Custom branding", "Direct support line"] },
+        { name: "Diamond", price: "499", unit: "⭐ / mo", tag: "",             perks: ["10 clone bots", "Unlimited everything", "White-label — no DigiHub branding", "Direct support line"] },
       ],
 
       faq: [
@@ -144,8 +156,8 @@ const PROJECTS = [
       ],
 
       cta: {
-        title: "Open your store today",
-        text: "Connect a bot token from @BotFather and list your first product in under five minutes. The Free plan needs no payment at all.",
+        title: "Open your bot today",
+        text: "Connect a bot token from @BotFather and get your first menu, form or product live in under five minutes. The Free plan needs no payment at all.",
         btnLabel: "Launch DigiHub bot",
       },
     },
