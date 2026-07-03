@@ -22,7 +22,7 @@
 
   --radius: 14px;
   --radius-sm: 9px;
-  --maxw: 1080px;
+  --maxw: 1280px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -130,6 +130,23 @@ img.dot { object-fit: cover; border: 1px solid var(--line); }
 .hero .actions { display: flex; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
 .hero h1 .hl { color: var(--accent); }
 .hero p { margin-top: 18px; }
+
+/* Two phone mockups shown side by side — the main one (store demo)
+   up front-right, a smaller secondary one (feedback/broadcast demo)
+   to its left, to show the bot does more than sell. Side by side
+   (not overlapping) so neither card's messages get clipped. */
+.phone-stack { display: flex; align-items: flex-end; justify-content: flex-end; gap: 16px; }
+.phone-secondary {
+  opacity: 0.65;
+  filter: saturate(0.8);
+  transform: translateY(22px);
+}
+.phone-secondary .phone { max-width: 210px; margin-left: 0; }
+.phone-secondary .chat { min-height: 190px; }
+@media (max-width: 900px) {
+  .phone-stack { justify-content: center; }
+  .phone-secondary { display: none; }
+}
 
 /* ---------- telegram chat mockup (signature element) ---------- */
 .phone {

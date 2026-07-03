@@ -10,6 +10,7 @@ const $ = (sel) => document.querySelector(sel);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const param = (name) => new URLSearchParams(location.search).get(name);
+const extAttrs = (href) => /^https?:\/\//.test(href) ? `target="_blank" rel="noopener"` : "";
 
 /* ---------- content source: config.js OR admin draft ----------
    The admin panel (admin.html) saves work-in-progress content to
@@ -161,11 +162,14 @@ function renderHome() {
       <h1>${h.title}</h1>
       <p class="lead">${esc(h.lead)}</p>
       <div class="actions">
-        <a class="btn btn-primary" href="${esc(h.primaryBtn.href)}">${esc(h.primaryBtn.label)}</a>
-        <a class="btn btn-ghost" href="${esc(h.ghostBtn.href)}">${esc(h.ghostBtn.label)}</a>
+        <a class="btn btn-primary" href="${esc(h.primaryBtn.href)}" ${extAttrs(h.primaryBtn.href)}>${esc(h.primaryBtn.label)}</a>
+        <a class="btn btn-ghost" href="${esc(h.ghostBtn.href)}" ${extAttrs(h.ghostBtn.href)}>${esc(h.ghostBtn.label)}</a>
       </div>
     </div>
-    ${chatHTML(h.chat, "Example purchase conversation")}`;
+    <div class="phone-stack">
+      ${h.chatSecondary ? `<div class="phone-secondary">${chatHTML(h.chatSecondary, "Example feedback and broadcast conversation")}</div>` : ""}
+      <div class="phone-primary">${chatHTML(h.chat, "Example purchase conversation")}</div>
+    </div>`;
 
   $("#features-eyebrow").textContent = CONF.site.featuresEyebrow || "// Features";
   $("#features-title").textContent = CONF.site.featuresTitle || "Features";

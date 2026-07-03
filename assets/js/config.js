@@ -25,11 +25,11 @@ const SITE = {
 
   /* Homepage hero */
   hero: {
-    eyebrow: "// Telegram bot platforms",
-    title: "Bots that run <span class='hl'>businesses</span>, not just chats.",
-    lead: "We build multi-tenant Telegram platforms — store bots, approval bots and moderation tools — engineered for audiences in the hundreds of thousands.",
-    primaryBtn: { label: "Explore DigiHub", href: "project.html?id=digihub" },
-    ghostBtn: { label: "All projects", href: "#projects" },
+    eyebrow: "// Telegram bot platforms for admins",
+    title: "One bot for your whole community — <span class='hl'>not just a store</span>.",
+    lead: "DigiHub gives admins a complete toolkit inside Telegram: sell digital products, collect member feedback, broadcast updates and auto-approve join requests — all from one branded bot you control.",
+    primaryBtn: { label: "See all modules", href: "#projects" },
+    ghostBtn: { label: "Try it on Telegram", href: "https://t.me/DigiHubProBot" },
     /* Telegram chat mockup shown beside the hero.
        side: "in" = bot message, "out" = user message.
        `html` may contain simple tags like <b>, <br>, spans.
@@ -45,18 +45,30 @@ const SITE = {
         { side: "in",  html: "✅ Payment received — here's your pack!<br />📎 notion-creator-pack.zip", time: "14:03" },
       ],
     },
+    /* Second, smaller mockup shown behind/left of the main one —
+       proves the bot does more than sell. Set to null to hide it. */
+    chatSecondary: {
+      avatar: "<img src='assets/img/logo.jpg' alt='' />",
+      botName: "DigiHub Admin",
+      messages: [
+        { side: "in",  html: "📬 <b>New feedback</b><br />\"Loved the new pack, thanks!\" ⭐⭐⭐⭐⭐", time: "11:05",
+          buttons: ["↩️ Reply", "📋 All feedback"] },
+        { side: "out", html: "/broadcast New drop live today 🚀", time: "11:07" },
+        { side: "in",  html: "📣 Broadcasting to 1,842 members…<br />✅ Sent in 4s", time: "11:07" },
+      ],
+    },
   },
 
   /* Homepage "Features" grid — shown right under the hero. */
   featuresEyebrow: "// Features",
-  featuresTitle: "Everything you need to run a Telegram business",
+  featuresTitle: "Everything you need to run your Telegram community",
   features: [
-    { icon: "🛍️", title: "Stars payments", desc: "Sell digital products with native Telegram Stars — no gateways, no cards, no country restrictions." },
-    { icon: "📦", title: "Channel-based storage", desc: "Products and files stay in your own private channel. We store only the message ID needed to deliver them." },
     { icon: "🤖", title: "Your own clone bot", desc: "Every platform runs under your brand, with your own bot token from @BotFather — not ours." },
+    { icon: "🛍️", title: "Stars payments", desc: "Sell digital products with native Telegram Stars — no gateways, no cards, no country restrictions." },
+    { icon: "📬", title: "Feedback & broadcast", desc: "Collect feedback from members and send announcements to everyone at once, right from the same bot." },
     { icon: "✅", title: "Auto join-request approval", desc: "Approve members automatically with smart delays, then welcome every one of them for you." },
+    { icon: "📦", title: "Channel-based storage", desc: "Products and files stay in your own private channel. We store only the message ID needed to deliver them." },
     { icon: "🔐", title: "Encrypted at rest", desc: "Bot tokens are encrypted with Fernet — nobody, including us, can read them in plain text." },
-    { icon: "🧹", title: "Clean, spam-free UX", desc: "Inline menus with proper back-flows. Setup messages and tokens auto-delete after use." },
   ],
 
   /* Homepage "How we build" cards */
