@@ -43,6 +43,24 @@ a:hover { text-decoration: underline; }
 
 img { max-width: 100%; }
 
+/* ---------- copy protection ----------
+   Applied via JS (main.js) only on customer-facing pages, never
+   on admin.html. Blocks text selection and image dragging; the
+   matching JS also blocks right-click, copy/cut and Ctrl+C/U/S/P. */
+.no-copy, .no-copy * {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+}
+.no-copy img { -webkit-user-drag: none; user-drag: none; }
+.no-copy input,
+.no-copy textarea {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 22px; }
 
 /* ---------- typography ---------- */

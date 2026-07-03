@@ -355,10 +355,31 @@ function renderLegal() {
     </div>`;
 }
 
+/* ---------- shared: block copy/select/right-click ----------
+   Deters casual copy-pasting of site text/links. Not real
+   security — anyone can still read the HTML via dev tools or
+   "view source", or bypass this by disabling JS. Customer-facing
+   pages only (this file never loads on admin.html). */
+function initCopyProtection() {
+  document.body.classList.add("no-copy");
+  const block = (e) => e.preventDefault();
+  document.addEventListener("contextmenu", block);
+  document.addEventListener("copy", block);
+  document.addEventListener("cut", block);
+  document.addEventListener("dragstart", block);
+  document.addEventListener("selectstart", block);
+  document.addEventListener("keydown", (e) => {
+    const k = e.key.toLowerCase();
+    if ((e.ctrlKey || e.metaKey) && ["c", "x", "u", "s", "p"].includes(k)) e.preventDefault();
+    if (k === "f12") e.preventDefault();
+  });
+}
+
 /* ---------- boot ---------- */
 document.addEventListener("DOMContentLoaded", () => {
   renderBackground();
   renderDraftBanner();
+  initCopyProtection();
   const activeProject = renderProject();
   renderChrome(activeProject);
   renderHome();
