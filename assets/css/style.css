@@ -443,6 +443,10 @@ a:focus-visible, .btn:focus-visible, summary:focus-visible {
 @media (max-width: 900px) {
   .hero { grid-template-columns: 1fr; padding: 48px 0 40px; }
   .phone { margin: 0 auto; }
+  .hero .eyebrow { margin-bottom: 20px; }
+  .hero h1 { margin-bottom: 8px; }
+  .hero p.lead { margin-top: 24px; }
+  .hero .actions { margin-top: 36px; }
   .grid.cols-3, .steps, .tiers { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 760px) {
