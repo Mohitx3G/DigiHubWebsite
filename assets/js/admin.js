@@ -51,6 +51,7 @@ let dirty = false;
 let currentTab = "site";
 let editingProject = -1;   // index into data.projects, -1 = list view
 let editingLegal = -1;
+let editingGuide = -1;
 
 function markDirty() {
   dirty = true;
@@ -61,10 +62,12 @@ function loadData() {
     const raw = localStorage.getItem(DRAFT_KEY);
     if (raw) {
       const d = JSON.parse(raw);
-      if (d && d.site && d.projects && d.legal) return d;
+      // Drafts saved before Guides existed won't have d.guides — fall back
+      // to the static list rather than losing the guides tab entirely.
+      if (d && d.site && d.projects && d.legal) return { ...d, guides: d.guides || clone(GUIDES) };
     }
   } catch (e) { /* fall through */ }
-  return { site: clone(SITE), projects: clone(PROJECTS), legal: clone(LEGAL) };
+  return { site: clone(SITE), projects: clone(PROJECTS), legal: clone(LEGAL), guides: clone(GUIDES) };
 }
 function saveDraft() {
   localStorage.setItem(DRAFT_KEY, JSON.stringify(data, stripPrivate));
@@ -458,6 +461,157 @@ function renderProjectEditor(host, idx) {
 }
 
 /* ============================================================
+   TAB: GUIDES
+   ============================================================ */
+/* Photo/video upload — reads the file client-side and embeds it as a
+   data: URI directly in doc.media.src. There's no server here, so this
+   is the only way "upload" can work at all — no separate hosting step.
+   Keep files small: this ends up inline in config.js, so a large video
+   bloats the file and slows every page load, not just the guide page. */
+function mediaEditor(host, doc) {
+  const wrap = document.createElement("div");
+  host.appendChild(wrap);
+
+  function render() {
+    wrap.innerHTML = "";
+    if (doc.media && doc.media.src) {
+      const preview = document.createElement("div");
+      preview.className = "media-preview";
+      preview.appendChild(
+        doc.media.type === "video"
+          ? Object.assign(document.createElement("video"), { src: doc.media.src, controls: true })
+          : Object.assign(document.createElement("img"), { src: doc.media.src })
+      );
+      wrap.appendChild(preview);
+
+      const rm = document.createElement("button");
+      rm.type = "button";
+      rm.className = "btn btn-ghost";
+      rm.textContent = "✕ Remove media";
+      rm.addEventListener("click", () => { doc.media = null; markDirty(); render(); });
+      wrap.appendChild(rm);
+      return;
+    }
+
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*,video/*";
+    input.addEventListener("change", () => {
+      const file = input.files[0];
+      if (!file) return;
+      if (file.size > 2 * 1024 * 1024) {
+        if (!confirm(`That file is ${(file.size / 1024 / 1024).toFixed(1)} MB — it gets embedded directly into config.js and will slow every page load. Use it anyway?`)) {
+          input.value = "";
+          return;
+        }
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        doc.media = { type: file.type.startsWith("video") ? "video" : "image", src: reader.result };
+        markDirty();
+        render();
+      };
+      reader.readAsDataURL(file);
+    });
+    wrap.appendChild(input);
+
+    const hint = document.createElement("p");
+    hint.className = "hint";
+    hint.textContent = "Optional — a screenshot or short clip shown under the summary. If you skip this, the page just moves straight to Quick Answers, no empty space left behind. Keep it small (a few hundred KB); it's embedded directly in config.js.";
+    wrap.appendChild(hint);
+  }
+  render();
+}
+
+function renderGuidesTab(host) {
+  if (editingGuide >= 0) return renderGuideEditor(host, editingGuide);
+
+  host.innerHTML = `<h2>Guides</h2>
+    <p class="hint">One page per bot module — opened from the "Guide" button inside that module in the bot itself. Each is a mini help center: a short summary, an optional screenshot or clip, and a Quick Answers FAQ someone can scan in under 30 seconds. The 15 modules here are fixed (they match real buttons in the bot) — edit their content, but they can't be added or removed from this tab.</p>`;
+
+  const list = document.createElement("div");
+  list.className = "obj-list";
+  data.guides.forEach((doc, i) => {
+    const item = document.createElement("div");
+    item.className = "obj-item";
+    const qaCount = (doc.quickAnswers || []).length;
+    const secCount = (doc.sections || []).length;
+    const bits = [`${qaCount} quick answer${qaCount === 1 ? "" : "s"}`];
+    if (secCount) bits.push(`${secCount} detail section${secCount === 1 ? "" : "s"}`);
+    if (doc.media && doc.media.src) bits.push("has media");
+    item.innerHTML = `
+      <span class="emoji">${doc.icon || "📖"}</span>
+      <span class="obj-name">${doc.title || "(untitled)"}
+        <small>guide.html?module=${doc.id} · ${bits.join(" · ")}</small>
+      </span>`;
+    const mk = (txt, cls, fn) => {
+      const b = document.createElement("button");
+      b.className = "btn " + cls; b.textContent = txt;
+      b.addEventListener("click", fn);
+      item.appendChild(b);
+    };
+    mk("Edit", "btn-gold", () => { editingGuide = i; renderTab(); });
+    list.appendChild(item);
+  });
+  host.appendChild(list);
+}
+
+function renderGuideEditor(host, idx) {
+  const doc = data.guides[idx];
+  host.innerHTML = "";
+
+  const back = document.createElement("button");
+  back.className = "back-link";
+  back.textContent = "← Back to all guides";
+  back.addEventListener("click", () => { editingGuide = -1; renderTab(); });
+  host.appendChild(back);
+
+  const h = document.createElement("h2");
+  h.textContent = `Edit: ${doc.title}`;
+  host.appendChild(h);
+
+  const meta = card("Header");
+  meta.appendChild(grid(
+    fld("Title", doc, "title"),
+    fld("Icon (emoji)", doc, "icon"),
+    fld("Summary — one line, shown right under the title", doc, "summary", { type: "textarea", rows: 2, full: true }),
+  ));
+  host.appendChild(meta);
+
+  const mediaC = card("Screenshot or video (optional)");
+  mediaEditor(mediaC, doc);
+  host.appendChild(mediaC);
+
+  const qaC = card("Quick Answers — the actual point of this page");
+  const qaNote = document.createElement("p");
+  qaNote.className = "hint";
+  qaNote.textContent = "Short, click-to-expand Q&A. Someone should find their answer here in under 30 seconds — 1-2 sentences per answer, not a paragraph.";
+  qaC.appendChild(qaNote);
+  const qaList = document.createElement("div");
+  qaC.appendChild(qaList);
+  doc.quickAnswers = doc.quickAnswers || [];
+  listEditor(qaList, doc.quickAnswers, (item) => [
+    fld("Question", item, "q", { full: true }),
+    fld("Answer (1-2 sentences)", item, "a", { type: "textarea", rows: 2, full: true }),
+  ], { q: "", a: "" }, "+ Add quick answer");
+  host.appendChild(qaC);
+
+  const secC = card("More detail (optional) — in the text box: blank line = new paragraph, lines starting with \"- \" = bullet points");
+  const secList = document.createElement("div");
+  secC.appendChild(secList);
+  doc.sections = doc.sections || [];
+  listEditor(secList, doc.sections, (s) => [
+    fld("Heading", s, "h", { full: true }),
+    fld("Content", s, "body", {
+      type: "textarea", rows: 6, full: true,
+      get: (o) => bodyToText(o.body),
+      set: (o, v) => { o.body = textToBody(v); },
+    }),
+  ], { h: "New section", body: [] }, "+ Add section");
+  host.appendChild(secC);
+}
+
+/* ============================================================
    TAB: LEGAL
    ============================================================ */
 function renderLegalTab(host) {
@@ -564,6 +718,8 @@ const SITE = ${j(data.site)};
 const PROJECTS = ${j(data.projects)};
 
 const LEGAL = ${j(data.legal)};
+
+const GUIDES = ${j(data.guides)};
 `;
 }
 
@@ -682,6 +838,7 @@ function renderTab() {
   host.innerHTML = "";
   if (currentTab === "site") renderSiteTab(host);
   else if (currentTab === "projects") renderProjectsTab(host);
+  else if (currentTab === "guides") renderGuidesTab(host);
   else if (currentTab === "legal") renderLegalTab(host);
   else renderPublishTab(host);
 }
@@ -729,6 +886,7 @@ document.addEventListener("DOMContentLoaded", () => {
     currentTab = b.dataset.tab;
     editingProject = -1;
     editingLegal = -1;
+    editingGuide = -1;
     document.querySelectorAll("#admin-tabs button").forEach((x) => x.classList.toggle("active", x === b));
     renderTab();
   });

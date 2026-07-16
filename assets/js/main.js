@@ -397,20 +397,54 @@ function renderGuide() {
   ).join("");
 
   const sections = doc.sections || [];
+  const qa       = doc.quickAnswers || [];
+
+  // No placeholder box when media is unset — the block simply isn't
+  // rendered, so Quick Answers flows straight up under the summary.
+  const mediaHTML = (doc.media && doc.media.src)
+    ? `<div class="guide-media">${
+        doc.media.type === "video"
+          ? `<video src="${esc(doc.media.src)}" controls playsinline preload="metadata"></video>`
+          : `<img src="${esc(doc.media.src)}" alt="${esc(doc.title)}" loading="lazy" />`
+      }</div>`
+    : "";
+
+  const qaHTML = qa.length ? `
+    <section class="qa-section">
+      <span class="eyebrow">// Quick answers</span>
+      <div class="faq">
+        ${qa.map((item) => `
+          <details>
+            <summary>${esc(item.q)}</summary>
+            <p>${linkifyEmails(esc(item.a))}</p>
+          </details>`).join("")}
+      </div>
+    </section>` : "";
+
+  const sectionsHTML = sections.length ? `
+    <section class="qa-section">
+      ${qa.length ? `<span class="eyebrow">// More detail</span>` : ""}
+      ${sections.map((s) => `
+        <div class="legal-section">
+          <h2>${esc(s.h)}</h2>
+          ${bodyHTML(s.body)}
+        </div>`).join("")}
+    </section>` : "";
+
+  const emptyHTML = (!qa.length && !sections.length) ? `
+    <section class="legal-section">
+      <p class="updated">Full guide coming soon — check back here for step-by-step instructions, examples and FAQ.</p>
+    </section>` : "";
 
   $("#guide-main").innerHTML = `
     <div class="wrap legal">
       <span class="eyebrow">// ${esc(CONF.site.brand)} · guide</span>
       <h1>${esc(doc.icon || "")} ${esc(doc.title)}</h1>
       <p class="lead">${linkifyEmails(esc(doc.summary))}</p>
-      ${sections.length ? sections.map((s) => `
-        <section class="legal-section">
-          <h2>${esc(s.h)}</h2>
-          ${bodyHTML(s.body)}
-        </section>`).join("") : `
-        <section class="legal-section">
-          <p class="updated">Full guide coming soon — check back here for step-by-step instructions, examples and FAQ.</p>
-        </section>`}
+      ${mediaHTML}
+      ${qaHTML}
+      ${sectionsHTML}
+      ${emptyHTML}
       <div class="legal-nav">
         ${(CONF.guides || []).filter((x) => x.id !== doc.id).map((x) =>
           `<a href="guide.html?module=${encodeURIComponent(x.id)}">${esc(x.icon || "")} ${esc(x.title)} →</a>`).join("")}

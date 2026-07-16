@@ -18,6 +18,7 @@ Open `admin.html`, sign in, and manage everything visually:
 |---|---|
 | **Site** | Brand, logo, links, homepage hero + chat mockup, "How we build" cards |
 | **Bots / Projects** | Add / edit / delete / reorder bots — including full detail pages (features, steps, pricing, FAQ, chat mockup) |
+| **Guides** | Edit each module's Help Center page — summary, screenshot/video upload, Quick Answers FAQ, optional deeper sections |
 | **Legal pages** | Privacy Policy, Terms, or any new document |
 | **Publish** | Download / copy the new `config.js`, or one-click publish via GitHub |
 
@@ -44,6 +45,7 @@ website files; the panel keeps it in your browser only.
 | `project.html?id=digihub` | Full page for ANY bot | that bot's `details` block in `PROJECTS` |
 | `legal.html?doc=privacy` | Privacy Policy | `LEGAL` array |
 | `legal.html?doc=terms` | Terms & Conditions | `LEGAL` array |
+| `guide.html?module=shop` | Help Center page for one bot module | `GUIDES` array |
 
 ## Add a new bot project
 
@@ -79,6 +81,28 @@ Section format:
     "Another paragraph.",
 ]}
 ```
+
+## Edit a module's Guide (Help Center page)
+
+The `GUIDES` array in `config.js` holds one entry per bot module — each is
+linked from a "Guide" button inside that module in the bot itself, at
+`guide.html?module=<id>`. The 15 module IDs are fixed (they match real
+buttons already wired into the bot's code), so entries can be edited but not
+added or removed from this array without also changing the bot's code.
+
+Each entry is a mini help center, built to answer a question in under 30
+seconds — not a manual:
+
+- `summary` — one line, shown at the top
+- `media` — optional screenshot or short clip (`{ type: "image"|"video", src }`).
+  Set `media: null` and the page just skips it — no empty placeholder box.
+  The admin panel's Guides tab can upload a file directly (it gets embedded
+  as a `data:` URI in `config.js` — keep it small, a few hundred KB, since
+  there's no separate file host on a static site).
+- `quickAnswers` — the actual point of the page: a list of `{q, a}` pairs
+  rendered as a click-to-expand FAQ. Keep answers to 1-2 sentences.
+- `sections` — optional, for anyone who wants more than Quick Answers gives.
+  Same `{h, body}` shape as `LEGAL` above.
 
 ## Change brand, links, contact
 

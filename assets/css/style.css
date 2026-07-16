@@ -474,6 +474,19 @@ footer, footer a { color: var(--muted); font-size: 0.88rem; }
   font-family: var(--font-display); font-weight: 600; font-size: 0.94rem;
 }
 
+/* ---------- guide pages (help center) ---------- */
+/* No fixed-height placeholder — the block is only ever rendered by JS
+   when doc.media.src exists, so an unset media field costs zero space. */
+.guide-media {
+  margin: 18px 0 8px; border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--line); background: var(--panel);
+}
+.guide-media img, .guide-media video { display: block; width: 100%; max-height: 420px; object-fit: cover; }
+.qa-section { margin-top: 34px; }
+.qa-section .eyebrow { display: block; margin-bottom: 14px; }
+.qa-section .faq { display: block; }
+.qa-section .legal-section:first-child { padding-top: 0; }
+
 /* ---------- project not found ---------- */
 .notfound { padding: 90px 22px; text-align: center; }
 .notfound .lead { margin: 14px auto 26px; }
