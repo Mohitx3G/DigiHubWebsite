@@ -20,7 +20,7 @@ const SITE = {
   tagline: "Telegram bot platforms, built to scale.",
   telegram: "https://t.me/DigiHubProBot",       // main contact / support link
   supportChannel: "https://t.me/DigiHubProBot", // announcements / support channel
-  email: "mohitrp4412@gmail.com",               // shown on legal pages as contact
+  email: "contact@digihubhmax.com",              // footer contact — general inquiries (Telegram link above covers customer support)
   year: 2026,
 
   /* Homepage hero */
@@ -324,6 +324,7 @@ const LEGAL = [
         body: [
           "Data is stored in a PostgreSQL database on our own servers — we don't use a named third-party cloud data platform. Clone bot tokens are encrypted at rest using Fernet symmetric encryption; nobody — including our team — can read them in plain text.",
           "Files and screenshots live inside Telegram's own infrastructure (private channels), protected by Telegram's security. Access to our database and admin channels is restricted to the project administrators.",
+          "Found a security vulnerability? Please report it to security@digihubhmax.com rather than disclosing it publicly — we take these reports seriously and will respond promptly.",
         ],
       },
       {
@@ -338,7 +339,7 @@ const LEGAL = [
         body: [
           "We keep your account and store data for as long as you use the service. If your subscription expires, your data is kept so you can resume where you left off.",
           "Internal system logs (automation logs, health alerts, admin audit trail) are purged automatically on a rolling basis, typically within 30–90 days, and are not user-facing data.",
-          "You can request deletion of your account data (store, products metadata, clone bot tokens) at any time by contacting us on Telegram. We will delete it within 30 days, except records we must keep for fraud prevention or legal reasons.",
+          "You can request deletion of your account data (store, products metadata, clone bot tokens) at any time by contacting us on Telegram or emailing privacy@digihubhmax.com. We will delete it within 30 days, except records we must keep for fraud prevention or legal reasons.",
         ],
       },
       {
@@ -351,7 +352,7 @@ const LEGAL = [
             "Delete your data, as described in the section above.",
             "Object to a specific use of your data that isn't necessary to run the service.",
           ]},
-          "Send these requests on Telegram or by email (see Contact below) and we'll respond within 30 days.",
+          "Send these requests on Telegram or to privacy@digihubhmax.com and we'll respond within 30 days.",
         ],
       },
       {
@@ -369,7 +370,7 @@ const LEGAL = [
       {
         h: "13. Contact",
         body: [
-          "Questions about privacy, or want to exercise any of the rights above? Message us on Telegram or email us — both are listed in the footer of this site.",
+          "Questions about privacy, or want to exercise any of the rights above? Message us on Telegram, or email privacy@digihubhmax.com. Security vulnerability reports go to security@digihubhmax.com instead.",
         ],
       },
     ],
@@ -432,6 +433,7 @@ const LEGAL = [
             "If your subscription expires, your store pauses gracefully — nothing is deleted, and renewing restores everything.",
             "Prices may change; changes apply from your next renewal, never retroactively.",
           ]},
+          "Billing or payment issues? Email billing@digihubhmax.com.",
         ],
       },
       {
@@ -478,7 +480,7 @@ const LEGAL = [
       {
         h: "12. Contact",
         body: [
-          "Questions about these terms? Reach us on Telegram or by email — links are in the footer of this site.",
+          "Questions about these terms, contracts or compliance? Reach us on Telegram or email legal@digihubhmax.com. For general questions, contact@digihubhmax.com works too.",
         ],
       },
     ],

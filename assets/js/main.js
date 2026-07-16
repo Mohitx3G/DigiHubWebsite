@@ -11,6 +11,12 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const param = (name) => new URLSearchParams(location.search).get(name);
 const extAttrs = (href) => /^https?:\/\//.test(href) ? `target="_blank" rel="noopener"` : "";
+// Runs on already-esc()'d text, so this only ever adds <a> tags we control —
+// no raw HTML from config.js content ever reaches the page.
+const linkifyEmails = (escapedText) => escapedText.replace(
+  /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
+  (email) => `<a href="mailto:${email}">${email}</a>`
+);
 
 /* ---------- content source: config.js OR admin draft ----------
    The admin panel (admin.html) saves work-in-progress content to
@@ -333,8 +339,8 @@ function renderLegal() {
 
   const bodyHTML = (items) => items.map((item) =>
     (item && item.list)
-      ? `<ul>${item.list.map((li) => `<li>${esc(li)}</li>`).join("")}</ul>`
-      : `<p>${esc(item)}</p>`
+      ? `<ul>${item.list.map((li) => `<li>${linkifyEmails(esc(li))}</li>`).join("")}</ul>`
+      : `<p>${linkifyEmails(esc(item))}</p>`
   ).join("");
 
   $("#legal-main").innerHTML = `
