@@ -121,13 +121,50 @@ whole site updates.
 Just double-click `index.html` — it works from disk.
 (Or run `python -m http.server` in this folder and open http://localhost:8000)
 
-## Hosting (free, zero maintenance)
+## Deploy
 
-Upload this folder to any static host:
+The live site (digihubhmax.com, behind Cloudflare) is deployed with:
 
-- **Cloudflare Pages** (recommended — free, fast in India, custom domain)
-- **GitHub Pages** — push to a repo, enable Pages in settings
-- **Netlify / Vercel** — drag-and-drop the folder
+```bash
+deploy/deploy.sh
+```
+
+That one command does the whole pipeline — content-hashes `style.css`,
+`main.js`, `admin.css` and `admin.js`, rewrites every HTML file's
+`<link>`/`<script>` tags to point at the hashed names, ships the result to
+the VPS as a new release directory, and atomically flips the live symlink
+to it. Nothing about this needs a manual Cloudflare cache purge, ever —
+see "Caching strategy" below for why.
+
+Requires SSH access to the VPS (`digihub@169.58.15.224`) with a key the
+agent can use non-interactively — on Windows, run it from a shell where
+the OpenSSH agent is reachable (PowerShell, not Git Bash, on this
+machine — Git Bash's bundled `ssh` can't reach the Windows agent pipe).
+
+### Caching strategy
+
+Two tiers, so nothing is ever stuck stale and nothing is ever
+unnecessarily re-fetched:
+
+- **Hashed assets** (`style.<hash>.css`, `main.<hash>.js`, …) — cached for
+  a year, `immutable`, by both Cloudflare and the browser. Safe because
+  the filename itself changes whenever the content does; the old URL is
+  never referenced again once deploy.sh rewrites the HTML, so there's
+  nothing to invalidate.
+- **Fixed-filename files** (the `*.html` pages, `assets/js/config.js`,
+  `assets/img/logo.jpg`) — `Cache-Control: no-store`. These can change
+  independently of a code deploy (the admin panel publishes straight to
+  `config.js`), so their filenames have to stay fixed — which means
+  Cloudflare has to be told, unambiguously, never to cache them at the
+  edge. A bare `no-cache` isn't enough for that: Cloudflare still caches
+  the object and falls back to its own default edge TTL (4h, the exact
+  bug this replaced) for how long it holds it. `no-store` is the one
+  directive Cloudflare genuinely bypasses its cache for — verified live,
+  see `deploy/nginx.conf`'s comments.
+
+If you ever add a new fixed-filename static file that changes outside a
+deploy, give it the same `no-store` treatment in `deploy/nginx.conf`
+rather than leaving it to Cloudflare's defaults.
 
 ## Structure
 
