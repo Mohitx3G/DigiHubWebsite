@@ -18,9 +18,9 @@ const SITE = {
   brand: "DiGiHub",
   logo: "assets/img/logo.jpg",                // shown in nav; "" = 🤖 emoji fallback
   tagline: "Telegram bot platforms, built to scale.",
-  telegram: "https://t.me/DigiHubProBot",       // main contact / support link
-  supportChannel: "https://t.me/DigiHubProBot", // announcements / support channel
-  email: "contact@digihubhmax.com",              // footer contact — general inquiries (Telegram link above covers customer support)
+  telegram: "https://t.me/DigiHubProBot",           // "Open/Try in Telegram" CTAs — the actual product bot
+  supportChannel: "https://t.me/DigiHubSupportBot", // footer "Support on Telegram" link
+  email: "contact@digihubhmax.com",                 // footer contact — general inquiries
   year: 2026,
 
   /* Homepage hero */

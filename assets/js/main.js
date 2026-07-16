@@ -130,7 +130,7 @@ function renderChrome(activeId) {
         <div class="foot-legal">${legalLinks}</div>
       </div>
       <div class="foot-contact">
-        <a href="${esc(site.telegram)}" target="_blank" rel="noopener">Support on Telegram →</a>
+        <a href="${esc(site.supportChannel)}" target="_blank" rel="noopener">Support on Telegram →</a>
         ${site.email ? `<a href="mailto:${esc(site.email)}">${esc(site.email)}</a>` : ""}
       </div>
     </div>`;
