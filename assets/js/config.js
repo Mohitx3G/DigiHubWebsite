@@ -486,3 +486,64 @@ const LEGAL = [
     ],
   },
 ];
+
+/* ============================================================
+   GUIDES — one entry per bot module, each becomes a page at
+   guide.html?module=<id>, linked from the "Guide" button inside
+   that module in the bot itself.
+
+   Every entry needs: id, title, icon, summary (shown at the top
+   of the page and used as the module's one-line description).
+   `sections` is optional — leave it empty (or omit it) and the
+   page shows just the summary with a "Full guide coming soon"
+   notice. Fill sections in as you write real documentation —
+   same {h, body} shape as LEGAL above (body items are plain
+   strings or {list: [...]}).
+   ============================================================ */
+const GUIDES = [
+  { id: "shop", title: "Shop Guide", icon: "🛍️",
+    summary: "Sell digital products with Telegram Stars. Products stay in your private storage channel — buyers get instant delivery after payment.",
+    sections: [] },
+  { id: "giveaways", title: "Giveaways Guide", icon: "🎉",
+    summary: "Run join-to-enter giveaways with automatic winner picking, entry tracking, and full analytics.",
+    sections: [] },
+  { id: "forms", title: "Forms Guide", icon: "📝",
+    summary: "Build conversational, multi-step forms. Customers can pause and resume anytime, with a visible progress bar.",
+    sections: [] },
+  { id: "broadcast", title: "Broadcast Guide", icon: "📣",
+    summary: "Send scheduled or one-off messages to your audience, with built-in cooldowns and customer-segment targeting.",
+    sections: [] },
+  { id: "automation", title: "Automation Guide", icon: "⚙️",
+    summary: "Trigger welcome messages, coupons, or credit rewards automatically when a customer joins or buys — or build multi-step drip sequences that run on their own.",
+    sections: [] },
+  { id: "force_join", title: "Force Join Guide", icon: "🔒",
+    summary: "Require customers to join your channel(s) before they can use the bot.",
+    sections: [] },
+  { id: "menu_builder", title: "Menu Builder Guide", icon: "🧭",
+    summary: "Build custom navigation pages with buttons linking to your shop, forms, links, or channels — no coding required.",
+    sections: [] },
+  { id: "auto_replies", title: "Auto Replies Guide", icon: "💬",
+    summary: "Set keyword-triggered replies so common questions get answered instantly, day or night.",
+    sections: [] },
+  { id: "live_chat", title: "Live Chat Guide", icon: "🗨️",
+    summary: "Let customers message you directly through the bot — replies relay back instantly, with owner-defined keyword filtering to block spam.",
+    sections: [] },
+  { id: "coupons", title: "Coupons Guide", icon: "🏷️",
+    summary: "Create percentage or fixed discount codes, scoped to products or categories, with usage limits.",
+    sections: [] },
+  { id: "credits", title: "Credits Guide", icon: "💎",
+    summary: "DigiHub Credits cover your per-sale commission — recharge to keep your store online.",
+    sections: [] },
+  { id: "welcome", title: "Welcome Page Guide", icon: "👋",
+    summary: "The first thing customers see when they open your bot — your poster, message, and navigation buttons.",
+    sections: [] },
+  { id: "referrals", title: "Referrals Guide", icon: "🎁",
+    summary: "Earn DigiHub Credits by referring other creators, with rewards across three tiers.",
+    sections: [] },
+  { id: "subscriptions", title: "Plans & Subscription Guide", icon: "💎",
+    summary: "Compare DigiHub plans, upgrade, and renew — pricing is in Telegram Stars, billed for the period you choose.",
+    sections: [] },
+  { id: "mybots", title: "My Bots Guide", icon: "🤖",
+    summary: "Create, manage, and monitor every bot you've launched from one place.",
+    sections: [] },
+];

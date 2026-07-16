@@ -24,14 +24,19 @@ const linkifyEmails = (escapedText) => escapedText.replace(
    it with a "draft" banner so you can preview before publishing.
    Visitors never have that key, so they always see config.js. */
 const DRAFT_KEY = "digihub_draft_v1";
-let CONF = { site: SITE, projects: PROJECTS, legal: LEGAL };
+let CONF = { site: SITE, projects: PROJECTS, legal: LEGAL, guides: GUIDES };
 let IS_DRAFT = false;
 try {
   if (typeof localStorage !== "undefined") {
     const raw = localStorage.getItem(DRAFT_KEY);
     if (raw) {
       const d = JSON.parse(raw);
-      if (d && d.site && d.projects && d.legal) { CONF = d; IS_DRAFT = true; }
+      if (d && d.site && d.projects && d.legal) {
+        // Drafts saved before Guides existed won't have d.guides — fall
+        // back to the static list rather than showing an empty page.
+        CONF = { ...d, guides: d.guides || GUIDES };
+        IS_DRAFT = true;
+      }
     }
   }
 } catch (e) { /* storage unavailable — fall back to config.js */ }
@@ -361,6 +366,58 @@ function renderLegal() {
     </div>`;
 }
 
+/* ============================================================
+   GUIDE PAGE — universal, renders any GUIDES entry.
+   URL: guide.html?module=<module id>   e.g. guide.html?module=shop
+   Linked from the "Guide" button inside that module in the bot.
+   ============================================================ */
+function renderGuide() {
+  if (document.body.dataset.page !== "guide") return;
+
+  const id  = param("module");
+  const doc = (CONF.guides || []).find((x) => x.id === id);
+
+  if (!doc) {
+    $("#guide-main").innerHTML = `
+      <div class="wrap legal">
+        <span class="eyebrow">// ${esc(CONF.site.brand)} · guide</span>
+        <h1>Guide not found</h1>
+        <p class="lead">That module doesn't have a guide page yet.</p>
+        <a href="index.html">← Back to home</a>
+      </div>`;
+    return;
+  }
+
+  document.title = `${doc.title} — ${CONF.site.brand}`;
+
+  const bodyHTML = (items) => items.map((item) =>
+    (item && item.list)
+      ? `<ul>${item.list.map((li) => `<li>${linkifyEmails(esc(li))}</li>`).join("")}</ul>`
+      : `<p>${linkifyEmails(esc(item))}</p>`
+  ).join("");
+
+  const sections = doc.sections || [];
+
+  $("#guide-main").innerHTML = `
+    <div class="wrap legal">
+      <span class="eyebrow">// ${esc(CONF.site.brand)} · guide</span>
+      <h1>${esc(doc.icon || "")} ${esc(doc.title)}</h1>
+      <p class="lead">${linkifyEmails(esc(doc.summary))}</p>
+      ${sections.length ? sections.map((s) => `
+        <section class="legal-section">
+          <h2>${esc(s.h)}</h2>
+          ${bodyHTML(s.body)}
+        </section>`).join("") : `
+        <section class="legal-section">
+          <p class="updated">Full guide coming soon — check back here for step-by-step instructions, examples and FAQ.</p>
+        </section>`}
+      <div class="legal-nav">
+        ${(CONF.guides || []).filter((x) => x.id !== doc.id).map((x) =>
+          `<a href="guide.html?module=${encodeURIComponent(x.id)}">${esc(x.icon || "")} ${esc(x.title)} →</a>`).join("")}
+      </div>
+    </div>`;
+}
+
 /* ---------- shared: block copy/select/right-click ----------
    Deters casual copy-pasting of site text/links. Not real
    security — anyone can still read the HTML via dev tools or
@@ -390,5 +447,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderChrome(activeProject);
   renderHome();
   renderLegal();
+  renderGuide();
   initReveal();
 });
