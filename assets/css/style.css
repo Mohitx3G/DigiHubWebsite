@@ -395,7 +395,7 @@ section.alt .card.feature { background: var(--bg); }
 .step p { color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
 
 /* ---------- pricing ---------- */
-.tiers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; align-items: stretch; }
+.tiers { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; align-items: stretch; }
 .tier {
   background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
   padding: 26px 22px; display: flex; flex-direction: column; position: relative;
