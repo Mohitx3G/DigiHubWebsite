@@ -53,7 +53,7 @@ website files; the panel keeps it in your browser only.
 2. Copy an existing object in the `PROJECTS` array (e.g. the `requestaccepter` one)
 3. Change `id`, `name`, `emoji`, `status`, `short` and the content inside `details`
 4. Save. The bot now has:
-   - a card on the homepage (linked automatically)
+   - a tab on the homepage's bot showcase (linked automatically)
    - its own page at `project.html?id=<your-id>`
    - a link in the top navigation
 

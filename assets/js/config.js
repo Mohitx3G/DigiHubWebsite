@@ -28,7 +28,7 @@ const SITE = {
     eyebrow: "// Telegram bot platforms for admins",
     title: "One bot for your whole community — <span class='hl'>not just a store</span>.",
     lead: "DigiHub gives creators a complete toolkit inside Telegram — a store, custom menus, forms, auto-replies, broadcasts, coupons, giveaways, live chat and channel-gated access — all running under your own bot, on your own brand.",
-    primaryBtn: { label: "See all modules", href: "#features" },
+    primaryBtn: { label: "See all modules", href: "#bots" },
     ghostBtn: { label: "Try it on Telegram", href: "https://t.me/DigiHubProBot" },
     /* Telegram chat mockup shown beside the hero.
        side: "in" = bot message, "out" = user message.
@@ -57,32 +57,6 @@ const SITE = {
       ],
     },
   },
-
-  /* Homepage "Features" grid — shown right under the hero.
-     This lists every real module the bot has, not just the store. */
-  featuresEyebrow: "// Features",
-  featuresTitle: "Everything you need to run your Telegram community",
-  features: [
-    { icon: "🤖", title: "Your own clone bot", desc: "Every bot runs under your brand, with your own bot token from @BotFather — not ours." },
-    { icon: "🛍️", title: "Shop & Stars payments", desc: "Sell digital products with native Telegram Stars. Files stay in your channel, buyers get instant delivery." },
-    { icon: "🧭", title: "Menu builder", desc: "Build custom navigation pages with buttons linking to your shop, forms, links or channels — no coding." },
-    { icon: "📝", title: "Forms", desc: "Create conversational, multi-step forms. Customers can pause and resume anytime, progress bar included." },
-    { icon: "💬", title: "Auto-replies", desc: "Set keyword-triggered replies so common questions get answered instantly, day or night." },
-    { icon: "📣", title: "Broadcast", desc: "Send scheduled or one-off messages to your audience, with built-in cooldowns so you never look spammy." },
-    { icon: "🎯", title: "Customer segments", desc: "Target broadcasts to specific groups — like your top spenders — instead of messaging everyone." },
-    { icon: "🏷️", title: "Coupons", desc: "Create percentage or fixed discount codes, scoped to products or categories, with usage limits." },
-    { icon: "🔒", title: "Channel-gated access", desc: "Require customers to join your channel(s) before they can use the bot — grow your channel while you sell." },
-    { icon: "📊", title: "Dashboard & analytics", desc: "See orders, revenue and audience growth in one place, without digging through chat history." },
-    { icon: "🔔", title: "Smart notifications", desc: "Choose which events ping you — new orders, low stock, daily summaries — so you're never buried in alerts." },
-    { icon: "🔐", title: "Encrypted at rest", desc: "Bot tokens are encrypted with Fernet — nobody, including us, can read them in plain text." },
-    { icon: "🎉", title: "Giveaways", desc: "Run join-to-enter giveaways with automatic winner picking and full entry analytics — no spreadsheets." },
-    { icon: "🗨️", title: "Live chat", desc: "Customers message you straight through the bot — replies relay back instantly, with owner-defined keyword filtering to block spam before it reaches you." },
-    { icon: "⚙️", title: "Automation & drip sequences", desc: "Fire welcome messages, coupons or credit rewards automatically on join or purchase — or build multi-step drip sequences that run on their own." },
-    { icon: "🏆", title: "Achievements", desc: "Unlock badges as your store grows — a portfolio that tracks your progress automatically, always visible even while your bot sleeps." },
-    { icon: "🎁", title: "Referrals & Credits", desc: "Earn DigiHub Credits by referring other creators, then spend them on upgrades or convert them into customer credits for your own store." },
-    { icon: "🌍", title: "Built for every market", desc: "New users pick their country and language on first launch — pricing and text adapt automatically." },
-    { icon: "👥", title: "Team access", desc: "Delegate store management to trusted admins with granular, revocable permissions — every action fully audited (Gold and up)." },
-  ],
 
   /* Homepage "How we build" cards */
   highlights: [

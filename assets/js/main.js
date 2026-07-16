@@ -160,6 +160,61 @@ function chatHTML(chat, ariaLabel) {
     </div>`;
 }
 
+/* ---------- homepage: bot tabs ----------
+   One tab per PROJECTS entry. Selecting a tab shows that bot's own
+   short description and its own `details.features` — each bot only
+   ever shows its own info, never a generic cross-product list. */
+let activeBotId = null;
+
+function renderBotTabs(id) {
+  activeBotId = id;
+
+  $("#bots-tabs").innerHTML = CONF.projects.map((p) => `
+    <button type="button" class="bot-tab ${p.id === activeBotId ? "active" : ""}" data-bot="${esc(p.id)}">
+      <span class="emoji">${p.emoji}</span>${esc(p.name)}
+      ${p.status !== "live" ? `<span class="tab-badge">${p.status === "soon" ? "soon" : esc(p.status)}</span>` : ""}
+    </button>`).join("");
+
+  $("#bots-tabs").querySelectorAll(".bot-tab").forEach((btn) => {
+    btn.addEventListener("click", () => renderBotTabs(btn.dataset.bot));
+  });
+
+  renderBotPanel(activeBotId);
+}
+
+function renderBotPanel(id) {
+  const p = CONF.projects.find((x) => x.id === id) || CONF.projects[0];
+  if (!p) { $("#bots-panel").innerHTML = ""; return; }
+
+  const d = p.details;
+  const badge = `<span class="status ${p.status}">${p.status === "soon" ? "coming soon" : p.status}</span>`;
+
+  const features = (d && d.features && d.features.length) ? `
+    <div class="grid cols-3 bot-panel-features">${d.features.map((f) => `
+      <div class="card feature">
+        <div class="emoji">${f.icon}</div>
+        <h3>${esc(f.title)}</h3>
+        <p>${esc(f.desc)}</p>
+      </div>`).join("")}
+    </div>` : "";
+
+  const actions = d ? `
+    <div class="actions">
+      <a class="btn btn-primary" href="project.html?id=${encodeURIComponent(p.id)}">View full details</a>
+      ${d.botLink ? `<a class="btn btn-ghost" href="${esc(d.botLink)}" target="_blank" rel="noopener">Try on Telegram</a>` : ""}
+    </div>` : "";
+
+  $("#bots-panel").innerHTML = `
+    <div class="bot-panel-head">
+      ${badge}
+      <div class="emoji">${p.emoji}</div>
+      <h3>${esc(p.name)}</h3>
+      <p>${esc(p.short)}</p>
+      ${actions}
+    </div>
+    ${features}`;
+}
+
 /* ============================================================
    HOMEPAGE
    ============================================================ */
@@ -182,28 +237,7 @@ function renderHome() {
       <div class="phone-primary">${chatHTML(h.chat, "Example purchase conversation")}</div>
     </div>`;
 
-  $("#features-eyebrow").textContent = CONF.site.featuresEyebrow || "// Features";
-  $("#features-title").textContent = CONF.site.featuresTitle || "Features";
-  $("#features-grid").innerHTML = (CONF.site.features || []).map((f) => `
-    <div class="card feature">
-      <div class="emoji">${f.icon}</div>
-      <h3>${esc(f.title)}</h3>
-      <p>${esc(f.desc)}</p>
-    </div>`).join("");
-
-  $("#projects-grid").innerHTML = CONF.projects.map((p) => {
-    const badge = `<span class="status ${p.status}">${p.status === "soon" ? "coming soon" : p.status}</span>`;
-    const href = p.details ? `project.html?id=${encodeURIComponent(p.id)}` : "";
-    const inner = `
-      ${badge}
-      <div class="emoji">${p.emoji}</div>
-      <h3>${esc(p.name)}</h3>
-      <p>${esc(p.short)}</p>
-      ${href ? `<div class="card-foot">View project →</div>` : ""}`;
-    return href
-      ? `<a class="card" href="${href}">${inner}</a>`
-      : `<div class="card">${inner}</div>`;
-  }).join("");
+  renderBotTabs(CONF.projects[0] && CONF.projects[0].id);
 
   $("#highlights-grid").innerHTML = (CONF.site.highlights || []).map((f) => `
     <div class="card feature">
