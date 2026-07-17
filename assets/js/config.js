@@ -159,8 +159,8 @@ const PROJECTS = [
     status: "live",
     short: "Auto-approve join requests on private channels with smart delays. Clone your own approval bot in one minute.",
     details: {
-      botUsername: "@RequestAccepterBot",
-      botLink: "https://t.me/DigiHubProBot",   // ← replace with the real bot link
+      botUsername: "@RequestAccepterPro_Bot",
+      botLink: "https://t.me/RequestAccepterPro_Bot",
       eyebrow: "// Request Accepter Pro · live",
       headline: "Join requests, approved on autopilot.",
       sub: "Stop approving members by hand. Request Accepter Pro watches your private channels and groups, approves join requests with smart delays, and welcomes every new member — from your own branded bot.",
