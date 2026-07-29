@@ -497,7 +497,24 @@ const GUIDES = [
       { q: "Where are my product files stored?", a: "Inside your own private Telegram storage channel. DigiHub only keeps the message ID — never a copy of the file itself." },
       { q: "Can I organize products into categories?", a: "Yes — add categories from Categories, then assign each product to one. No categories means customers see a flat product list." },
     ],
-    sections: [] },
+    sections: [
+      { h: "Setting up your shop", body: [
+        { list: [
+          "Connect a private storage channel — the bot needs to be an admin there. This is where every product file actually lives.",
+          "Add at least one category (optional, but customers browse by category once you have more than a couple of products).",
+          "Create a product: name, price in Telegram Stars, and the file itself (or a link, for non-file products).",
+          "Set the product's Reward — what a buyer actually receives. A product with no reward set stays invisible to customers and can't be purchased.",
+        ] },
+      ] },
+      { h: "The Showcase page", body: [
+        "When you mark a product for the Showcase, it becomes the first page customers see when they open your store — useful for featuring your best or newest item instead of making customers scroll a full catalog.",
+        { type: "tip", text: "Priority controls ordering within a category or the Showcase — higher priority products appear first." },
+      ] },
+      { h: "Discounts and delivery", body: [
+        "Coupons (percentage or fixed) and any customer credit balance both apply at checkout, coupon first — see the Coupons guide for how to scope one to a specific product.",
+        "Delivery is instant and automatic: once Stars payment clears, the buyer gets the file directly, copied straight from your storage channel.",
+      ] },
+    ] },
   { id: "giveaways", title: "Giveaways Guide", icon: "🎉",
     summary: "Run join-to-enter giveaways with automatic winner picking, entry tracking, and full analytics.",
     media: null,
@@ -506,7 +523,22 @@ const GUIDES = [
       { q: "Can I require customers to join a channel to enter?", a: "Yes — set join conditions when you create the giveaway." },
       { q: "How is the reward delivered?", a: "Automatically, to each winner, the moment the giveaway ends — no manual step needed." },
     ],
-    sections: [] },
+    sections: [
+      { h: "Creating a giveaway", body: [
+        { list: [
+          "Set a title, a banner image, and the prize each winner receives.",
+          "Choose an end time — entries close automatically the moment it's reached.",
+          "Optionally require entrants to join one or more channels first, the same gate Force Join uses.",
+        ] },
+      ] },
+      { h: "Entries and winners", body: [
+        "Every entrant is tracked automatically, so you always know exactly how many people are in. When the giveaway ends, winners are picked at random from everyone who met the entry conditions at that moment, and rewards go out immediately — no manual step, no risk of forgetting.",
+        { type: "note", text: "A customer who joins the required channel(s) after the giveaway already ended is not retroactively entered — the conditions are checked at entry time, not at draw time." },
+      ] },
+      { h: "Analytics", body: [
+        "Each giveaway's detail screen shows entry count over time and, after it ends, the winner list — useful for judging whether a prize tier is actually driving entries before you run another one.",
+      ] },
+    ] },
   { id: "forms", title: "Forms Guide", icon: "📝",
     summary: "Build conversational, multi-step forms. Customers can pause and resume anytime, with a visible progress bar.",
     media: null,
@@ -515,7 +547,18 @@ const GUIDES = [
       { q: "Where do submitted answers go?", a: "You get a notification with all their answers in one view the moment they submit." },
       { q: "What happens after someone submits?", a: "You can optionally route them to a specific menu or page once they finish." },
     ],
-    sections: [] },
+    sections: [
+      { h: "Building a form", body: [
+        "Give it a title and description, then add questions one at a time — each can be plain text, multiple choice, or a few other answer types, and you choose per question whether it's required.",
+        { type: "tip", text: "Reorder or temporarily disable individual questions any time without losing the ones customers already answered." },
+      ] },
+      { h: "The customer experience", body: [
+        "Questions are asked one at a time in a real conversation, not a wall of fields — a visible progress bar shows how far along they are. If a customer closes the chat mid-form, their answers so far are saved; they pick up exactly where they left off next time.",
+      ] },
+      { h: "Reviewing submissions", body: [
+        "Every submission arrives as a single notification with all answers laid out together. From there you can optionally route the customer straight into a specific menu or page once they finish, useful for a form that gates access to something.",
+      ] },
+    ] },
   { id: "broadcast", title: "Broadcast Guide", icon: "📣",
     summary: "Send scheduled or one-off messages to your audience, with built-in cooldowns and customer-segment targeting.",
     media: null,
@@ -524,7 +567,17 @@ const GUIDES = [
       { q: "Is there a cooldown between broadcasts?", a: "Yes, scaled to your plan — the panel shows exactly when you can send your next one." },
       { q: "Can I test before sending to everyone?", a: "Yes — Test First sends it only to you before it goes out to real customers." },
     ],
-    sections: [] },
+    sections: [
+      { h: "Composing a broadcast", body: [
+        "Add text, media, and buttons (the same Universal Button Builder used across DigiHub) before you send. Test First delivers the exact message to you alone, so you catch a typo or a broken link before your whole audience sees it.",
+      ] },
+      { h: "Targeting a segment", body: [
+        "Send to everyone, or narrow it to a segment — new customers, buyers, high spenders, or people who haven't been back in a while. Segments are built from real purchase and activity data, not a list you maintain manually.",
+      ] },
+      { h: "Send cooldowns", body: [
+        { type: "warning", text: "There's a minimum gap between broadcasts, scaled to your plan — the composer shows exactly when your next send is allowed. This isn't arbitrary: pacing sends is also what keeps Telegram from treating your bot as a spam source." },
+      ] },
+    ] },
   { id: "automation", title: "Automation Guide", icon: "⚙️",
     summary: "Trigger welcome messages, coupons, or credit rewards automatically when a customer joins or buys — or build multi-step drip sequences that run on their own.",
     media: null,
@@ -533,7 +586,21 @@ const GUIDES = [
       { q: "What's the difference between Automation and Sequences?", a: "Rules fire once per trigger. Sequences (drip campaigns) send a series of steps over time after the trigger." },
       { q: "Can I delay an action?", a: "Yes — immediately, after a set time (15 min / 1 hour / 24 hours), or a custom delay." },
     ],
-    sections: [] },
+    sections: [
+      { h: "Rules vs. Sequences", body: [
+        "A Rule fires once, right when its trigger happens — a customer joining, or completing a purchase. A Sequence is a multi-step drip campaign that keeps running over time after that same kind of trigger: welcome message now, a tip after a day, a coupon after a week, and so on.",
+      ] },
+      { h: "Building a rule", body: [
+        { list: [
+          "Pick the trigger: join, or purchase.",
+          "Pick the action: send a message, grant a coupon, or credit customer wallet balance.",
+          "Pick the delay: immediately, a preset window (15 min / 1 hour / 24 hours), or a custom delay you set yourself.",
+        ] },
+      ] },
+      { h: "Sequences", body: [
+        { type: "tip", text: "Use a Sequence when you want a relationship to build over several touches instead of one action — a welcome series is the most common use, but reward or win-back sequences work the same way." },
+      ] },
+    ] },
   { id: "force_join", title: "Force Join Guide", icon: "🔒",
     summary: "Require customers to join your channel(s) before they can use the bot.",
     media: null,
@@ -542,7 +609,18 @@ const GUIDES = [
       { q: "How many channels can I require?", a: "Depends on your plan — the panel shows your current usage and limit." },
       { q: "Does this affect me, the owner?", a: "No — the gate only applies to customers, never to you." },
     ],
-    sections: [] },
+    sections: [
+      { h: "Setting it up", body: [
+        "Add one or more channels a customer must join before they can use your bot. The bot needs to be an admin in each channel to actually check membership.",
+      ] },
+      { h: "What customers see", body: [
+        "Anyone who hasn't joined gets a gate screen with a join button instead of the bot's normal menus. The check re-runs automatically the moment they tap through and join — no need for them to come back and retry manually.",
+        { type: "note", text: "The gate applies to customers only. You and any delegated admins pass straight through regardless of channel membership." },
+      ] },
+      { h: "Plan limits", body: [
+        "How many channels you can require is scaled to your plan — the panel always shows your current usage against that limit.",
+      ] },
+    ] },
   { id: "menu_builder", title: "Menu Builder Guide", icon: "🧭",
     summary: "Build custom navigation pages with buttons linking to your shop, forms, links, or channels — no coding required.",
     media: null,
@@ -551,7 +629,20 @@ const GUIDES = [
       { q: "Can I set a menu as my bot's homepage?", a: "Yes — set any menu as Home, and it's what customers see when they open your bot." },
       { q: "Is there a limit on menus?", a: "Yes, scaled to your plan — the panel shows how many you've used." },
     ],
-    sections: [] },
+    sections: [
+      { h: "The Home Menu", body: [
+        "One menu is always your Home Menu — it's what customers land on the moment they open your bot, unless you've customized the Welcome Page separately. Set any menu as Home from its detail card at any time; the previous one is automatically unset.",
+      ] },
+      { h: "Building a menu", body: [
+        "Start with just a title — description, media, and buttons are all optional fields you fill in whenever you're ready, not a forced step-by-step wizard. Buttons go through the same Universal Button Builder used by Welcome and Broadcast: move, duplicate, recolor, and pick where each one links.",
+      ] },
+      { h: "Templates and duplication", body: [
+        { list: [
+          "Six ready-made templates cover common needs — Rules & Terms, FAQ, VIP Benefits, Support Center, and Application Portal, alongside a blank Home template.",
+          "Duplicate an existing menu (content and buttons both) as a faster starting point than a template when you're making something similar to what you already have.",
+        ] },
+      ] },
+    ] },
   { id: "auto_replies", title: "Auto Replies Guide", icon: "💬",
     summary: "Set keyword-triggered replies so common questions get answered instantly, day or night.",
     media: null,
@@ -560,7 +651,17 @@ const GUIDES = [
       { q: "Can I turn a reply off without deleting it?", a: "Yes — tap the toggle next to any rule to disable it temporarily." },
       { q: "Is there a limit on rules?", a: "Yes, scaled to your plan." },
     ],
-    sections: [] },
+    sections: [
+      { h: "How matching works", body: [
+        "Each rule has a trigger phrase and a reply. Choose per rule whether it matches only an exact message or any message containing that text — exact match for precise commands, partial match for catching variations of the same question.",
+      ] },
+      { h: "Managing rules", body: [
+        { type: "tip", text: "Toggle a rule off instead of deleting it if you just want to pause it temporarily — the trigger and reply stay saved, ready to re-enable later." },
+      ] },
+      { h: "How it fits with Live Chat", body: [
+        "Auto Replies is checked first on every incoming customer message. Only when nothing matches does the message fall through to Live Chat (if you have it turned on) and reach you directly.",
+      ] },
+    ] },
   { id: "live_chat", title: "Live Chat Guide", icon: "🗨️",
     summary: "Let customers message you directly through the bot — replies relay back instantly, with owner-defined keyword filtering to block spam.",
     media: null,
@@ -569,7 +670,17 @@ const GUIDES = [
       { q: "Can I block spam messages?", a: "Yes — set a keyword filter. Matching messages never reach you, and the customer gets a quiet notice instead." },
       { q: "Does this replace Auto Replies?", a: "No — a customer who triggers an Auto Reply still just gets that reply. Live Chat is for everything else." },
     ],
-    sections: [] },
+    sections: [
+      { h: "Turning it on", body: [
+        "Off by default — nothing about your bot's behavior changes until you flip it on. Once enabled, any customer message that doesn't match an Auto Reply gets relayed straight to you.",
+      ] },
+      { h: "Replying", body: [
+        "Reply the same way you would to any Telegram message: long-press it and hit Reply. No commands, no separate inbox screen — your reply is relayed back to that exact customer automatically.",
+      ] },
+      { h: "Keeping out spam", body: [
+        { type: "tip", text: "Set a keyword filter to block specific words or phrases before they ever reach you. A matching message never gets relayed — the customer gets a short, quiet notice instead." },
+      ] },
+    ] },
   { id: "coupons", title: "Coupons Guide", icon: "🏷️",
     summary: "Create percentage or fixed discount codes, scoped to products or categories, with usage limits.",
     media: null,
@@ -578,7 +689,18 @@ const GUIDES = [
       { q: "Can I limit how many times a coupon is used?", a: "Yes — set a usage limit per coupon when you create it." },
       { q: "Percentage or fixed discount?", a: "Either — choose when you create the coupon." },
     ],
-    sections: [] },
+    sections: [
+      { h: "Creating a coupon", body: [
+        { list: [
+          "Choose a code, and whether the discount is a percentage or a fixed Stars amount.",
+          "Scope it — store-wide, or limited to one product or category.",
+          "Set an optional usage limit so it stops working once redeemed that many times.",
+        ] },
+      ] },
+      { h: "How discounts apply", body: [
+        "A coupon applies first at checkout, then any customer credit balance on top of that — so the two stack rather than one overriding the other.",
+      ] },
+    ] },
   { id: "credits", title: "Credits Guide", icon: "💎",
     summary: "DigiHub Credits cover your per-sale commission — recharge to keep your store online.",
     media: null,
@@ -587,7 +709,17 @@ const GUIDES = [
       { q: "What happens if I run out?", a: "Recharge to keep your store online — the panel shows your balance and roughly how many more sales it covers." },
       { q: "Where do I buy more?", a: "Tap Buy Credits — purchases happen in the main DigiHub bot." },
     ],
-    sections: [] },
+    sections: [
+      { h: "What Credits fund", body: [
+        "DigiHub takes a small commission on each sale your store makes, and Credits are what cover it — every sale draws automatically from your balance. Your store keeps operating normally as long as you have enough.",
+      ] },
+      { h: "Running low", body: [
+        { type: "warning", text: "If your balance runs out, new sales can't complete until you recharge — existing customers and orders aren't affected, but checkout pauses until Credits are topped up." },
+      ] },
+      { h: "Recharging", body: [
+        "Tap Buy Credits from the panel — purchases happen inside the main DigiHub bot itself, in Telegram Stars, and land in your balance instantly.",
+      ] },
+    ] },
   { id: "welcome", title: "Welcome Page Guide", icon: "👋",
     summary: "The first thing customers see when they open your bot — your poster, message, and navigation buttons.",
     media: null,
@@ -596,7 +728,17 @@ const GUIDES = [
       { q: "Can I preview it before customers see it?", a: "Yes — tap Preview to see exactly what they'll see." },
       { q: "What if I don't set anything?", a: "DigiHub shows a sensible default until you customize it." },
     ],
-    sections: [] },
+    sections: [
+      { h: "What goes here", body: [
+        "A poster image or video, a message (with full rich-text formatting — bold, italic, links, and premium emoji if you have Telegram Premium yourself), and navigation buttons through the same Universal Button Builder used elsewhere.",
+      ] },
+      { h: "Before you publish", body: [
+        { type: "tip", text: "Tap Preview any time to see exactly what a customer sees — it renders through the same function real customers hit, so there's never a gap between preview and reality." },
+      ] },
+      { h: "Personalization", body: [
+        "Leave the message unset and DigiHub shows a default greeting personalized with each customer's own name. The moment you set custom text, it's shown to everyone exactly as you wrote it — personalization only applies to the default.",
+      ] },
+    ] },
   { id: "referrals", title: "Referrals Guide", icon: "🎁",
     summary: "Earn DigiHub Credits by referring other creators, with rewards across three tiers.",
     media: null,
@@ -605,7 +747,17 @@ const GUIDES = [
       { q: "How many tiers are there?", a: "Three — you earn from people you refer directly, and smaller rewards from the tiers below them." },
       { q: "What can I do with earned Credits?", a: "Use them to upgrade or renew your own subscription, or convert them into customer credits inside one of your stores." },
     ],
-    sections: [] },
+    sections: [
+      { h: "How the three tiers work", body: [
+        "You earn a percentage when someone you referred directly subscribes to a paid plan — that's tier one. Smaller rewards flow up from the people they in turn refer (tier two), and again one level below that (tier three). All of it is automatic once you've shared your link.",
+      ] },
+      { h: "Using what you earn", body: [
+        { list: [
+          "Apply earned Credits toward upgrading or renewing your own subscription.",
+          "Or convert them into customer credits inside one of your own stores, to fund promotions or rewards for your buyers.",
+        ] },
+      ] },
+    ] },
   { id: "subscriptions", title: "Plans & Subscription Guide", icon: "💎",
     summary: "Compare DigiHub plans, upgrade, and renew — pricing is in Telegram Stars, billed for the period you choose.",
     media: null,
@@ -614,7 +766,17 @@ const GUIDES = [
       { q: "What happens if my plan expires?", a: "Your store pauses gracefully — nothing is deleted, and renewing restores everything exactly as it was." },
       { q: "How is pricing billed?", a: "In Telegram Stars, for whichever period you choose — discounts apply automatically for longer commitments." },
     ],
-    sections: [] },
+    sections: [
+      { h: "Choosing a plan", body: [
+        "Each plan's card lists exactly what it unlocks — how many bots and products you get, and which higher-tier tools (analytics, automation, white-label branding) are included. Compare them side by side before you commit.",
+      ] },
+      { h: "Billing", body: [
+        "Pricing is in Telegram Stars, charged for whichever period you pick at checkout — longer commitments get an automatic discount over paying month to month.",
+      ] },
+      { h: "If a plan expires", body: [
+        { type: "note", text: "Nothing is deleted when a subscription lapses — your store pauses gracefully instead. Renewing at any point restores everything exactly as you left it." },
+      ] },
+    ] },
   { id: "mybots", title: "My Bots Guide", icon: "🤖",
     summary: "Create, manage, and monitor every bot you've launched from one place.",
     media: null,
@@ -623,5 +785,19 @@ const GUIDES = [
       { q: "What happens to a Sleeping bot?", a: "It's paused, not deleted — reactivate it any time and everything comes back as you left it." },
       { q: "Can someone else help manage my bot?", a: "Yes — delegate access with specific permissions from that bot's Admins settings." },
     ],
-    sections: [] },
+    sections: [
+      { h: "Reading the status colors", body: [
+        { list: [
+          "🔵 Trial — your evaluation period, full features, time-limited.",
+          "🟢 Active — running normally, Credits topped up.",
+          "🟡 Low Credits — still running, but recharge soon.",
+          "🟠 Grace period — Credits ran out; a short window to recharge before the bot pauses.",
+          "⚫ Sleeping — paused, not deleted. Reactivate any time and everything comes back exactly as you left it.",
+          "📦 Archived — long-term paused state, same no-data-loss guarantee as Sleeping.",
+        ] },
+      ] },
+      { h: "Delegating access", body: [
+        "Add a co-admin from that bot's Admins settings and choose exactly which permissions they get — you're never handing over full control by default.",
+      ] },
+    ] },
 ];

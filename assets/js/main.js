@@ -107,6 +107,7 @@ function renderChrome(activeId) {
       <nav class="nav-links" id="nav-links">
         <a href="index.html" class="${page === "home" ? "active" : ""}">Projects</a>
         ${projectLinks}
+        <a href="docs.html" class="${page === "docs" || page === "guide" ? "active" : ""}">Guides</a>
         <a class="btn btn-primary" href="${esc(site.telegram)}" target="_blank" rel="noopener">Open in Telegram</a>
       </nav>
     </div>`;
@@ -401,6 +402,41 @@ function renderLegal() {
 }
 
 /* ============================================================
+   DOCS HUB — card grid of every GUIDES entry. URL: docs.html
+   The one page that was missing: guide.html itself is only ever
+   reached today via a per-module "Guide" button inside the bot
+   (services/guide_links.py) — nothing on the site let a visitor
+   browse all 15 guides at once. This is that entry point.
+   ============================================================ */
+function renderDocsHub() {
+  if (document.body.dataset.page !== "docs") return;
+  document.title = `Guides — ${CONF.site.brand}`;
+
+  const guides = CONF.guides || [];
+
+  $("#docs-main").innerHTML = `
+    <section class="hero docs-hero">
+      <div class="wrap">
+        <span class="eyebrow">// ${esc(CONF.site.brand)} · guides</span>
+        <h1>Guides</h1>
+        <p class="lead">Setup steps, key concepts, and FAQ for every DiGiHub module.</p>
+      </div>
+    </section>
+    <section>
+      <div class="wrap">
+        <div class="grid cols-3 docs-grid">
+          ${guides.map((g) => `
+            <a class="card feature docs-card" href="guide.html?module=${encodeURIComponent(g.id)}">
+              <div class="emoji">${esc(g.icon || "📄")}</div>
+              <h3>${esc(g.title)}</h3>
+              <p>${esc(g.summary || "")}</p>
+            </a>`).join("")}
+        </div>
+      </div>
+    </section>`;
+}
+
+/* ============================================================
    GUIDE PAGE — universal, renders any GUIDES entry.
    URL: guide.html?module=<module id>   e.g. guide.html?module=shop
    Linked from the "Guide" button inside that module in the bot.
@@ -424,14 +460,40 @@ function renderGuide() {
 
   document.title = `${doc.title} — ${CONF.site.brand}`;
 
-  const bodyHTML = (items) => items.map((item) =>
-    (item && item.list)
-      ? `<ul>${item.list.map((li) => `<li>${linkifyEmails(esc(li))}</li>`).join("")}</ul>`
-      : `<p>${linkifyEmails(esc(item))}</p>`
-  ).join("");
+  // Callout item shape: { type: "tip"|"warning"|"note", text: "..." },
+  // alongside the existing plain-string and { list: [...] } shapes — same
+  // {h, body} section format LEGAL docs already use, just one more item kind.
+  const CALLOUT_LABEL = { tip: "Tip", warning: "Warning", note: "Note" };
+  const bodyHTML = (items) => items.map((item) => {
+    if (item && item.list) {
+      return `<ul>${item.list.map((li) => `<li>${linkifyEmails(esc(li))}</li>`).join("")}</ul>`;
+    }
+    if (item && item.type && CALLOUT_LABEL[item.type]) {
+      return `<div class="callout callout-${esc(item.type)}">
+        <span class="callout-label">${CALLOUT_LABEL[item.type]}</span>
+        <p>${linkifyEmails(esc(item.text || ""))}</p>
+      </div>`;
+    }
+    return `<p>${linkifyEmails(esc(item))}</p>`;
+  }).join("");
 
   const sections = doc.sections || [];
   const qa       = doc.quickAnswers || [];
+
+  // "On this page" — built from each section's own heading, anchored via a
+  // slugified id on that section's <h2>. Own vanilla-JS scroll highlighting
+  // (see initGuideToc below), same "no framework" constraint as the rest of
+  // this site — not a sidebar (site has no two-column layout anywhere else;
+  // an inline box keeps mobile simple) but still gives the reader the same
+  // "see the whole shape before reading" orientation a sidebar TOC gives.
+  const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const tocHTML = sections.length > 1 ? `
+    <nav class="guide-toc" aria-label="On this page">
+      <span class="guide-toc-label">On this page</span>
+      <ol>
+        ${sections.map((s) => `<li><a href="#${slugify(s.h)}" data-toc-target="${slugify(s.h)}">${esc(s.h)}</a></li>`).join("")}
+      </ol>
+    </nav>` : "";
 
   // No placeholder box when media is unset — the block simply isn't
   // rendered, so Quick Answers flows straight up under the summary.
@@ -459,7 +521,7 @@ function renderGuide() {
     <section class="qa-section">
       ${qa.length ? `<span class="eyebrow">// More detail</span>` : ""}
       ${sections.map((s) => `
-        <div class="legal-section">
+        <div class="legal-section" id="${slugify(s.h)}">
           <h2>${esc(s.h)}</h2>
           ${bodyHTML(s.body)}
         </div>`).join("")}
@@ -476,6 +538,7 @@ function renderGuide() {
       <h1>${esc(doc.icon || "")} ${esc(doc.title)}</h1>
       <p class="lead">${linkifyEmails(esc(doc.summary))}</p>
       ${mediaHTML}
+      ${tocHTML}
       ${qaHTML}
       ${sectionsHTML}
       ${emptyHTML}
@@ -484,6 +547,35 @@ function renderGuide() {
           `<a href="guide.html?module=${encodeURIComponent(x.id)}">${esc(x.icon || "")} ${esc(x.title)} →</a>`).join("")}
       </div>
     </div>`;
+
+  initGuideToc();
+}
+
+/* "On this page" active-section highlighting — IntersectionObserver only,
+   no scroll listener, no dependency. No-ops cleanly when there's no TOC
+   (single-section guides) or the browser lacks IntersectionObserver. */
+function initGuideToc() {
+  const toc = document.querySelector(".guide-toc");
+  if (!toc || !("IntersectionObserver" in window)) return;
+
+  const links    = [...toc.querySelectorAll("a[data-toc-target]")];
+  const sections = links
+    .map((a) => document.getElementById(a.dataset.tocTarget))
+    .filter(Boolean);
+  if (!sections.length) return;
+
+  const setActive = (id) => {
+    links.forEach((a) => a.classList.toggle("active", a.dataset.tocTarget === id));
+  };
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.filter((e) => e.isIntersecting);
+      if (visible.length) setActive(visible[0].target.id);
+    },
+    { rootMargin: "-15% 0px -70% 0px" } // "active" = section near the top third of the viewport
+  );
+  sections.forEach((s) => observer.observe(s));
 }
 
 /* ---------- shared: block copy/select/right-click ----------
@@ -515,6 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderChrome(activeProject);
   renderHome();
   renderLegal();
+  renderDocsHub();
   renderGuide();
   initReveal();
 });
