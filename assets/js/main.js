@@ -309,6 +309,7 @@ function renderProject() {
         <div class="section-head">
           <span class="eyebrow">// Pricing</span>
           <h2>Pay in Stars, upgrade any time</h2>
+          ${d.tiersNote ? `<p class="lead">${esc(d.tiersNote)}</p>` : ""}
         </div>
         <div class="tiers">${d.tiers.map((t) => `
           <div class="tier ${t.tag ? "popular" : ""}">

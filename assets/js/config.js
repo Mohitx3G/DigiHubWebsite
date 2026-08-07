@@ -103,6 +103,7 @@ const PROJECTS = [
       features: [
         { icon: "🤖", title: "Your own clone bot", desc: "Connect a bot token and get a fully branded bot under your name — not ours. Your community only ever sees your brand." },
         { icon: "🛍️", title: "Shop & Stars payments", desc: "Sell digital products with native Telegram Stars — files stay in your channel, buyers get instant delivery." },
+        { icon: "📱", title: "Mini App storefront", desc: "Give buyers a full app-like storefront inside Telegram — browse, buy and re-download without leaving chat. Silver plan and up." },
         { icon: "🧭", title: "Menu builder", desc: "Build custom navigation pages with buttons linking to your shop, forms, links or channels — no coding required." },
         { icon: "📝", title: "Forms", desc: "Create conversational, multi-step forms. Customers can pause and resume anytime, with a visible progress bar." },
         { icon: "💬", title: "Auto-replies", desc: "Set keyword-triggered replies so common questions get answered instantly, day or night." },
@@ -129,9 +130,11 @@ const PROJECTS = [
         { title: "Get paid, auto-deliver", desc: "Stars arrive in your wallet, the file arrives in the buyer's chat. Done." },
       ],
 
+      tiersNote: "Every new bot starts on a 12-day Elite trial — full top-tier features, no card needed. After that it drops to Free automatically, and Free just keeps running.",
+
       tiers: [
-        { name: "Free",     price: "0",   unit: "⭐ / mo", tag: "",             perks: ["1 clone bot", "Up to 20 products", "Stars payments", "Instant delivery"] },
-        { name: "Silver",   price: "100", unit: "⭐ / mo", tag: "",             perks: ["1 clone bot", "Up to 100 products", "Sales stats", "1 force-join channel"] },
+        { name: "Free",     price: "0",   unit: "⭐ / mo", tag: "",             perks: ["1 clone bot", "Up to 20 products", "Stars payments", "Stays online forever"] },
+        { name: "Silver",   price: "100", unit: "⭐ / mo", tag: "",             perks: ["1 clone bot", "Up to 100 products", "Sales stats", "Mini App storefront"] },
         { name: "Gold",     price: "250", unit: "⭐ / mo", tag: "Most popular", perks: ["3 clone bots", "Up to 500 products", "Full dashboard", "Team access — up to 5 admins"] },
         { name: "Elite",    price: "500", unit: "⭐ / mo", tag: "",             perks: ["10 clone bots", "Unlimited products", "White-label — no DigiHub branding", "Team access — up to 20 admins"] },
         { name: "Business", price: "750", unit: "⭐ / mo", tag: "",             perks: ["10 clone bots", "Unlimited products", "6 force-join channels", "Team access — up to 50 admins"] },
@@ -139,14 +142,15 @@ const PROJECTS = [
 
       faq: [
         { q: "Do my files get uploaded to your servers?", a: "No. Files stay in a private Telegram channel that you own. DigiHub stores only the message ID and channel ID needed to forward the product after purchase." },
-        { q: "What happens if my subscription expires?", a: "Your store pauses gracefully — nothing is deleted. Renew any time and everything comes back exactly as you left it." },
+        { q: "What happens when my trial ends?", a: "Your bot doesn't stop. It automatically drops to the Free plan and keeps running — no products lost, no downtime. Upgrade anytime to unlock premium features again." },
+        { q: "What happens if my paid subscription expires?", a: "Your store pauses gracefully — nothing is deleted. Renew any time and everything comes back exactly as you left it." },
         { q: "Can buyers spam my store bot?", a: "The bot UI is fully inline — buyers navigate with buttons and back-flows, and any text or tokens sent during setup are auto-deleted after use. Chats stay clean." },
         { q: "Which payment methods are supported?", a: "Telegram Stars, natively. Stars work in every country Telegram works in, with no card or gateway setup." },
       ],
 
       cta: {
         title: "Open your bot today",
-        text: "Connect a bot token from @BotFather and get your first menu, form or product live in under five minutes. The Free plan needs no payment at all.",
+        text: "Connect a bot token from @BotFather and get your first menu, form or product live in under five minutes — with a 12-day Elite trial included, no card needed.",
         btnLabel: "Launch DigiHub bot",
       },
     },
