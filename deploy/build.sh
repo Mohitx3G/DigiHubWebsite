@@ -26,6 +26,13 @@ for entry in "$ROOT"/*; do
   cp -r "$entry" "$DIST/$base"
 done
 
+# mediakit/backend/ is the source of the small API the site proxies to on
+# port 8787. It is tracked in this repo so it is version-controlled
+# somewhere, but it runs from /home/digihub/mediakit/backend on the server
+# and nginx does not serve it (404). Keep server source out of the web root
+# rather than shipping it into a public directory.
+rm -rf "$DIST/mediakit/backend"
+
 # Assets that change only via a code deploy: safe to hash + cache forever.
 HASHABLE=(
   "assets/css/style.css"

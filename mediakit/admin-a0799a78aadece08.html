@@ -86,6 +86,42 @@
   .empty{ color:var(--slate); font-size:0.86rem; padding:12px 0; }
   .err{ color:#c0392b; font-size:0.86rem; margin-top:8px; }
   .btn-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .btn.mini{ padding:4px 12px; min-height:0; font-size:0.74rem; border-radius:99px; }
+  a{ color:var(--marigold); }
+
+  /* Activity feed */
+  .ev{ padding:11px 0; border-bottom:1px solid var(--rule); font-size:0.88rem; }
+  .ev:last-child{ border-bottom:none; }
+  .ev .when{ display:block; color:var(--slate); font-size:0.74rem; margin-top:5px; }
+  .chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .chip{
+    background:var(--ink-3); border:1px solid var(--rule); border-radius:99px;
+    padding:2px 10px; font-size:0.78rem; overflow-wrap:anywhere;
+  }
+  .chip.contact{ border-color:var(--teal); }
+  .sharelink{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:7px; }
+  .sharelink a{ font-size:0.8rem; overflow-wrap:anywhere; }
+
+  /* Signups collapse into labelled cards on a phone. As a nowrap table every
+     column past Name — Contact included — sat behind a horizontal scroll that
+     is easy to miss entirely on a touch screen. */
+  @media (max-width: 760px){
+    #signupsTable, #signupsTable tbody, #signupsTable tr, #signupsTable td{ display:block; width:100%; }
+    #signupsTable thead{ display:none; }
+    #signupsTable tr{
+      border:1px solid var(--rule); border-radius:var(--radius-sm);
+      background:var(--ink-3); padding:10px 12px; margin-bottom:10px;
+    }
+    #signupsTable td{
+      border-bottom:none; padding:3px 0; white-space:normal; overflow-wrap:anywhere;
+      display:flex; gap:14px; align-items:baseline; justify-content:space-between;
+    }
+    #signupsTable td::before{
+      content:attr(data-label); color:var(--slate); font-size:0.7rem; font-weight:600;
+      text-transform:uppercase; letter-spacing:0.03em; flex:0 0 auto;
+    }
+    #signupsTable td > span{ text-align:right; }
+  }
 </style>
 </head>
 <body>
@@ -148,6 +184,7 @@
 
     <div class="panel">
       <h2>Signups</h2>
+      <p class="sub" style="margin-top:-6px;">One row per person — name, contact, age and both handles, exactly as entered at signup. Tap a contact to mail or call it.</p>
       <div class="btn-row">
         <button class="btn secondary" id="refreshSignupsBtn" type="button">Refresh</button>
         <button class="btn teal" id="downloadSignupsBtn" type="button">Download CSV</button>
@@ -160,7 +197,7 @@
 
     <div class="panel">
       <h2>Activity</h2>
-      <p class="sub" style="margin-top:-6px;">Every time someone downloads a card. Auto-deleted after 10 days.</p>
+      <p class="sub" style="margin-top:-6px;">Every card downloaded and every share link created, with who did it. Auto-deleted after 10 days (the links themselves stay alive for 90).</p>
       <div class="btn-row">
         <button class="btn secondary" id="refreshEventsBtn" type="button">Refresh</button>
         <button class="btn teal" id="downloadEventsBtn" type="button">Download CSV</button>
@@ -212,7 +249,40 @@
   function esc(s){
     var d = document.createElement("div");
     d.textContent = s === null || s === undefined ? "" : String(s);
-    return d.innerHTML;
+    // Quotes too — esc() now also fills href/data-* attributes, and every
+    // string here is visitor-supplied.
+    return d.innerHTML.replace(/"/g, "&quot;");
+  }
+
+  function fmtValue(v){
+    return (v === null || v === undefined || v === "") ? "—" : String(v);
+  }
+
+  function fmtDate(iso){
+    return String(iso || "").replace("T", " ").replace("Z", " UTC");
+  }
+
+  // Email -> mailto:, anything else that looks like a number -> tel:.
+  function contactHref(c){
+    c = String(c || "").trim();
+    if (!c) return null;
+    if (c.indexOf("@") !== -1) return "mailto:" + c;
+    var digits = c.replace(/[^\d+]/g, "");
+    return digits.length >= 6 ? "tel:" + digits : null;
+  }
+
+  function contactHtml(c){
+    var href = contactHref(c);
+    if (!href) return esc(fmtValue(c));
+    return '<a href="' + esc(href) + '">' + esc(c) + '</a>';
+  }
+
+  // data-label drives the mobile card layout (see the max-width:760px block).
+  function rawCell(label, html){
+    return '<td data-label="' + esc(label) + '"><span>' + html + "</span></td>";
+  }
+  function cell(label, value){
+    return rawCell(label, esc(fmtValue(value)));
   }
 
   function loadSignups(){
@@ -220,42 +290,120 @@
       var rows = data.signups || [];
       var tbody = document.querySelector("#signupsTable tbody");
       tbody.innerHTML = rows.map(function(s){
-        return "<tr><td>" + s.id + "</td><td>" + esc(s.created_at) + "</td><td>" + esc(s.name) + "</td><td>" +
-          esc(s.contact) + "</td><td>" + esc(s.age) + "</td><td>" + esc(s.handle_main) + "</td><td>" +
-          esc(s.handle_content) + "</td></tr>";
+        return "<tr>" +
+          cell("ID", s.id) +
+          cell("Date", fmtDate(s.created_at)) +
+          cell("Name", s.name) +
+          rawCell("Contact", contactHtml(s.contact)) +
+          cell("Age", s.age) +
+          cell("Main handle", s.handle_main ? "@" + s.handle_main : "") +
+          cell("Content handle", s.handle_content ? "@" + s.handle_content : "") +
+          "</tr>";
       }).join("");
       document.getElementById("signupsEmpty").style.display = rows.length ? "none" : "";
-      renderStats(rows.length, null);
+      renderStats(rows.length, null, null);
     });
   }
 
-  var EVENT_LABELS = { pdf_download: "Downloaded PDF", image_download: "Downloaded Image" };
+  var EVENT_LABELS = {
+    pdf_download: "Downloaded PDF",
+    image_download: "Downloaded Image",
+    share_created: "Created share link"
+  };
+
+  // Detail is JSON: a bare "who" string for downloads, an object with who +
+  // share_id for share_created. Older rows predate both shapes — show them raw.
+  function parseDetail(raw){
+    if (raw === null || raw === undefined || raw === "") return null;
+    try { return JSON.parse(raw); } catch(e){ return raw; }
+  }
+
+  // "Name · @handle · you@mail.com · age 22" -> one chip per part, with the
+  // contact one made clickable so it can be acted on straight from the log.
+  function whoChips(who){
+    var parts = String(who || "").split(" · ").filter(function(p){ return p.trim(); });
+    if (!parts.length) return "";
+    return '<div class="chips">' + parts.map(function(p){
+      p = p.trim();
+      var href = partHref(p);
+      return href
+        ? '<span class="chip contact"><a href="' + esc(href) + '">' + esc(p) + "</a></span>"
+        : '<span class="chip">' + esc(p) + "</span>";
+    }).join("") + "</div>";
+  }
+
+  // Which chips are actually reachable contacts: "@handle" and the
+  // "content: @handle" label never are; a phone written with spaces is.
+  function partHref(p){
+    if (p.charAt(0) === "@") return null;
+    if (p.indexOf("@") !== -1) return p.indexOf(" ") === -1 ? "mailto:" + p : null;
+    var digits = p.replace(/[^\d+]/g, "");
+    return digits.replace(/\D/g, "").length >= 6 ? "tel:" + digits : null;
+  }
+
+  function shareLinkHtml(shareId){
+    var url = location.origin + "/media-kit.html?s=" + shareId;
+    return '<div class="sharelink"><a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(url) + "</a>" +
+      '<button class="btn secondary mini" type="button" data-copy="' + esc(url) + '">Copy</button></div>';
+  }
+
   var lastEventsCount = null;
   function loadEvents(){
     authedFetch("/admin/events").then(function(r){ return r.json(); }).then(function(data){
       var rows = data.events || [];
+      var links = 0;
       var list = document.getElementById("eventsList");
       list.innerHTML = rows.map(function(e){
-        var label = EVENT_LABELS[e.event_type] || esc(e.event_type);
-        var detail = e.detail ? " — " + esc(e.detail) : "";
-        return '<div style="padding:9px 0; border-bottom:1px solid var(--rule); font-size:0.88rem;">' +
-          '<b>' + label + '</b>' + detail +
-          '<span style="display:block; color:var(--slate); font-size:0.74rem; margin-top:2px;">' + esc(e.created_at) + '</span>' +
-          '</div>';
+        var label = EVENT_LABELS[e.event_type] || e.event_type;
+        var d = parseDetail(e.detail);
+        var who = "", extra = "";
+        if (d && typeof d === "object"){
+          who = d.who || "";
+          if (d.share_id){ extra = shareLinkHtml(d.share_id); }
+        } else if (d !== null){
+          who = d;
+        }
+        if (e.event_type === "share_created") links++;
+        return '<div class="ev"><b>' + esc(label) + "</b>" +
+          whoChips(who) + extra +
+          '<span class="when">' + esc(fmtDate(e.created_at)) + "</span></div>";
       }).join("");
       document.getElementById("eventsEmpty").style.display = rows.length ? "none" : "";
       lastEventsCount = rows.length;
-      renderStats(null, rows.length);
+      renderStats(null, rows.length, links);
     });
   }
 
+  // Copy buttons are re-rendered on every refresh, so delegate off the list.
+  document.getElementById("eventsList").addEventListener("click", function(ev){
+    var btn = ev.target && ev.target.closest ? ev.target.closest("[data-copy]") : null;
+    if (!btn) return;
+    var text = btn.getAttribute("data-copy");
+    function flash(){
+      var prev = btn.textContent;
+      btn.textContent = "Copied";
+      setTimeout(function(){ btn.textContent = prev; }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash).catch(function(){ prompt("Copy this link:", text); });
+    } else {
+      prompt("Copy this link:", text);
+    }
+  });
+
   var lastSignupsCount = null;
-  function renderStats(signupsCount, eventsCount){
+  var lastLinksCount = null;
+  function renderStats(signupsCount, eventsCount, linksCount){
     if (signupsCount !== null) lastSignupsCount = signupsCount;
     if (eventsCount !== null) lastEventsCount = eventsCount;
+    if (linksCount !== null) lastLinksCount = linksCount;
+    function stat(num, label){
+      return '<div class="stat"><div class="num">' + (num === null ? "…" : num) + '</div><div class="lbl">' + label + "</div></div>";
+    }
     document.getElementById("statRow").innerHTML =
-      '<div class="stat"><div class="num">' + (lastSignupsCount === null ? "…" : lastSignupsCount) + '</div><div class="lbl">Total signups</div></div>' +
-      '<div class="stat"><div class="num">' + (lastEventsCount === null ? "…" : lastEventsCount) + '</div><div class="lbl">Activity (last 10 days)</div></div>';
+      stat(lastSignupsCount, "Total signups") +
+      stat(lastEventsCount, "Activity (last 10 days)") +
+      stat(lastLinksCount, "Links created (last 10 days)");
   }
 
   function downloadCsv(path, filename){

@@ -11,7 +11,10 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-HOST="digihub@169.58.15.224"
+# Overridable so a machine whose ~/.ssh/config only defines a host alias
+# (rather than a key for the bare IP) can deploy without editing this file:
+#   DIGIHUB_WEBSITE_HOST=digihub-vps deploy/deploy.sh
+HOST="${DIGIHUB_WEBSITE_HOST:-digihub@169.58.15.224}"
 RELEASES_DIR="/opt/digihub-website-releases"
 LIVE_LINK="/opt/digihub-website"
 KEEP=5

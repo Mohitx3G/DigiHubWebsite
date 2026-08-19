@@ -1656,7 +1656,11 @@
     fetch(API_BASE + "/share", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+      // _who rides along on the wire only — the backend pops it off before
+      // saving, so a shared kit never carries the creator's account details
+      // to whoever opens the link. It exists so the admin activity log can
+      // show who made each link, the same identity the download events use.
+      body: JSON.stringify(Object.assign({}, data, { _who: activityDetail() }))
     }).then(function(r){
       if (!r.ok) throw new Error("share failed");
       return r.json();
