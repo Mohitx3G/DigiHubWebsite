@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover" />
+<title>Media Kit Builder — DigiHub</title>
+<meta name="description" content="Build a media kit and brand-deal rate card for your Instagram in minutes." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Media Kit Builder — DigiHub" />
+<meta property="og:description" content="Build a media kit and brand-deal rate card for your Instagram in minutes." />
+<meta property="og:url" content="https://digihubhmax.com/media-kit.html" />
+<meta property="og:image" content="assets/img/logo.jpg" />
+<meta name="referrer" content="no-referrer" />
+<meta name="theme-color" content="#faf8f3" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#14161c" media="(prefers-color-scheme: dark)" />
+
+<!-- Add-to-Home-Screen support -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Media Kit" />
+<link rel="apple-touch-icon" href="assets/img/logo.jpg" />
+<link rel="icon" type="image/jpeg" href="assets/img/logo.jpg" />
+<script src="assets/js/html2canvas.min.js"></script>
+
+<style>
+  :root{
+    --ink:#faf8f3; --ink-2:#f1eee5; --ink-3:#ffffff;
+    --chalk:#1b1d24; --chalk-soft:#3a3d48; --slate:#6b6f7d;
+    --rule: rgba(27,29,36,0.14);
+    --marigold:#b9761e; --marigold-bright:#e8a23d;
+    --teal:#2f7c68; --teal-bright:#4fa089;
+    --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", "URW Palladio L", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --radius:12px; --radius-sm:9px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#14161c; --ink-2:#1c1f28; --ink-3:#20232d;
+      --chalk:#edebe3; --chalk-soft:#b9b7ae; --slate:#8b90a0;
+      --rule: rgba(237,235,227,0.12);
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    background:var(--ink); color:var(--chalk); font-family:var(--font-body);
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+    min-height:100vh; padding:24px 16px calc(60px + env(safe-area-inset-bottom));
+    position:relative; overflow-x:hidden;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:400; letter-spacing:-0.01em;}
+  .wrap{max-width:1150px; margin:0 auto; position:relative; z-index:1;}
+
+  /* ---------- ambient background ---------- */
+  .ambient{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  .orb{ position:absolute; border-radius:50%; filter:blur(64px); opacity:0.22; }
+  .orb-1{ width:44vw; height:44vw; min-width:300px; min-height:300px; left:-12%; top:-14%;
+    background:radial-gradient(circle at 40% 40%, var(--marigold-bright), transparent 70%); }
+  .orb-2{ width:36vw; height:36vw; min-width:260px; min-height:260px; right:-10%; top:16%;
+    background:radial-gradient(circle at 60% 40%, var(--teal-bright), transparent 70%); }
+  @media (prefers-color-scheme: dark){ .orb{ opacity:0.4; } }
+
+  header.top{margin-bottom:20px;}
+  .badge{
+    display:inline-flex; align-items:center; gap:5px; font-family:var(--font-body); font-size:0.72rem; font-weight:600;
+    color:var(--teal); background:color-mix(in srgb, var(--teal) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--teal) 30%, transparent);
+    padding:3px 10px; border-radius:99px; margin:0 6px 8px 0;
+  }
+  @media (prefers-color-scheme: dark){ .badge{ color:var(--teal-bright); } }
+  .badge.price{ color:var(--marigold); background:color-mix(in srgb, var(--marigold) 14%, transparent); border-color:color-mix(in srgb, var(--marigold) 32%, transparent); }
+  @media (prefers-color-scheme: dark){ .badge.price{ color:var(--marigold-bright); } }
+  header.top h1{font-size:clamp(1.5rem,4vw,1.8rem); font-weight:400;}
+  header.top p{color:var(--slate); font-size:0.92rem; margin-top:6px; max-width:60ch;}
+
+  .layout{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start;}
+  @media (max-width:900px){ .layout{grid-template-columns:1fr;} }
+  .col-preview{ position:sticky; top:20px; }
+  @media (max-width:900px){ .col-preview{ position:static; } }
+
+  .panel{
+    background:var(--ink-2); border:1px solid var(--rule); border-radius:var(--radius);
+    padding:20px; margin-bottom:16px;
+  }
+  .panel h2{font-size:1.05rem; margin-bottom:4px; color:var(--chalk); display:flex; align-items:center; gap:9px;}
+  .panel h2 .step-num{
+    width:22px; height:22px; border-radius:50%; background:var(--marigold); color:#fff;
+    font-family:var(--font-display); font-style:italic; font-size:0.78rem; font-weight:400;
+    display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .panel .sub{font-size:0.8rem; color:var(--slate); margin-bottom:16px;}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:0.82rem; color:var(--slate); margin-bottom:6px;}
+  .field input, .field select, .field textarea{
+    width:100%; background:var(--ink-3); border:1px solid var(--rule); color:var(--chalk);
+    border-radius:var(--radius-sm); padding:11px 12px; font-family:var(--font-body); font-size:1rem;
+    min-height:44px;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline:none; border-color:var(--marigold); }
+  .field textarea{resize:vertical; min-height:64px;}
+  .field input[type="color"]{ padding:4px; height:44px; cursor:pointer; }
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media (max-width:480px){ .row2{grid-template-columns:1fr;} }
+
+  .photo-upload{ display:flex; align-items:center; gap:14px; margin-bottom:18px; flex-wrap:wrap; }
+  .photo-circle{
+    width:64px; height:64px; border-radius:50%; background:var(--ink-3);
+    border:1px solid var(--rule); display:flex; align-items:center; justify-content:center;
+    overflow:hidden; flex-shrink:0; color:var(--slate); font-size:0.7rem; text-align:center;
+  }
+  .photo-circle img{width:100%; height:100%; object-fit:cover;}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--marigold); color:#fff; border:none; border-radius:var(--radius-sm);
+    padding:12px 18px; min-height:46px; font-family:var(--font-body); font-weight:600; font-size:0.94rem;
+    cursor:pointer; text-decoration:none; -webkit-tap-highlight-color:transparent;
+  }
+  .btn:hover{ background:var(--marigold-bright); }
+  .btn.secondary{ background:var(--ink-3); color:var(--chalk); border:1px solid var(--rule); }
+  .btn.secondary:hover{ border-color:var(--marigold); }
+  .btn.teal{ background:var(--teal); }
+  .btn.teal:hover{ background:var(--teal-bright); }
+  .btn.block{ width:100%; }
+  .btn-row{display:flex; gap:10px; margin-top:6px; flex-wrap:wrap;}
+  input[type="file"]{display:none;}
+
+  /* ---------- deal-terms checkboxes ---------- */
+  .deal-item{
+    border:1px solid var(--rule); border-radius:var(--radius-sm); padding:13px 14px; margin-bottom:10px;
+  }
+  .deal-item .deal-head{display:flex; align-items:flex-start; gap:11px;}
+  .deal-item input[type="checkbox"]{ width:20px; height:20px; margin-top:1px; accent-color:var(--marigold); flex-shrink:0; }
+  .deal-item .deal-title{font-weight:600; font-size:0.92rem;}
+  .deal-item .deal-desc{font-size:0.78rem; color:var(--slate); margin-top:2px;}
+  .deal-item select{ margin-top:10px; }
+  .deal-item{ opacity:0.55; }
+  .deal-item.active{ opacity:1; border-color:var(--marigold); }
+
+  .hint{font-size:0.76rem; color:var(--slate); margin-top:10px;}
+
+  /* calculation explainer strip (engagement working, suggest formula) */
+  .calc-note{
+    font-size:0.78rem; line-height:1.5; color:var(--chalk-soft);
+    background:rgba(47,124,104,0.10); border:1px solid rgba(47,124,104,0.25);
+    border-radius:var(--radius-sm); padding:9px 11px; margin:0 0 14px;
+  }
+  .calc-note b{ color:var(--teal); }
+  @media (prefers-color-scheme: dark){ .calc-note b{ color:var(--teal-bright); } }
+
+  /* rate card editor rows */
+  .rate-row{ display:grid; grid-template-columns:1fr 110px 40px; gap:8px; margin-bottom:8px; align-items:center; }
+  @media (max-width:480px){ .rate-row{ grid-template-columns:1fr 90px 38px; } }
+  .rate-row input{
+    width:100%; background:var(--ink-3); border:1px solid var(--rule); color:var(--chalk);
+    border-radius:var(--radius-sm); padding:10px 11px; font-family:var(--font-body); font-size:0.94rem; min-height:44px;
+  }
+  .rate-row input:focus{ outline:none; border-color:var(--marigold); }
+  .rate-row .rm{
+    background:var(--ink-3); border:1px solid var(--rule); color:var(--slate); border-radius:var(--radius-sm);
+    min-height:44px; cursor:pointer; font-size:1.05rem; line-height:1;
+  }
+  .rate-row .rm:hover{ color:#c0392b; border-color:#c0392b; }
+  .rate-empty{ font-size:0.8rem; color:var(--slate); margin-bottom:8px; }
+
+  /* ---------- the media kit card (also = the PDF) ---------- */
+  #card{
+    --kit-accent:#b9761e;
+    background:#ffffff; color:#1a1a1a; border-radius:var(--radius);
+    overflow:hidden; font-family:var(--font-body);
+    box-shadow:0 8px 30px rgba(0,0,0,0.22);
+  }
+  #card .kit-banner{
+    height:74px;
+    background:linear-gradient(120deg, var(--kit-accent-secondary, #b9761e), var(--kit-accent));
+  }
+  /* No overflow:hidden here — the avatar deliberately overlaps the banner via
+     a negative margin, and clipping the body cut the top off the photo. The
+     background layer gets its own clip wrapper instead. */
+  #card .kit-body{ padding:0 clamp(20px,5vw,34px) 28px; position:relative; }
+  #card .kit-bg-clip{ position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  #card .kit-bg-image{
+    position:absolute; inset:-20px; background-size:cover; background-position:center;
+    filter:blur(var(--kit-bg-blur, 0px)); transition:filter 0.15s ease;
+  }
+  #card .kit-head{display:flex; align-items:center; gap:16px; margin-top:-20px; margin-bottom:16px; padding-top:14px; position:relative; z-index:2;}
+  #card .kit-photo{
+    width:74px; height:74px; border-radius:50%; object-fit:cover; background:#eee;
+    border:3px solid #fff; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,0.18);
+  }
+  #card .kit-photo.empty{display:flex; align-items:center; justify-content:center; color:#aaa; font-size:0.65rem;}
+  #card .kit-name{font-family:var(--kit-font-display, var(--font-display)); font-size:1.35rem; font-weight:400; color:var(--kit-ink, #111);}
+  #card .kit-handle{color:var(--kit-ink-soft, #5b6b7a); font-size:0.92rem; margin-top:2px;}
+  #card .kit-tags{display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;}
+  #card .tag{
+    font-size:0.72rem; padding:3px 9px; border-radius:99px;
+    background:var(--kit-tag-bg, #eef4fb);
+    color:var(--kit-tag-ink, #2a6fa8);
+    font-weight:600;
+  }
+  #card .kit-bio{font-family:var(--kit-font-body, var(--font-body)); font-size:0.94rem; color:var(--kit-ink, #333); margin-bottom:20px; white-space:pre-wrap;}
+  #card .kit-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:22px;}
+  @media (max-width:520px){ #card .kit-stats{ grid-template-columns:1fr 1fr; } }
+  #card .stat{background:var(--kit-box-bg, #f7f9fb); border:1px solid var(--kit-box-border, #eef1f4); border-radius:10px; padding:11px 8px;}
+  #card .stat .num{font-family:var(--kit-font-display, var(--font-display)); font-size:1.1rem; font-weight:400; color:var(--kit-ink, #111);}
+  #card .stat .lbl{font-size:0.62rem; color:var(--kit-ink-soft, #5b6b7a); text-transform:uppercase; letter-spacing:0.04em; margin-top:2px;}
+
+  #card .kit-deal{
+    border:1px solid var(--kit-box-border, #eef1f4); border-radius:12px; padding:16px 18px; margin-bottom:18px; background:var(--kit-box-bg, #fbfcfd);
+  }
+  #card .kit-deal h3, #card .kit-audience h3, #card .kit-brands h3{font-size:0.82rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--kit-ink-soft, #5b6b7a); margin-bottom:10px;}
+  #card .kit-audience{ margin-bottom:18px; }
+  #card .kit-audience .aud-row{ display:flex; justify-content:space-between; gap:10px; font-size:0.84rem; padding:3px 0; color:var(--kit-ink, #333); }
+  #card .kit-audience .aud-row span:first-child{ color:var(--kit-ink-soft, #5b6b7a); }
+  #card .kit-brands{ margin-bottom:18px; }
+  #card .rate-item{ margin-bottom:12px; }
+  #card .rate-item:last-child{ margin-bottom:0; }
+  #card .rate-head{ display:flex; justify-content:space-between; gap:10px; font-weight:700; font-size:0.94rem; color:var(--kit-ink, #111); }
+  #card .rate-break{ font-size:0.76rem; color:var(--kit-ink-soft, #5b6b7a); margin-top:2px; }
+  #card .rate-break span{ display:inline-block; margin-right:10px; }
+  #card .deal-row{display:flex; justify-content:space-between; font-size:0.86rem; padding:4px 0; color:var(--kit-ink, #333); gap:10px;}
+  #card .deal-row.total{font-weight:700; color:var(--kit-ink, #111); border-top:1px solid #eef1f4; margin-top:6px; padding-top:8px;}
+  #card .deal-terms{font-size:0.78rem; color:var(--kit-ink-soft, #5b6b7a); margin-top:8px;}
+
+  #card .kit-footer{display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; font-size:0.8rem; color:var(--kit-ink-soft, #5b6b7a); border-top:1px solid #eef1f4; padding-top:14px;}
+  #card .kit-footer b{color:var(--kit-ink, #333);}
+  #card{ -webkit-print-color-adjust:exact; print-color-adjust:exact; position:relative; }
+  #card .kit-glass{ position:relative; z-index:2; border-radius:14px; }
+  #card.has-bg-image .kit-glass{
+    background:rgba(255,255,255,0.62);
+    backdrop-filter:blur(var(--kit-glass-blur, 14px)); -webkit-backdrop-filter:blur(var(--kit-glass-blur, 14px));
+    padding:16px clamp(14px,3vw,20px); margin:0 -4px;
+  }
+  #card[data-theme="dark"].has-bg-image .kit-glass{ background:rgba(15,17,22,0.58); }
+  #card[data-theme="gradient"].has-bg-image .kit-glass{ background:rgba(255,255,255,0.16); }
+  #card.has-bg-image .stat{
+    background:var(--kit-box-bg, rgba(255,255,255,0.5)); border-color:var(--kit-box-border, rgba(255,255,255,0.4));
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  }
+  #card.has-bg-image .kit-deal{
+    background:var(--kit-box-bg, rgba(255,255,255,0.5)); border-color:var(--kit-box-border, rgba(255,255,255,0.4));
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  }
+  .kit-watermark{ display:block; position:absolute; inset:0; z-index:5; pointer-events:none; overflow:hidden; }
+  .kit-watermark span{
+    position:absolute; font-family:var(--font-body); font-weight:700; font-size:0.82rem;
+    color:rgba(0,0,0,0.18); transform:rotate(-28deg); white-space:nowrap; letter-spacing:0.02em;
+  }
+  .kit-watermark span:nth-child(1){ top:6%; left:-8%; }
+  .kit-watermark span:nth-child(2){ top:24%; left:48%; }
+  .kit-watermark span:nth-child(3){ top:46%; left:-10%; }
+  .kit-watermark span:nth-child(4){ top:66%; left:42%; }
+  .kit-watermark span:nth-child(5){ top:88%; left:-4%; }
+  #card[data-theme="dark"] .kit-watermark span, #card[data-theme="gradient"] .kit-watermark span{ color:rgba(255,255,255,0.2); }
+
+  /* ---------- theme swatches picker ---------- */
+  .theme-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .theme-swatch{
+    width:44px; height:44px; border-radius:10px; border:2px solid var(--rule); cursor:pointer;
+    padding:0; overflow:hidden; position:relative; flex-shrink:0;
+  }
+  .theme-swatch.active{ border-color:var(--marigold); }
+  .theme-swatch span{ position:absolute; inset:0; }
+
+  /* ---------- theme: minimal ---------- */
+  #card[data-theme="minimal"]{ box-shadow:0 1px 0 var(--rule); }
+  #card[data-theme="minimal"] .kit-banner{ display:none; }
+  #card[data-theme="minimal"] .kit-head{ margin-top:0; align-items:center; }
+  #card[data-theme="minimal"] .kit-body{ padding-top:30px; }
+  #card[data-theme="minimal"] .kit-photo{ border-color:#f1eee5; }
+  #card[data-theme="minimal"] .kit-name{ font-size:1.6rem; }
+  #card[data-theme="minimal"] .tag{ background:none; padding:0; margin-right:10px; font-weight:400; color:#5b6b7a; }
+  #card[data-theme="minimal"] .tag::after{ content:"·"; margin-left:10px; color:#ccc; }
+  #card[data-theme="minimal"] .tag:last-child::after{ content:""; }
+  #card[data-theme="minimal"] .kit-stats{ border-top:1px solid #eee; border-bottom:1px solid #eee; padding:14px 0; }
+  #card[data-theme="minimal"] .stat{ background:none; border:none; border-radius:0; padding:0; text-align:center; }
+  #card[data-theme="minimal"] .stat:not(:last-child){ border-right:1px solid #eee; }
+  #card[data-theme="minimal"] .kit-deal{ background:none; border:1px solid #eee; }
+
+  /* ---------- theme: dark ---------- */
+  #card[data-theme="dark"]{ background:#111318; color:#e7e9ee; }
+  #card[data-theme="dark"] .kit-name{ color:var(--kit-ink, #fff); }
+  #card[data-theme="dark"] .kit-handle{ color:var(--kit-ink-soft, #9aa1ae); }
+  #card[data-theme="dark"] .kit-bio{ color:var(--kit-ink, #c3c7d1); }
+  #card[data-theme="dark"] .stat{ background:#1a1d24; border-color:#262a33; }
+  #card[data-theme="dark"] .stat .num{ color:var(--kit-ink, #fff); }
+  #card[data-theme="dark"] .stat .lbl{ color:var(--kit-ink-soft, #8b90a0); }
+  #card[data-theme="dark"] .kit-deal{ background:#1a1d24; border-color:#262a33; }
+  #card[data-theme="dark"] .deal-row{ color:var(--kit-ink, #c3c7d1); }
+  #card[data-theme="dark"] .deal-row.total{ color:var(--kit-ink, #fff); border-color:#262a33; }
+  #card[data-theme="dark"] .kit-footer{ color:var(--kit-ink-soft, #8b90a0); border-color:#262a33; }
+  #card[data-theme="dark"] .kit-footer b{ color:var(--kit-ink, #e7e9ee); }
+  #card[data-theme="dark"] .kit-photo{ border-color:#111318; }
+
+  /* ---------- theme: gradient ---------- */
+  #card[data-theme="gradient"]{
+    background:linear-gradient(155deg, var(--kit-accent), var(--kit-accent-gradient2, #4a8a76));
+    color:#fff;
+  }
+  #card[data-theme="gradient"] .kit-banner{ display:none; }
+  #card[data-theme="gradient"] .kit-head{ margin-top:0; padding-top:30px; }
+  #card[data-theme="gradient"] .kit-name{ color:var(--kit-ink, #fff); }
+  #card[data-theme="gradient"] .kit-handle{ color:var(--kit-ink-soft, rgba(255,255,255,0.75)); }
+  #card[data-theme="gradient"] .kit-bio{ color:var(--kit-ink, rgba(255,255,255,0.92)); }
+  #card[data-theme="gradient"] .tag{ background:rgba(255,255,255,0.18); color:#fff; }
+  #card[data-theme="gradient"] .stat{ background:rgba(255,255,255,0.14); border-color:rgba(255,255,255,0.2); backdrop-filter:blur(6px); }
+  #card[data-theme="gradient"] .stat .num{ color:var(--kit-ink, #fff); }
+  #card[data-theme="gradient"] .stat .lbl{ color:var(--kit-ink-soft, rgba(255,255,255,0.75)); }
+  #card[data-theme="gradient"] .kit-deal{ background:rgba(255,255,255,0.14); border-color:rgba(255,255,255,0.2); }
+  #card[data-theme="gradient"] .kit-deal h3, #card[data-theme="gradient"] .deal-row, #card[data-theme="gradient"] .deal-terms{ color:var(--kit-ink, rgba(255,255,255,0.92)); }
+  #card[data-theme="gradient"] .deal-row.total{ color:var(--kit-ink, #fff); border-color:rgba(255,255,255,0.25); }
+  #card[data-theme="gradient"] .kit-footer{ color:var(--kit-ink-soft, rgba(255,255,255,0.75)); border-color:rgba(255,255,255,0.2); }
+  #card[data-theme="gradient"] .kit-footer b{ color:var(--kit-ink, #fff); }
+  #card[data-theme="gradient"] .kit-photo{ border-color:rgba(255,255,255,0.85); }
+
+  /* ---------- theme: brutalist ---------- */
+  #card[data-theme="brutalist"]{
+    border-radius:0; border:3px solid #111; box-shadow:8px 8px 0 var(--kit-accent);
+  }
+  #card[data-theme="brutalist"] .kit-banner{ display:none; }
+  #card[data-theme="brutalist"] .kit-head{ margin-top:0; padding-top:26px; }
+  #card[data-theme="brutalist"] .kit-photo{ border-radius:8px; border:3px solid #111; }
+  #card[data-theme="brutalist"] .kit-name{ font-family:var(--font-body); font-weight:800; text-transform:uppercase; letter-spacing:-0.02em; }
+  #card[data-theme="brutalist"] .tag{ border-radius:0; border:2px solid #111; background:#fff; color:#111; font-weight:800; }
+  #card[data-theme="brutalist"] .stat{ border-radius:0; border:2px solid #111; background:#fff; }
+  #card[data-theme="brutalist"] .stat .num{ font-family:var(--font-body); font-weight:800; }
+  #card[data-theme="brutalist"] .kit-deal{ border-radius:0; border:2px solid #111; background:#fff; }
+
+  @media print{
+    /* display:none, NOT visibility:hidden — hidden elements keep their layout
+       box, and the tall form column was padding the PDF out to 5-6 blank
+       pages. Removing them from flow leaves the card as the only content. */
+    .ambient,
+    header.top,
+    .col-form,
+    #blurControls,
+    .col-preview > .btn-row,
+    .col-preview > .hint,
+    .overlay{ display:none !important; }
+
+    html, body{ background:#fff !important; margin:0; padding:0; }
+    body{ padding:0 !important; }
+    .wrap{ max-width:none; margin:0; padding:0; }
+    .layout{ display:block !important; gap:0; }
+    .col-preview{ position:static !important; top:auto; }
+
+    #card{
+      box-shadow:none;
+      border-radius:0;
+      margin:0;
+      width:100%;
+      /* set by JS right before printing so a tall kit shrinks onto one page */
+      zoom:var(--print-zoom, 1);
+      break-inside:avoid;
+      page-break-inside:avoid;
+    }
+    /* keep a stat row / rate card from being sliced across a page break */
+    #card .kit-stats,
+    #card .kit-audience,
+    #card .kit-deal,
+    #card .kit-brands,
+    #card .rate-item,
+    #card .kit-head{ break-inside:avoid; page-break-inside:avoid; }
+
+    .kit-watermark{ display:none !important; }
+    @page{ margin:0.4in; }
+  }
+
+  /* ---------- gate overlays (signup + paywall) ---------- */
+  .overlay{
+    position:fixed; inset:0; z-index:100; background:rgba(20,22,28,0.72);
+    backdrop-filter:blur(6px); display:flex; align-items:flex-start; justify-content:center;
+    overflow-y:auto; padding:24px 16px calc(24px + env(safe-area-inset-bottom));
+  }
+  .overlay .pw-card{
+    background:var(--ink); border:1px solid var(--rule); border-radius:var(--radius);
+    max-width:420px; width:100%; padding:26px 22px; margin:auto;
+    box-shadow:0 20px 60px rgba(0,0,0,0.4);
+  }
+  .overlay h2{font-size:1.4rem; margin:10px 0 6px;}
+  .overlay .price{ font-family:var(--font-display); font-size:2rem; color:var(--marigold); margin:14px 0 4px; }
+  @media (prefers-color-scheme: dark){ .overlay .price{ color:var(--marigold-bright); } }
+  .overlay .price small{ font-family:var(--font-body); font-size:0.9rem; color:var(--slate); font-weight:400; }
+  .overlay p.desc{ color:var(--slate); font-size:0.9rem; margin-bottom:18px; }
+  .overlay .pw-step{ display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; }
+  .overlay .pw-step .n{
+    width:22px; height:22px; border-radius:50%; background:var(--teal); color:#fff; flex-shrink:0;
+    font-size:0.75rem; font-weight:700; display:inline-flex; align-items:center; justify-content:center; margin-top:2px;
+  }
+  .overlay .pw-step .t{ font-size:0.88rem; }
+  .overlay .pw-step .t small{ display:block; color:var(--slate); font-size:0.78rem; margin-top:2px; }
+  .overlay .pw-soon{ font-size:0.82rem; color:var(--slate); font-style:italic; }
+  .overlay .pw-divider{ border-top:1px solid var(--rule); margin:18px 0; }
+  .overlay .pw-code-row{ display:flex; gap:8px; }
+  .overlay .pw-code-row input{ flex:1; text-transform:uppercase; letter-spacing:0.06em; }
+  .overlay .pw-error{ color:#c0392b; font-size:0.82rem; margin-top:8px; min-height:1.2em; }
+  .overlay .pw-error.ok{ color:var(--teal); }
+  @media (prefers-color-scheme: dark){ .overlay .pw-error.ok{ color:var(--teal-bright); } }
+  .overlay .field{ margin-bottom:12px; }
+  .overlay .row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:420px){ .overlay .row2{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+  <div class="ambient"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+
+  <div class="wrap">
+    <header class="top">
+      <span class="badge">🔒 Your photo stays on this device</span>
+      <span class="badge price" id="priceBadge" style="display:none;">₹29 / month</span>
+      <h1>Media Kit Builder</h1>
+      <p>Fill in your details, then download the card as a PDF — plus a built-in rate calculator for brand deal terms.</p>
+      <button class="btn secondary" id="shareBtn" type="button" style="margin-top:10px;">Share this tool</button>
+    </header>
+
+    <div class="layout">
+      <!-- FORM -->
+      <div class="col-form">
+
+        <div class="panel">
+          <h2><span class="step-num">1</span> You</h2>
+          <p class="sub">Saved on this device only.</p>
+
+          <div class="photo-upload">
+            <div class="photo-circle" id="photoCircle">Photo</div>
+            <div>
+              <button class="btn secondary" type="button" id="photoBtn">Choose file</button>
+              <input type="file" id="photoInput" accept="image/*" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="name">Name *</label>
+            <input type="text" id="name" placeholder="Enter your name" />
+          </div>
+
+          <div class="row2">
+            <div class="field">
+              <label for="handle">Instagram handle *</label>
+              <input type="text" id="handle" placeholder="yourhandle" />
+            </div>
+            <div class="field">
+              <label for="location">Based in</label>
+              <input type="text" id="location" placeholder="Enter your city" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="bio">One line about you</label>
+            <input type="text" id="bio" placeholder="What you make, and who it's for" />
+          </div>
+
+          <div class="field">
+            <label for="category">Categories</label>
+            <input type="text" id="category" placeholder="Design, Tech, Lifestyle" />
+          </div>
+
+          <div class="field">
+            <label for="brands">Brands you've worked with</label>
+            <input type="text" id="brands" placeholder="Comma separated" />
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2><span class="step-num">2</span> Numbers</h2>
+          <p class="sub">Instagram → Insights → Last 30 days. Type them once and they're saved on this device.</p>
+          <div class="row2">
+            <div class="field">
+              <label for="followers">Followers</label>
+              <input type="text" id="followers" placeholder="e.g. 24.5K" />
+            </div>
+            <div class="field">
+              <label for="views">Avg. reel views</label>
+              <input type="text" id="views" placeholder="e.g. 18.2K" />
+            </div>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label for="likes">Avg. likes (per reel)</label>
+              <input type="text" id="likes" placeholder="e.g. 1.4K" />
+            </div>
+            <div class="field">
+              <label for="comments">Avg. comments</label>
+              <input type="text" id="comments" placeholder="e.g. 42" />
+            </div>
+          </div>
+          <p class="calc-note" id="engagementNote" style="display:none;"></p>
+          <div class="row2">
+            <div class="field">
+              <label for="storyViews">Avg. story views</label>
+              <input type="text" id="storyViews" placeholder="e.g. 3.4K" />
+            </div>
+            <div class="field">
+              <label for="engagement">Engagement rate</label>
+              <input type="text" id="engagement" placeholder="auto" />
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2><span class="step-num">3</span> Audience</h2>
+          <p class="sub">Optional — brands care about who's watching, not just how many.</p>
+          <div class="field">
+            <label for="audienceTop">Top locations</label>
+            <input type="text" id="audienceTop" placeholder="Mumbai 24%, Delhi 18%, Bangalore 11%" />
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label for="audienceAge">Main age range</label>
+              <input type="text" id="audienceAge" placeholder="e.g. 18–34" />
+            </div>
+            <div class="field">
+              <label for="audienceGender">Gender split</label>
+              <input type="text" id="audienceGender" placeholder="e.g. 62% women" />
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2><span class="step-num">4</span> Rates</h2>
+          <div class="row2">
+            <div class="field">
+              <label for="currency">Currency</label>
+              <select id="currency">
+                <option value="INR">INR — ₹</option>
+                <option value="USD">USD — $</option>
+                <option value="EUR">EUR — €</option>
+                <option value="GBP">GBP — £</option>
+                <option value="AED">AED — د.إ</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="ratePer1000">Rate per 1,000 followers</label>
+              <input type="text" id="ratePer1000" placeholder="e.g. 200" />
+            </div>
+          </div>
+
+          <p class="calc-note" id="suggestNote">Fill in your numbers, then tap suggest.</p>
+          <button class="btn block" type="button" id="suggestRatesBtn" style="margin-bottom:16px;">Suggest rates from my numbers</button>
+
+          <label style="display:block; font-size:0.82rem; color:var(--slate); margin-bottom:8px;">Your rate card</label>
+          <div id="rateCardRows"></div>
+          <button class="btn secondary" type="button" id="addRateRowBtn" style="margin-top:4px;">+ Add a piece</button>
+        </div>
+
+        <div class="panel">
+          <h2><span class="step-num">5</span> What brand is asking for</h2>
+          <p class="sub">Tick what applies — each adds a markup on top of every rate above.</p>
+
+          <div class="deal-item" data-deal="ad" data-pct="50">
+            <div class="deal-head">
+              <input type="checkbox" id="deal-ad" />
+              <div>
+                <div class="deal-title">They want to run it as a paid ad</div>
+                <div class="deal-desc">Your content used in their advertising, not just posted on your page. (+50%)</div>
+              </div>
+            </div>
+            <select id="deal-ad-duration">
+              <option value="1 month">For 1 month</option>
+              <option value="3 months" selected>For 3 months</option>
+              <option value="6 months">For 6 months</option>
+              <option value="12 months">For 12 months</option>
+            </select>
+          </div>
+
+          <div class="deal-item" data-deal="exclusive" data-pct="30">
+            <div class="deal-head">
+              <input type="checkbox" id="deal-exclusive" />
+              <div>
+                <div class="deal-title">They want you to skip their competitors</div>
+                <div class="deal-desc">You agree not to work with similar brands for a while. (+30%)</div>
+              </div>
+            </div>
+            <select id="deal-exclusive-duration">
+              <option value="1 month">For 1 month</option>
+              <option value="3 months" selected>For 3 months</option>
+              <option value="6 months">For 6 months</option>
+              <option value="12 months">For 12 months</option>
+            </select>
+          </div>
+
+          <div class="deal-item" data-deal="whitelist" data-pct="30">
+            <div class="deal-head">
+              <input type="checkbox" id="deal-whitelist" />
+              <div>
+                <div class="deal-title">They want to run ads from your handle</div>
+                <div class="deal-desc">Ads that look like they're from your account. Usually called whitelisting. (+30%)</div>
+              </div>
+            </div>
+            <select id="deal-whitelist-duration">
+              <option value="1 month">For 1 month</option>
+              <option value="3 months" selected>For 3 months</option>
+              <option value="6 months">For 6 months</option>
+              <option value="12 months">For 12 months</option>
+            </select>
+          </div>
+
+          <div class="field" style="margin-top:14px;">
+            <label for="paymentTerms">Payment terms</label>
+            <input type="text" id="paymentTerms" placeholder="50% advance, balance within 15 days of going live" />
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2><span class="step-num">6</span> Contact &amp; design</h2>
+          <div class="row2">
+            <div class="field">
+              <label for="contact">Contact email</label>
+              <input type="email" id="contact" placeholder="you@example.com" />
+            </div>
+            <div class="field">
+              <label for="website">Website / portfolio</label>
+              <input type="text" id="website" placeholder="yoursite.com" />
+            </div>
+          </div>
+          <div class="field">
+            <label>Card theme</label>
+            <div class="theme-row" id="themeRow">
+              <button class="theme-swatch" type="button" data-theme="normal" title="Normal"><span style="background:linear-gradient(120deg,#b9761e,#2f7c68);"></span></button>
+              <button class="theme-swatch" type="button" data-theme="minimal" title="Minimal"><span style="background:#faf8f3; border-bottom:3px solid #1b1d24;"></span></button>
+              <button class="theme-swatch" type="button" data-theme="dark" title="Dark"><span style="background:#111318;"></span></button>
+              <button class="theme-swatch" type="button" data-theme="gradient" title="Gradient"><span style="background:linear-gradient(155deg,#b9761e,#2f7c68);"></span></button>
+              <button class="theme-swatch" type="button" data-theme="brutalist" title="Brutalist"><span style="background:#fff; border:3px solid #111;"></span></button>
+            </div>
+          </div>
+          <div class="field" style="max-width:160px;">
+            <label for="accentColor">Card accent color</label>
+            <input type="color" id="accentColor" value="#b9761e" />
+          </div>
+
+          <div class="field">
+            <label>Card background (the big lower area)</label>
+            <div class="btn-row" style="margin-top:0;">
+              <input type="color" id="bgColor" value="#ffffff" style="width:44px; height:44px; padding:4px;" />
+              <button class="btn secondary" type="button" id="bgImageBtn">Upload image</button>
+              <input type="file" id="bgImageInput" accept="image/*" />
+              <button class="btn secondary" type="button" id="bgClearBtn">Clear</button>
+            </div>
+            <p class="hint" style="margin-top:8px;">If your text becomes hard to read against a custom background, fix it below with Text color.</p>
+          </div>
+
+          <div class="row2">
+            <div class="field">
+              <label for="fontChoice">Font</label>
+              <select id="fontChoice">
+                <option value="">Theme default</option>
+                <option value="serif">Classic Serif</option>
+                <option value="sans">Modern Sans</option>
+                <option value="rounded">Friendly Rounded</option>
+                <option value="mono">Typewriter</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="inkColor">Text color</label>
+              <div class="btn-row" style="margin-top:0;">
+                <input type="color" id="inkColor" value="#111111" style="width:44px; height:44px; padding:4px;" />
+                <button class="btn secondary" type="button" id="inkClearBtn">Reset to theme</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn teal" id="getLinkBtn" type="button">Get link</button>
+            <button class="btn secondary" id="resetBtn" type="button">Reset</button>
+          </div>
+          <p class="hint">"Get link" copies a URL that pre-fills this form with your saved details on any device.</p>
+        </div>
+
+      </div>
+
+      <!-- PREVIEW / PDF -->
+      <div class="col-preview">
+        <div id="card">
+          <div class="kit-watermark" id="kitWatermark" aria-hidden="true">
+            <span>digihubhmax.com</span>
+            <span>digihubhmax.com</span>
+            <span>digihubhmax.com</span>
+            <span>digihubhmax.com</span>
+            <span>digihubhmax.com</span>
+          </div>
+          <div class="kit-banner"></div>
+          <div class="kit-body">
+            <div class="kit-bg-clip"><div class="kit-bg-image" id="kitBgImage"></div></div>
+            <div class="kit-glass" id="kitGlass">
+              <div class="kit-head">
+                <img id="cardPhoto" class="kit-photo empty" alt="" />
+                <div>
+                  <div class="kit-name" id="cardName">Your name</div>
+                  <div class="kit-handle" id="cardHandle">@handle · Location</div>
+                </div>
+              </div>
+              <div class="kit-tags" id="cardTags"></div>
+              <div class="kit-bio" id="cardBio" style="margin-top:14px;">Your one-line description will appear here.</div>
+
+              <div class="kit-stats" id="cardStats"></div>
+
+              <div class="kit-audience" id="cardAudience" style="display:none;">
+                <h3>Audience</h3>
+                <div id="cardAudienceRows"></div>
+              </div>
+
+              <div class="kit-deal" id="cardDealBlock" style="display:none;">
+                <h3>Rate card</h3>
+                <div id="rateCardLines"></div>
+                <div class="deal-terms" id="dealPaymentTerms"></div>
+              </div>
+
+              <div class="kit-brands" id="cardBrandsWrap" style="display:none;">
+                <h3>Worked with</h3>
+                <div class="kit-tags" id="cardBrands"></div>
+              </div>
+
+              <div class="kit-footer">
+                <span>Contact: <b id="cardContact">—</b></span>
+                <span id="cardWebsiteWrap">Web: <b id="cardWebsite">—</b></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field" id="blurControls" style="margin-top:16px; display:none;">
+          <label for="glassBlurRange">Blur behind text</label>
+          <input type="range" id="glassBlurRange" min="0" max="30" value="14" style="width:100%;" />
+          <label for="bgBlurRange" style="margin-top:10px;">Blur of whole background image</label>
+          <input type="range" id="bgBlurRange" min="0" max="20" value="0" style="width:100%;" />
+        </div>
+
+        <div class="btn-row" style="margin-top:14px; justify-content:center;">
+          <button class="btn" id="downloadBtn" type="button">Download as PDF</button>
+          <button class="btn" id="downloadImageBtn" type="button">Download as Image</button>
+        </div>
+        <p class="hint" style="text-align:center;">This is a preview — the watermark is removed automatically after downloading.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SIGNUP GATE ================= -->
+  <div id="signupGate" class="overlay" style="display:none;">
+    <div class="pw-card">
+      <span class="badge">Quick signup</span>
+      <h2>Before you start…</h2>
+      <p class="desc">Tell us a bit about you — takes 20 seconds, stored securely, never shown publicly.</p>
+
+      <div class="field">
+        <label for="suName">Name *</label>
+        <input type="text" id="suName" placeholder="Your name" />
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="suContact">Email or mobile *</label>
+          <input type="text" id="suContact" placeholder="you@example.com" />
+        </div>
+        <div class="field">
+          <label for="suAge">Age *</label>
+          <input type="number" id="suAge" placeholder="e.g. 22" min="5" max="120" />
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="suHandleMain">Main Instagram handle *</label>
+          <input type="text" id="suHandleMain" placeholder="yourhandle" />
+        </div>
+        <div class="field">
+          <label for="suHandleContent">Content handle</label>
+          <input type="text" id="suHandleContent" placeholder="if different" />
+        </div>
+      </div>
+
+      <button class="btn block" id="suSubmitBtn" type="button" style="margin-top:6px;">Continue</button>
+      <p class="pw-error" id="suError"></p>
+    </div>
+  </div>
+
+  <!-- ================= DOWNLOAD UNLOCK ================= -->
+  <div id="paywall" class="overlay" style="display:none;">
+    <div class="pw-card">
+      <span class="badge price">Unlock download</span>
+      <h2>Get your PDF</h2>
+      <div class="price">₹29 <small>/ 1 month</small></div>
+      <p class="desc">Everything above stays free to use — this unlocks the watermark-free PDF download for 30 days on this device.</p>
+
+      <div class="pw-step">
+        <span class="n">1</span>
+        <span class="t">Pay ₹29
+          <small id="pwPayNote">Payment link coming soon — check back shortly.</small>
+        </span>
+      </div>
+      <div class="pw-step">
+        <span class="n">2</span>
+        <span class="t">Send the payment screenshot
+          <small id="pwWaNote">WhatsApp number coming soon.</small>
+        </span>
+      </div>
+      <div class="pw-step">
+        <span class="n">3</span>
+        <span class="t">We reply with your access code — enter it below<small>Valid for 30 days on this device.</small></span>
+      </div>
+
+      <div id="pwActions" class="btn-row" style="margin-top:6px;"></div>
+
+      <div class="pw-divider"></div>
+
+      <label for="pwCode" style="display:block; font-size:0.82rem; color:var(--slate); margin-bottom:6px;">Access code</label>
+      <div class="pw-code-row">
+        <input type="text" id="pwCode" placeholder="e.g. A1B2C3D4" autocomplete="off" autocapitalize="characters" />
+        <button class="btn teal" id="pwUnlockBtn" type="button">Unlock</button>
+      </div>
+      <p class="pw-error" id="pwError"></p>
+
+      <div id="pwAdSection" style="display:none;">
+        <div class="pw-divider"></div>
+        <p class="desc" style="margin-bottom:10px;">Or skip paying — wait a few seconds while this page shows an ad, then download for free.</p>
+        <div id="pwAdSlot" style="min-height:90px; background:var(--ink-2); border:1px solid var(--rule); border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:12px;"></div>
+        <button class="btn secondary block" id="pwAdWaitBtn" type="button">Watch ad, download in <span id="pwAdCountdown">8</span>s</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var API_BASE = "/api/mediakit";
+
+  function logEvent(type, detail){
+    try {
+      fetch(API_BASE + "/event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: type, detail: detail })
+      }).catch(function(){});
+    } catch(e) {}
+  }
+
+  function activityDetail(){
+    // Pulled from the account created at signup (not the editable card
+    // fields below) — so the log always reflects who actually holds this
+    // account, even if they change the name/handle on the card itself.
+    var su = null;
+    try { su = JSON.parse(localStorage.getItem("mediaKitBuilder.signupData.v1") || "null"); } catch(e){}
+    if (!su){
+      var name = els.name.value.trim() || "Unnamed";
+      var handle = els.handle.value.trim();
+      var contact = els.contact.value.trim();
+      var parts = [name];
+      if (handle) parts.push("@" + handle.replace(/^@/, ""));
+      if (contact) parts.push(contact);
+      return parts.join(" · ");
+    }
+    var parts = [su.name || "Unnamed"];
+    if (su.handle_main) parts.push("@" + su.handle_main.replace(/^@/, ""));
+    if (su.handle_content && su.handle_content !== su.handle_main) parts.push("content: @" + su.handle_content.replace(/^@/, ""));
+    if (su.contact) parts.push(su.contact);
+    if (su.age) parts.push("age " + su.age);
+    return parts.join(" · ");
+  }
+
+  // ============ PAYWALL CONFIG — edit these, then redeploy ============
+  var PAY_CONFIG = {
+    ENFORCE: false,                // overwritten by /api/mediakit/config (admin dashboard toggle) once it loads
+    ADSENSE_ENABLED: false,        // overwritten by /api/mediakit/config
+    ADSENSE_PUBLISHER_ID: "",
+    ADSENSE_SLOT_ID: "",
+    ACCESS_DAYS: 30,
+    RAZORPAY_LINK: "",             // paste your ₹29 Razorpay Payment Link here
+    WHATSAPP_NUMBER: "",           // e.g. "91XXXXXXXXXXX" (country code, no +/spaces)
+    // One SHA-256 hash per issued code. Generate a new code+hash with:
+    //   node -e "const c=require('crypto').randomBytes(4).toString('hex').toUpperCase();console.log('code:',c);console.log('hash:',require('crypto').createHash('sha256').update(c).digest('hex'))"
+    VALID_CODE_HASHES: [
+      "81ac8dc25e3ca848877496a9e3d6959e7ec7971246464e0fbb7eba9140745f65" // test code — remove once real sales start
+    ]
+  };
+  // ======================================================================
+
+  var STORE_KEY = "mediaKitBuilder.v3";
+  var LEGACY_STORE_KEY = "mediaKitBuilder.v2";
+  var ACCESS_KEY = "mediaKitBuilder.access.v1";
+  var textFields = ["name","handle","location","bio","category","brands",
+                     "followers","views","likes","comments","storyViews","engagement",
+                     "audienceTop","audienceAge","audienceGender",
+                     "currency","ratePer1000",
+                     "paymentTerms","contact","website","accentColor"];
+  var dealKeys = ["ad","exclusive","whitelist"];
+  var photoData = null;
+  var bgImageData = null;
+
+  // ---- rate card state ----
+  // rateCard: [{ deliverable, rate }] — rate is a plain number string the
+  // user can overwrite; "Suggest rates" only ever pre-fills it.
+  var rateCard = [];
+  var engagementManual = false; // true once the user types over the auto value
+  var CURRENCY_SYMBOLS = { INR: "₹", USD: "$", EUR: "€", GBP: "£", AED: "د.إ" };
+  // Multipliers reverse-engineered from the reel's own numbers
+  // (₹7,500 / ₹10,100 / ₹5,300 off the same base).
+  var DELIVERABLE_PRESETS = [
+    { deliverable: "1 reel", mult: 1.0 },
+    { deliverable: "1 reel + 2 stories", mult: 1.35 },
+    { deliverable: "Carousel post", mult: 0.7 }
+  ];
+  function engagementMultiplier(pct){
+    if (pct === null || isNaN(pct)) return 1.0;
+    if (pct < 1) return 0.8;
+    if (pct < 3) return 1.0;
+    if (pct < 6) return 1.2;
+    if (pct < 10) return 1.35;
+    return 1.5;
+  }
+
+  var bgColorValue = null;
+  var cardTheme = "normal";
+  var themeSwatches = document.querySelectorAll(".theme-swatch");
+  var bgColorInput = document.getElementById("bgColor");
+  var inkColorValue = null;
+  var fontChoiceValue = "";
+  var inkColorInput = document.getElementById("inkColor");
+  var fontChoiceInput = document.getElementById("fontChoice");
+  var glassBlurValue = 14;
+  var bgBlurValue = 0;
+  var glassBlurInput = document.getElementById("glassBlurRange");
+  var bgBlurInput = document.getElementById("bgBlurRange");
+  var FONT_STACKS = {
+    serif: 'Georgia, "Iowan Old Style", "Palatino Linotype", "URW Palladio L", serif',
+    sans: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+    rounded: '"Century Gothic", "Trebuchet MS", Verdana, sans-serif',
+    mono: '"Courier New", Courier, monospace'
+  };
+  function hexToRgba(hex, alpha){
+    hex = (hex || "").replace("#", "");
+    if (hex.length === 3) hex = hex.split("").map(function(c){ return c + c; }).join("");
+    var r = parseInt(hex.substr(0, 2), 16) || 0;
+    var g = parseInt(hex.substr(2, 2), 16) || 0;
+    var b = parseInt(hex.substr(4, 2), 16) || 0;
+    return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
+  }
+  function isLightHex(hex){
+    hex = (hex || "").replace("#", "");
+    if (hex.length === 3) hex = hex.split("").map(function(c){ return c + c; }).join("");
+    var r = parseInt(hex.substr(0, 2), 16) || 0;
+    var g = parseInt(hex.substr(2, 2), 16) || 0;
+    var b = parseInt(hex.substr(4, 2), 16) || 0;
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.6;
+  }
+  function hexToRgbArr(hex){
+    hex = (hex || "").replace("#", "");
+    if (hex.length === 3) hex = hex.split("").map(function(c){ return c + c; }).join("");
+    return [parseInt(hex.substr(0, 2), 16) || 0, parseInt(hex.substr(2, 2), 16) || 0, parseInt(hex.substr(4, 2), 16) || 0];
+  }
+  // Mimics CSS color-mix(in srgb, hexA pctA%, hexB) — html2canvas's CSS
+  // parser doesn't understand color-mix(), so accent-derived colors that
+  // need to survive the "Download as Image" capture are precomputed here
+  // instead of left as a CSS function.
+  function mixHex(hexA, hexB, pctA){
+    var a = hexToRgbArr(hexA), b = hexToRgbArr(hexB), t = pctA / 100;
+    var r = Math.round(a[0] * t + b[0] * (1 - t));
+    var g = Math.round(a[1] * t + b[1] * (1 - t));
+    var bl = Math.round(a[2] * t + b[2] * (1 - t));
+    return "rgb(" + r + "," + g + "," + bl + ")";
+  }
+
+  var els = {};
+  textFields.forEach(function(id){ els[id] = document.getElementById(id); });
+  var dealChecks = {}, dealDurations = {}, dealItems = {};
+  dealKeys.forEach(function(k){
+    dealChecks[k] = document.getElementById("deal-" + k);
+    dealDurations[k] = document.getElementById("deal-" + k + "-duration");
+    dealItems[k] = document.querySelector('.deal-item[data-deal="' + k + '"]');
+  });
+
+  var photoCircle = document.getElementById("photoCircle");
+  var photoInput = document.getElementById("photoInput");
+  var photoBtn = document.getElementById("photoBtn");
+
+  var card = {
+    photo: document.getElementById("cardPhoto"),
+    name: document.getElementById("cardName"),
+    handle: document.getElementById("cardHandle"),
+    tags: document.getElementById("cardTags"),
+    bio: document.getElementById("cardBio"),
+    dealBlock: document.getElementById("cardDealBlock"),
+    dealPaymentTerms: document.getElementById("dealPaymentTerms"),
+    contact: document.getElementById("cardContact"),
+    website: document.getElementById("cardWebsite"),
+    websiteWrap: document.getElementById("cardWebsiteWrap")
+  };
+
+  function parseCount(str){
+    if (!str) return null;
+    str = String(str).trim().toUpperCase().replace(/[,₹$€£\s]/g, "");
+    var m = str.match(/^([\d.]+)([KM]?)$/);
+    if (!m) return null;
+    var n = parseFloat(m[1]);
+    if (isNaN(n)) return null;
+    if (m[2] === "K") n *= 1e3;
+    if (m[2] === "M") n *= 1e6;
+    return n;
+  }
+
+  function parseMoney(str){
+    if (!str) return null;
+    var m = String(str).match(/[\d,]+(\.\d+)?/);
+    if (!m) return null;
+    var n = parseFloat(m[0].replace(/,/g, ""));
+    return isNaN(n) ? null : n;
+  }
+
+  // 25000 -> "25K", 1400000 -> "1.4M" — used in the engagement working and
+  // the suggest-rates explainer so the maths reads the way a creator wrote it.
+  function formatCount(n){
+    if (n === null || n === undefined || isNaN(n)) return "0";
+    if (n >= 1e6) return (n / 1e6).toFixed(n % 1e6 === 0 ? 0 : 1) + "M";
+    if (n >= 1e3) return (n / 1e3).toFixed(n % 1e3 === 0 ? 0 : 1) + "K";
+    return String(Math.round(n));
+  }
+
+  function moneyPrefix(str){
+    var m = String(str || "").match(/^\s*([₹$€£]|Rs\.?)/);
+    return m ? m[1] : "";
+  }
+
+  // Engagement = (likes + comments) / followers. Auto-fills the field and
+  // shows its working, but stops overwriting once the user edits it by hand
+  // (engagementManual) — some creators quote a figure straight from Insights.
+  function computedEngagementPct(){
+    var followers = parseCount(els.followers.value);
+    var likes = parseCount(els.likes.value);
+    var comments = parseCount(els.comments.value);
+    if (!followers || (!likes && !comments)) return null;
+    return (((likes || 0) + (comments || 0)) / followers) * 100;
+  }
+
+  function updateEngagement(){
+    var note = document.getElementById("engagementNote");
+    var pct = computedEngagementPct();
+
+    if (!engagementManual){
+      els.engagement.value = pct === null ? "" : pct.toFixed(2) + "%";
+    }
+
+    if (pct === null){
+      note.style.display = "none";
+      note.textContent = "";
+      return;
+    }
+    var likes = parseCount(els.likes.value) || 0;
+    var comments = parseCount(els.comments.value) || 0;
+    var followers = parseCount(els.followers.value);
+    note.style.display = "";
+    note.innerHTML = "Engagement rate <b>" + pct.toFixed(2) + "%</b> — (" +
+      formatCount(likes) + " likes + " + formatCount(comments) + " comments) / " +
+      formatCount(followers) + " followers" +
+      (engagementManual ? " · you've set your own figure above" : "");
+  }
+
+  function currencySymbol(){
+    return CURRENCY_SYMBOLS[els.currency.value] || "₹";
+  }
+
+  // ---- rate card editor ----
+  function renderRateRows(){
+    var wrap = document.getElementById("rateCardRows");
+    wrap.innerHTML = "";
+    if (!rateCard.length){
+      var empty = document.createElement("p");
+      empty.className = "rate-empty";
+      empty.textContent = "No pieces yet — tap suggest above, or add one manually.";
+      wrap.appendChild(empty);
+      return;
+    }
+    rateCard.forEach(function(row, i){
+      var div = document.createElement("div");
+      div.className = "rate-row";
+
+      var name = document.createElement("input");
+      name.type = "text";
+      name.value = row.deliverable;
+      name.placeholder = "Deliverable";
+      name.addEventListener("input", function(){
+        rateCard[i].deliverable = name.value;
+        render();
+        save();
+      });
+
+      var rate = document.createElement("input");
+      rate.type = "text";
+      rate.value = row.rate;
+      rate.placeholder = "Rate";
+      rate.setAttribute("inputmode", "numeric");
+      rate.addEventListener("input", function(){
+        rateCard[i].rate = rate.value;
+        render();
+        save();
+      });
+
+      var rm = document.createElement("button");
+      rm.type = "button";
+      rm.className = "rm";
+      rm.textContent = "×";
+      rm.title = "Remove";
+      rm.addEventListener("click", function(){
+        rateCard.splice(i, 1);
+        renderRateRows();
+        render();
+        save();
+      });
+
+      div.appendChild(name);
+      div.appendChild(rate);
+      div.appendChild(rm);
+      wrap.appendChild(div);
+    });
+  }
+
+  function updateSuggestNote(){
+    var note = document.getElementById("suggestNote");
+    var followers = parseCount(els.followers.value);
+    var per1000 = parseMoney(els.ratePer1000.value);
+    var pct = activeEngagementPct();
+    if (!followers || !per1000){
+      note.innerHTML = "Fill in your followers and a rate per 1,000, then tap suggest.";
+      return;
+    }
+    var mult = engagementMultiplier(pct);
+    var base = (followers / 1000) * per1000 * mult;
+    var sym = currencySymbol();
+    note.innerHTML = formatCount(followers) + " followers × " + sym + per1000.toLocaleString() +
+      " per 1,000 × <b>" + mult + "×</b>" +
+      (pct === null ? "" : " for " + pct.toFixed(1) + "% engagement") +
+      " = <b>" + sym + Math.round(base).toLocaleString() + "</b> for one reel.<br>" +
+      "Everything below stays editable — a starting point, not a market price.";
+  }
+
+  function suggestRates(){
+    var followers = parseCount(els.followers.value);
+    var per1000 = parseMoney(els.ratePer1000.value);
+    if (!followers || !per1000){
+      alert("Add your follower count and a rate per 1,000 followers first.");
+      return;
+    }
+    var mult = engagementMultiplier(activeEngagementPct());
+    var base = (followers / 1000) * per1000 * mult;
+    rateCard = DELIVERABLE_PRESETS.map(function(p){
+      return { deliverable: p.deliverable, rate: String(Math.round(base * p.mult)) };
+    });
+    renderRateRows();
+    render();
+    save();
+  }
+
+  function activeEngagementPct(){
+    // Whatever is in the field wins (manual or auto), falling back to computed.
+    var typed = parseFloat(String(els.engagement.value).replace("%", "").trim());
+    if (!isNaN(typed)) return typed;
+    return computedEngagementPct();
+  }
+
+  function render(){
+    card.name.textContent = els.name.value.trim() || "Your name";
+
+    var handleVal = els.handle.value.trim();
+    var locVal = els.location.value.trim();
+    card.handle.innerHTML = "";
+    if (!handleVal && !locVal){
+      card.handle.textContent = "@handle · Location";
+    } else {
+      if (handleVal){
+        var igWrap = document.createElement("span");
+        igWrap.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px; margin-right:3px;"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.9.2 2.3.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.3 1.1.4 2.3.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.9-.4 2.3-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1.1.3-2.3.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.9-.2-2.3-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.3-1.1-.4-2.3C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.9.4-2.3.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1.1-.3 2.3-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1 .1-1.6.2-1.9.3-.5.2-.8.4-1.2.7-.3.3-.6.7-.7 1.2-.1.3-.3.9-.3 1.9-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1 .2 1.6.3 1.9.2.5.4.8.7 1.2.3.3.7.6 1.2.7.3.1.9.3 1.9.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1-.1 1.6-.2 1.9-.3.5-.2.8-.4 1.2-.7.3-.3.6-.7.7-1.2.1-.3.3-.9.3-1.9.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1-.2-1.6-.3-1.9-.2-.5-.4-.8-.7-1.2-.3-.3-.7-.6-1.2-.7-.3-.1-.9-.3-1.9-.3-1.2-.1-1.6-.1-4.7-.1zm0 4.6a5.4 5.4 0 110 10.8 5.4 5.4 0 010-10.8zm0 1.8a3.6 3.6 0 100 7.2 3.6 3.6 0 000-7.2zm5.6-2a1.3 1.3 0 110 2.6 1.3 1.3 0 010-2.6z"/></svg>';
+        card.handle.appendChild(igWrap);
+        card.handle.appendChild(document.createTextNode(handleVal.indexOf("@") === 0 ? handleVal : "@" + handleVal));
+      }
+      if (locVal){
+        if (handleVal) card.handle.appendChild(document.createTextNode(" · "));
+        var pinWrap = document.createElement("span");
+        pinWrap.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px; margin-right:2px;"><path d="M12 2C7.6 2 4 5.6 4 10c0 5.4 6.6 11.1 7.9 12.2.3.3.9.3 1.2 0C14.4 21.1 21 15.4 21 10 21 5.6 17.4 2 12 2zm0 10.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 7.5 12 7.5s2.5 1.1 2.5 2.5-1.1 2.5-2.5 2.5z"/></svg>';
+        card.handle.appendChild(pinWrap);
+        card.handle.appendChild(document.createTextNode(locVal));
+      }
+    }
+
+    card.tags.innerHTML = "";
+    els.category.value.split(",").map(function(s){ return s.trim(); }).filter(Boolean).forEach(function(cat){
+      var tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = cat;
+      card.tags.appendChild(tag);
+    });
+
+    card.bio.textContent = els.bio.value.trim() || "Your one-line description will appear here.";
+
+    updateEngagement();
+    updateSuggestNote();
+
+    // Stat tiles are built from whatever the creator actually filled in —
+    // an empty tile reads as a gap to a brand, so blanks are dropped.
+    // "25000" typed in reads as "25K" on the card, but anything that isn't a
+    // plain number (already "24.5K", or a percentage) is shown as written.
+    function tidyCount(raw){
+      var t = String(raw).trim();
+      if (!t) return "";
+      if (/^\d+$/.test(t.replace(/,/g, ""))) return formatCount(parseInt(t.replace(/,/g, ""), 10));
+      return t;
+    }
+    var statSpecs = [
+      { label: "Followers", value: tidyCount(els.followers.value) },
+      { label: "Avg. reel views", value: tidyCount(els.views.value) },
+      { label: "Avg. likes", value: tidyCount(els.likes.value) },
+      { label: "Avg. comments", value: tidyCount(els.comments.value) },
+      { label: "Engagement", value: els.engagement.value.trim() },
+      { label: "Story views", value: tidyCount(els.storyViews.value) }
+    ].filter(function(s){ return s.value; });
+
+    var statsWrap = document.getElementById("cardStats");
+    statsWrap.innerHTML = "";
+    if (!statSpecs.length){
+      statSpecs = [{ label: "Followers", value: "—" }, { label: "Engagement", value: "—" }];
+    }
+    statSpecs.forEach(function(s){
+      var tile = document.createElement("div");
+      tile.className = "stat";
+      var num = document.createElement("div");
+      num.className = "num";
+      num.textContent = s.value;
+      var lbl = document.createElement("div");
+      lbl.className = "lbl";
+      lbl.textContent = s.label;
+      tile.appendChild(num);
+      tile.appendChild(lbl);
+      statsWrap.appendChild(tile);
+    });
+    statsWrap.style.gridTemplateColumns = "repeat(" + Math.min(statSpecs.length, 4) + ",1fr)";
+
+    // Audience
+    var audRows = [
+      { k: "Top locations", v: els.audienceTop.value.trim() },
+      { k: "Age range", v: els.audienceAge.value.trim() },
+      { k: "Gender split", v: els.audienceGender.value.trim() }
+    ].filter(function(r){ return r.v; });
+    var audWrap = document.getElementById("cardAudience");
+    var audRowsWrap = document.getElementById("cardAudienceRows");
+    audRowsWrap.innerHTML = "";
+    if (audRows.length){
+      audWrap.style.display = "";
+      audRows.forEach(function(r){
+        var row = document.createElement("div");
+        row.className = "aud-row";
+        var k = document.createElement("span");
+        k.textContent = r.k;
+        var v = document.createElement("span");
+        v.textContent = r.v;
+        row.appendChild(k);
+        row.appendChild(v);
+        audRowsWrap.appendChild(row);
+      });
+    } else {
+      audWrap.style.display = "none";
+    }
+
+    // Brands worked with
+    var brandList = els.brands.value.split(",").map(function(s){ return s.trim(); }).filter(Boolean);
+    var brandsWrap = document.getElementById("cardBrandsWrap");
+    var brandsTags = document.getElementById("cardBrands");
+    brandsTags.innerHTML = "";
+    if (brandList.length){
+      brandsWrap.style.display = "";
+      brandList.forEach(function(b){
+        var tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = b;
+        brandsTags.appendChild(tag);
+      });
+    } else {
+      brandsWrap.style.display = "none";
+    }
+
+    card.contact.textContent = els.contact.value.trim() || "—";
+    if (els.website.value.trim()){
+      card.website.textContent = els.website.value.trim();
+      card.websiteWrap.style.display = "";
+    } else {
+      card.websiteWrap.style.display = "none";
+    }
+
+    var accent = els.accentColor.value || "#b9761e";
+    var cardEl = document.getElementById("card");
+    cardEl.style.setProperty("--kit-accent", accent);
+    cardEl.style.setProperty("--kit-accent-secondary", mixHex(accent, "#2f7c68", 75));
+    cardEl.style.setProperty("--kit-accent-gradient2", mixHex(accent, "#2f7c68", 55));
+    cardEl.style.setProperty("--kit-tag-bg", mixHex(accent, "#ffffff", 16));
+    cardEl.style.setProperty("--kit-tag-ink", mixHex(accent, "#000000", 60));
+    cardEl.setAttribute("data-theme", cardTheme);
+    themeSwatches.forEach(function(sw){
+      sw.classList.toggle("active", sw.getAttribute("data-theme") === cardTheme);
+    });
+
+    var kitBody = document.querySelector("#card .kit-body");
+    var kitBgImage = document.getElementById("kitBgImage");
+    var blurControls = document.getElementById("blurControls");
+    if (bgImageData){
+      kitBody.style.background = "";
+      kitBgImage.style.backgroundImage = "url(" + bgImageData + ")";
+      cardEl.classList.add("has-bg-image");
+      cardEl.style.setProperty("--kit-bg-blur", bgBlurValue + "px");
+      cardEl.style.setProperty("--kit-glass-blur", glassBlurValue + "px");
+      blurControls.style.display = "";
+    } else if (bgColorValue){
+      kitBgImage.style.backgroundImage = "";
+      kitBody.style.background = bgColorValue;
+      cardEl.classList.remove("has-bg-image");
+      blurControls.style.display = "none";
+    } else {
+      kitBgImage.style.backgroundImage = "";
+      kitBody.style.background = "";
+      cardEl.classList.remove("has-bg-image");
+      blurControls.style.display = "none";
+    }
+
+    if (inkColorValue){
+      cardEl.style.setProperty("--kit-ink", inkColorValue);
+      cardEl.style.setProperty("--kit-ink-soft", hexToRgba(inkColorValue, 0.72));
+      if (isLightHex(inkColorValue)){
+        cardEl.style.setProperty("--kit-box-bg", "rgba(255,255,255,0.10)");
+        cardEl.style.setProperty("--kit-box-border", "rgba(255,255,255,0.18)");
+      } else {
+        cardEl.style.setProperty("--kit-box-bg", "rgba(0,0,0,0.05)");
+        cardEl.style.setProperty("--kit-box-border", "rgba(0,0,0,0.09)");
+      }
+    } else {
+      cardEl.style.removeProperty("--kit-ink");
+      cardEl.style.removeProperty("--kit-ink-soft");
+      cardEl.style.removeProperty("--kit-box-bg");
+      cardEl.style.removeProperty("--kit-box-border");
+    }
+
+    if (fontChoiceValue && FONT_STACKS[fontChoiceValue]){
+      cardEl.style.setProperty("--kit-font-display", FONT_STACKS[fontChoiceValue]);
+      cardEl.style.setProperty("--kit-font-body", FONT_STACKS[fontChoiceValue]);
+    } else {
+      cardEl.style.removeProperty("--kit-font-display");
+      cardEl.style.removeProperty("--kit-font-body");
+    }
+
+    // ---- rate card on the preview ----
+    // Usage-rights markups from step 5 apply on top of EVERY deliverable,
+    // with the breakdown shown so a brand can see how the number was built.
+    var sym = currencySymbol();
+    var activeDeals = dealKeys.filter(function(k){ return dealChecks[k].checked; });
+
+    activeDeals.forEach(function(k){ dealItems[k].classList.add("active"); });
+    dealKeys.filter(function(k){ return !dealChecks[k].checked; }).forEach(function(k){ dealItems[k].classList.remove("active"); });
+
+    var dealLabels = { ad: "Paid ad usage", exclusive: "Exclusivity", whitelist: "Whitelisting" };
+    var markupPct = 0;
+    var markupParts = [];
+    activeDeals.forEach(function(k){
+      var pct = parseInt(dealItems[k].getAttribute("data-pct"), 10);
+      markupPct += pct;
+      markupParts.push({ label: dealLabels[k] + ", " + dealDurations[k].value, pct: pct });
+    });
+
+    var priced = rateCard.filter(function(r){
+      return String(r.deliverable).trim() && parseMoney(r.rate) !== null;
+    });
+
+    var linesWrap = document.getElementById("rateCardLines");
+    linesWrap.innerHTML = "";
+
+    if (priced.length){
+      card.dealBlock.style.display = "";
+      priced.forEach(function(r){
+        var base = parseMoney(r.rate);
+        var total = base * (1 + markupPct / 100);
+
+        var item = document.createElement("div");
+        item.className = "rate-item";
+
+        var head = document.createElement("div");
+        head.className = "rate-head";
+        var nameSpan = document.createElement("span");
+        nameSpan.textContent = String(r.deliverable).trim();
+        var priceSpan = document.createElement("span");
+        priceSpan.textContent = sym + Math.round(total).toLocaleString();
+        head.appendChild(nameSpan);
+        head.appendChild(priceSpan);
+        item.appendChild(head);
+
+        if (markupParts.length){
+          var brk = document.createElement("div");
+          brk.className = "rate-break";
+          var bits = ["Base " + sym + Math.round(base).toLocaleString()];
+          markupParts.forEach(function(m){
+            bits.push(m.label + " +" + sym + Math.round(base * m.pct / 100).toLocaleString());
+          });
+          bits.forEach(function(b){
+            var s = document.createElement("span");
+            s.textContent = b;
+            brk.appendChild(s);
+          });
+          item.appendChild(brk);
+        }
+        linesWrap.appendChild(item);
+      });
+      card.dealPaymentTerms.textContent = els.paymentTerms.value.trim()
+        ? "Payment terms: " + els.paymentTerms.value.trim()
+        : "";
+    } else {
+      card.dealBlock.style.display = "none";
+    }
+
+    if (photoData){
+      card.photo.src = photoData;
+      card.photo.classList.remove("empty");
+      photoCircle.innerHTML = "";
+      var img = document.createElement("img");
+      img.src = photoData;
+      photoCircle.appendChild(img);
+    } else {
+      card.photo.removeAttribute("src");
+      card.photo.classList.add("empty");
+      photoCircle.textContent = "Photo";
+    }
+  }
+
+  function collect(){
+    var data = {};
+    textFields.forEach(function(id){ data[id] = els[id].value; });
+    data.photo = photoData;
+    data.theme = cardTheme;
+    data.bgImage = bgImageData;
+    data.bgColor = bgColorValue;
+    data.ink = inkColorValue;
+    data.font = fontChoiceValue;
+    data.glassBlur = glassBlurValue;
+    data.bgBlur = bgBlurValue;
+    data.rateCard = rateCard;
+    data.engagementManual = engagementManual;
+    data.deals = {};
+    dealKeys.forEach(function(k){
+      data.deals[k] = { checked: dealChecks[k].checked, duration: dealDurations[k].value };
+    });
+    return data;
+  }
+
+  function apply(data){
+    if (!data) return;
+    textFields.forEach(function(id){ if (data[id] !== undefined) els[id].value = data[id]; });
+    rateCard = Array.isArray(data.rateCard) ? data.rateCard : [];
+    engagementManual = !!data.engagementManual;
+    photoData = data.photo || null;
+    cardTheme = data.theme || "normal";
+    bgImageData = data.bgImage || null;
+    bgColorValue = data.bgColor || null;
+    if (bgColorValue) bgColorInput.value = bgColorValue;
+    inkColorValue = data.ink || null;
+    if (inkColorValue) inkColorInput.value = inkColorValue;
+    fontChoiceValue = data.font || "";
+    fontChoiceInput.value = fontChoiceValue;
+    glassBlurValue = data.glassBlur !== undefined ? data.glassBlur : 14;
+    bgBlurValue = data.bgBlur !== undefined ? data.bgBlur : 0;
+    glassBlurInput.value = glassBlurValue;
+    bgBlurInput.value = bgBlurValue;
+    if (data.deals){
+      dealKeys.forEach(function(k){
+        if (data.deals[k]){
+          dealChecks[k].checked = !!data.deals[k].checked;
+          if (data.deals[k].duration) dealDurations[k].value = data.deals[k].duration;
+        }
+      });
+    }
+  }
+
+  function save(){
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch(e) {}
+  }
+
+  function load(){
+    var raw;
+    try { raw = localStorage.getItem(STORE_KEY); } catch(e) { raw = null; }
+    if (raw){
+      try { apply(JSON.parse(raw)); } catch(e) {}
+      return;
+    }
+    // Migrate a pre-rate-card (v2) draft rather than silently losing it:
+    // the old single "baseRate" becomes the first rate-card row, and its
+    // currency symbol is mapped back to the new currency selector.
+    var legacyRaw;
+    try { legacyRaw = localStorage.getItem(LEGACY_STORE_KEY); } catch(e) { legacyRaw = null; }
+    if (!legacyRaw) return;
+    try {
+      var legacy = JSON.parse(legacyRaw);
+      var amount = parseMoney(legacy.baseRate);
+      if (amount !== null){
+        legacy.rateCard = [{ deliverable: "1 reel", rate: String(Math.round(amount)) }];
+        var symbol = moneyPrefix(legacy.baseRate);
+        var bySymbol = { "₹": "INR", "$": "USD", "€": "EUR", "£": "GBP" };
+        if (bySymbol[symbol]) legacy.currency = bySymbol[symbol];
+      }
+      delete legacy.baseRate;
+      apply(legacy);
+      save();
+    } catch(e) {}
+  }
+
+  function resizeImage(file, cb, maxDim){
+    maxDim = maxDim || 800;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = new Image();
+      img.onload = function(){
+        var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        var w = Math.round(img.width * scale);
+        var h = Math.round(img.height * scale);
+        var canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext("2d");
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, 0, 0, w, h);
+        cb(canvas.toDataURL("image/jpeg", 0.92));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  textFields.forEach(function(id){
+    // engagement is handled on its own below — the generic handler would run
+    // render() (and re-derive the value) before the manual flag was set,
+    // wiping whatever the user just typed.
+    if (id === "engagement") return;
+    els[id].addEventListener("input", function(){ render(); save(); });
+    els[id].addEventListener("change", function(){ render(); save(); });
+  });
+  // Typing in the engagement box takes it off auto; clearing it hands control back.
+  els.engagement.addEventListener("input", function(){
+    engagementManual = els.engagement.value.trim() !== "";
+    render();
+    save();
+  });
+  dealKeys.forEach(function(k){
+    dealChecks[k].addEventListener("change", function(){ render(); save(); });
+    dealDurations[k].addEventListener("change", function(){ render(); save(); });
+  });
+
+  document.getElementById("suggestRatesBtn").addEventListener("click", suggestRates);
+  document.getElementById("addRateRowBtn").addEventListener("click", function(){
+    rateCard.push({ deliverable: "", rate: "" });
+    renderRateRows();
+    render();
+    save();
+  });
+
+  themeSwatches.forEach(function(sw){
+    sw.addEventListener("click", function(){
+      cardTheme = sw.getAttribute("data-theme");
+      render();
+      save();
+    });
+  });
+
+  photoBtn.addEventListener("click", function(){ photoInput.click(); });
+  photoInput.addEventListener("change", function(){
+    var file = photoInput.files && photoInput.files[0];
+    if (!file) return;
+    resizeImage(file, function(dataUrl){
+      photoData = dataUrl;
+      render();
+      save();
+    });
+  });
+
+  var bgImageBtn = document.getElementById("bgImageBtn");
+  var bgImageInput = document.getElementById("bgImageInput");
+  bgImageBtn.addEventListener("click", function(){ bgImageInput.click(); });
+  bgImageInput.addEventListener("change", function(){
+    var file = bgImageInput.files && bgImageInput.files[0];
+    if (!file) return;
+    resizeImage(file, function(dataUrl){
+      bgImageData = dataUrl;
+      render();
+      save();
+    }, 1200);
+  });
+  bgColorInput.addEventListener("input", function(){
+    bgColorValue = bgColorInput.value;
+    bgImageData = null;
+    render();
+    save();
+  });
+  document.getElementById("bgClearBtn").addEventListener("click", function(){
+    bgColorValue = null;
+    bgImageData = null;
+    bgImageInput.value = "";
+    render();
+    save();
+  });
+
+  inkColorInput.addEventListener("input", function(){
+    inkColorValue = inkColorInput.value;
+    render();
+    save();
+  });
+  document.getElementById("inkClearBtn").addEventListener("click", function(){
+    inkColorValue = null;
+    render();
+    save();
+  });
+  fontChoiceInput.addEventListener("change", function(){
+    fontChoiceValue = fontChoiceInput.value;
+    render();
+    save();
+  });
+
+  glassBlurInput.addEventListener("input", function(){
+    glassBlurValue = Number(glassBlurInput.value);
+    render();
+    save();
+  });
+  bgBlurInput.addEventListener("input", function(){
+    bgBlurValue = Number(bgBlurInput.value);
+    render();
+    save();
+  });
+
+  function offerLink(url, note){
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(function(){
+        alert(note);
+      }).catch(function(){ prompt("Copy this link:", url); });
+    } else {
+      prompt("Copy this link:", url);
+    }
+  }
+
+  document.getElementById("getLinkBtn").addEventListener("click", function(){
+    // Photos/background images never travel with the link — they stay on the
+    // creator's device. Everything else is saved server-side so the URL can be
+    // a short id (~50 chars) instead of the whole kit base64'd inline.
+    var data = collect();
+    data.photo = null;
+    data.bgImage = null;
+
+    var btn = document.getElementById("getLinkBtn");
+    var prevText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Making link…";
+
+    function restore(){ btn.disabled = false; btn.textContent = prevText; }
+
+    function fallbackInlineLink(){
+      // Backend unreachable — fall back to the old self-contained link so the
+      // button still works offline, just with a long URL.
+      var encoded;
+      try { encoded = btoa(encodeURIComponent(JSON.stringify(data))); } catch(e) { encoded = ""; }
+      offerLink(location.origin + location.pathname + "#d=" + encoded,
+        "Link copied. (Couldn't reach the server, so this one's a long link — it still works.)");
+    }
+
+    fetch(API_BASE + "/share", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    }).then(function(r){
+      if (!r.ok) throw new Error("share failed");
+      return r.json();
+    }).then(function(res){
+      restore();
+      if (!res || !res.id) { fallbackInlineLink(); return; }
+      offerLink(location.origin + location.pathname + "?s=" + res.id,
+        "Link copied — it pre-fills your details on any device. Photos stay on this one. Expires after " +
+        (res.expires_days || 90) + " days.");
+    }).catch(function(){
+      restore();
+      fallbackInlineLink();
+    });
+  });
+
+  document.getElementById("shareBtn").addEventListener("click", function(){
+    var shareUrl = "https://digihubhmax.com/media-kit.html";
+    var shareText = "Build your Instagram media kit and brand-deal rate card:";
+    if (navigator.share){
+      navigator.share({ title: "Media Kit Builder", text: shareText, url: shareUrl }).catch(function(){});
+    } else if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(shareUrl).then(function(){
+        alert("Link copied: " + shareUrl);
+      }).catch(function(){ prompt("Copy this link:", shareUrl); });
+    } else {
+      prompt("Copy this link:", shareUrl);
+    }
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    if (!confirm("Clear all fields and the saved draft?")) return;
+    textFields.forEach(function(id){ if (id !== "accentColor" && id !== "currency") els[id].value = ""; });
+    els.accentColor.value = "#b9761e";
+    els.currency.value = "INR";
+    els.engagement.value = "";
+    engagementManual = false;
+    rateCard = [];
+    renderRateRows();
+    cardTheme = "normal";
+    bgImageData = null;
+    bgColorValue = null;
+    bgColorInput.value = "#ffffff";
+    inkColorValue = null;
+    inkColorInput.value = "#111111";
+    fontChoiceValue = "";
+    fontChoiceInput.value = "";
+    glassBlurValue = 14;
+    bgBlurValue = 0;
+    glassBlurInput.value = 14;
+    bgBlurInput.value = 0;
+    dealKeys.forEach(function(k){ dealChecks[k].checked = false; });
+    photoData = null;
+    try { localStorage.removeItem(STORE_KEY); } catch(e) {}
+    render();
+  });
+
+  function loadFromHash(){
+    if (location.hash.indexOf("#d=") !== 0) return false;
+    try {
+      var json = decodeURIComponent(atob(location.hash.slice(3)));
+      apply(JSON.parse(json));
+      return true;
+    } catch(e) { return false; }
+  }
+
+  function shareIdFromUrl(){
+    var m = location.search.match(/[?&]s=([A-Za-z0-9]+)/);
+    return m ? m[1] : null;
+  }
+
+  var pendingShareId = shareIdFromUrl();
+  if (pendingShareId){
+    // Short link: pull the saved kit before falling back to this device's draft.
+    fetch(API_BASE + "/share/" + encodeURIComponent(pendingShareId))
+      .then(function(r){
+        if (!r.ok) throw new Error("no share");
+        return r.json();
+      })
+      .then(function(data){
+        apply(data);
+        renderRateRows();
+        render();
+        save();
+      })
+      .catch(function(){
+        // Expired or bad id — fall back to whatever this device already had.
+        if (!loadFromHash()) load();
+        renderRateRows();
+        render();
+      });
+  } else {
+    if (!loadFromHash()) load();
+  }
+  renderRateRows();
+  render();
+  save();
+
+  // ============================= PAYWALL =============================
+  var paywallEl = document.getElementById("paywall");
+
+  function sha256Hex(text){
+    var data = new TextEncoder().encode(text);
+    return crypto.subtle.digest("SHA-256", data).then(function(buf){
+      return Array.prototype.map.call(new Uint8Array(buf), function(b){
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+    });
+  }
+
+  function getAccess(){
+    try { return JSON.parse(localStorage.getItem(ACCESS_KEY) || "null"); } catch(e) { return null; }
+  }
+
+  function hasValidAccess(){
+    var access = getAccess();
+    if (!access || !access.unlockedAt || !access.hash) return false;
+    var ageDays = (Date.now() - access.unlockedAt) / (1000 * 60 * 60 * 24);
+    if (ageDays > PAY_CONFIG.ACCESS_DAYS) return false;
+    return PAY_CONFIG.VALID_CODE_HASHES.indexOf(access.hash) !== -1;
+  }
+
+  var ADSENSE_KEY = "mediaKitBuilder.adUnlocked.v1";
+  var pendingDownload = null; // null | "pdf" | "image"
+
+  function hasAdUnlock(){
+    try { return sessionStorage.getItem(ADSENSE_KEY) === "1"; } catch(e){ return false; }
+  }
+  function setAdUnlock(){
+    try { sessionStorage.setItem(ADSENSE_KEY, "1"); } catch(e){}
+  }
+
+  function isDownloadLocked(){
+    return PAY_CONFIG.ENFORCE && !hasValidAccess() && !hasAdUnlock();
+  }
+
+  function updateLockUI(){
+    document.getElementById("card").classList.toggle("locked", isDownloadLocked());
+  }
+
+  function showPaywall(){
+    paywallEl.style.display = "flex";
+    document.body.style.overflow = "hidden";
+  }
+  function hidePaywall(){
+    paywallEl.style.display = "none";
+    document.body.style.overflow = "";
+  }
+
+  // A full kit (stats + audience + rate card + brands) is taller than one A4
+  // page, so it used to spill onto a second sheet mid-card. Measure it and
+  // shrink to fit before handing off to the print dialog.
+  function applyPrintZoom(){
+    var cardEl = document.getElementById("card");
+    cardEl.style.removeProperty("--print-zoom");
+
+    var DPI = 96;
+    var MARGIN_IN = 0.4 * 2;              // @page margin, both sides
+    var pageW = (8.27 - MARGIN_IN) * DPI; // A4 portrait, printable area
+    var pageH = (11.69 - MARGIN_IN) * DPI;
+
+    // Measure at the width the printed page will actually use, not the
+    // on-screen width — a narrower card wraps more text and comes out
+    // TALLER, so measuring on screen under-estimates and still spills.
+    var prevWidth = cardEl.style.width;
+    cardEl.style.width = pageW + "px";
+    var printedHeight = cardEl.getBoundingClientRect().height;
+    if (prevWidth) cardEl.style.width = prevWidth; else cardEl.style.removeProperty("width");
+
+    if (!printedHeight) return;
+
+    // Width fits by construction (the card is width:100% of the printable
+    // area in print CSS), so only height can push onto a second sheet.
+    // 0.995 leaves a hair of slack so rounding can't tip it over.
+    var zoom = Math.min(1, (pageH / printedHeight) * 0.995);
+    if (zoom < 1) cardEl.style.setProperty("--print-zoom", String(zoom));
+  }
+
+  function clearPrintZoom(){
+    document.getElementById("card").style.removeProperty("--print-zoom");
+  }
+
+  // Safari/Chrome fire these around the native dialog; covers the case where
+  // the user cancels the print rather than saving.
+  if (window.matchMedia){
+    var printMq = window.matchMedia("print");
+    if (printMq.addEventListener){
+      printMq.addEventListener("change", function(e){
+        if (e.matches) applyPrintZoom(); else clearPrintZoom();
+      });
+    }
+  }
+  window.addEventListener("beforeprint", applyPrintZoom);
+  window.addEventListener("afterprint", clearPrintZoom);
+
+  function downloadAsPdf(){
+    var prevTitle = document.title;
+    var nameVal = els.name.value.trim();
+    document.title = "MediaKit" + (nameVal ? "-" + nameVal.replace(/\s+/g,"") : "");
+    applyPrintZoom();
+    window.print();
+    setTimeout(function(){
+      document.title = prevTitle;
+      clearPrintZoom();
+    }, 500);
+    logEvent("pdf_download", activityDetail());
+  }
+
+  function downloadAsImage(){
+    var card = document.getElementById("card");
+    if (typeof html2canvas !== "function"){
+      alert("Couldn't load the image generator — try Download as PDF instead.");
+      return;
+    }
+    html2canvas(card, {
+      backgroundColor: null,
+      scale: 2,
+      useCORS: true,
+      ignoreElements: function(el){ return el.classList && el.classList.contains("kit-watermark"); }
+    }).then(function(canvas){
+      canvas.toBlob(function(blob){
+        if (!blob){
+          alert("Couldn't generate the image in this browser — try Download as PDF instead.");
+          return;
+        }
+        var nameVal = els.name.value.trim();
+        var a = document.createElement("a");
+        a.download = "MediaKit" + (nameVal ? "-" + nameVal.replace(/\s+/g,"") : "") + ".png";
+        a.href = URL.createObjectURL(blob);
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+      }, "image/png");
+      logEvent("image_download", activityDetail());
+    }).catch(function(){
+      alert("Couldn't generate the image in this browser — try Download as PDF instead.");
+    });
+  }
+
+  function doActualDownload(type){
+    if (type === "image") downloadAsImage();
+    else downloadAsPdf();
+  }
+
+  function setupPaywallUI(){
+    var actions = document.getElementById("pwActions");
+    actions.innerHTML = "";
+    if (PAY_CONFIG.RAZORPAY_LINK){
+      document.getElementById("pwPayNote").textContent = "Tap below to pay securely via Razorpay.";
+      var payBtn = document.createElement("a");
+      payBtn.href = PAY_CONFIG.RAZORPAY_LINK;
+      payBtn.target = "_blank";
+      payBtn.rel = "noreferrer";
+      payBtn.className = "btn block";
+      payBtn.textContent = "Pay ₹29 via Razorpay";
+      actions.appendChild(payBtn);
+    }
+    if (PAY_CONFIG.WHATSAPP_NUMBER){
+      document.getElementById("pwWaNote").textContent = "Tap below to open WhatsApp with a pre-filled message.";
+      var msg = "Hi! I've paid ₹29 for 1 month of Media Kit Builder access. Sharing the payment screenshot below.";
+      var waBtn = document.createElement("a");
+      waBtn.href = "https://wa.me/" + PAY_CONFIG.WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg);
+      waBtn.target = "_blank";
+      waBtn.rel = "noreferrer";
+      waBtn.className = "btn teal block";
+      waBtn.textContent = "Send screenshot on WhatsApp";
+      actions.appendChild(waBtn);
+    }
+
+    var adSection = document.getElementById("pwAdSection");
+    adSection.style.display = PAY_CONFIG.ADSENSE_ENABLED ? "" : "none";
+    if (PAY_CONFIG.ADSENSE_ENABLED){
+      var slot = document.getElementById("pwAdSlot");
+      slot.innerHTML = "";
+      if (PAY_CONFIG.ADSENSE_PUBLISHER_ID && PAY_CONFIG.ADSENSE_SLOT_ID){
+        if (!document.getElementById("adsenseScript")){
+          var s = document.createElement("script");
+          s.id = "adsenseScript";
+          s.async = true;
+          s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + PAY_CONFIG.ADSENSE_PUBLISHER_ID;
+          s.crossOrigin = "anonymous";
+          document.head.appendChild(s);
+        }
+        var ins = document.createElement("ins");
+        ins.className = "adsbygoogle";
+        ins.style.display = "block";
+        ins.setAttribute("data-ad-client", PAY_CONFIG.ADSENSE_PUBLISHER_ID);
+        ins.setAttribute("data-ad-slot", PAY_CONFIG.ADSENSE_SLOT_ID);
+        ins.setAttribute("data-ad-format", "auto");
+        ins.setAttribute("data-full-width-responsive", "true");
+        slot.appendChild(ins);
+        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
+      } else {
+        slot.textContent = "Ad space";
+        slot.style.color = "var(--slate)";
+        slot.style.fontSize = "0.8rem";
+      }
+    }
+  }
+
+  function initPaywallHandlers(){
+    var codeInput = document.getElementById("pwCode");
+    var errorEl = document.getElementById("pwError");
+
+    function unlockAndFinish(){
+      errorEl.className = "pw-error ok";
+      errorEl.textContent = "Unlocked! Downloading…";
+      updateLockUI();
+      setTimeout(function(){
+        hidePaywall();
+        if (pendingDownload){ var type = pendingDownload; pendingDownload = null; doActualDownload(type); }
+      }, 400);
+    }
+
+    document.getElementById("pwUnlockBtn").addEventListener("click", function(){
+      var code = codeInput.value.trim().toUpperCase();
+      if (!code){
+        errorEl.className = "pw-error";
+        errorEl.textContent = "Enter the code you received.";
+        return;
+      }
+      sha256Hex(code).then(function(hash){
+        if (PAY_CONFIG.VALID_CODE_HASHES.indexOf(hash) !== -1){
+          try {
+            localStorage.setItem(ACCESS_KEY, JSON.stringify({ hash: hash, unlockedAt: Date.now() }));
+          } catch(e) {}
+          unlockAndFinish();
+        } else {
+          errorEl.className = "pw-error";
+          errorEl.textContent = "That code isn't valid. Double-check and try again.";
+        }
+      });
+    });
+    codeInput.addEventListener("keydown", function(e){
+      if (e.key === "Enter") document.getElementById("pwUnlockBtn").click();
+    });
+
+    var adBtn = document.getElementById("pwAdWaitBtn");
+    var adCountdownEl = document.getElementById("pwAdCountdown");
+    adBtn.addEventListener("click", function(){
+      adBtn.disabled = true;
+      var seconds = 8;
+      adCountdownEl.textContent = seconds;
+      var timer = setInterval(function(){
+        seconds -= 1;
+        if (seconds <= 0){
+          clearInterval(timer);
+          setAdUnlock();
+          unlockAndFinish();
+          return;
+        }
+        adCountdownEl.textContent = seconds;
+      }, 1000);
+    });
+  }
+  initPaywallHandlers();
+
+  document.getElementById("downloadBtn").addEventListener("click", function(){
+    if (isDownloadLocked()){
+      setupPaywallUI();
+      showPaywall();
+      pendingDownload = "pdf";
+      return;
+    }
+    doActualDownload("pdf");
+  });
+
+  document.getElementById("downloadImageBtn").addEventListener("click", function(){
+    if (isDownloadLocked()){
+      setupPaywallUI();
+      showPaywall();
+      pendingDownload = "image";
+      return;
+    }
+    doActualDownload("image");
+  });
+
+  // ============================= SIGNUP GATE =============================
+  var SIGNUP_KEY = "mediaKitBuilder.signup.v1";
+  var signupEl = document.getElementById("signupGate");
+
+  function hasSignedUp(){
+    try { return !!localStorage.getItem(SIGNUP_KEY); } catch(e){ return false; }
+  }
+  function showSignup(){ signupEl.style.display = "flex"; document.body.style.overflow = "hidden"; }
+  function hideSignup(){ signupEl.style.display = "none"; document.body.style.overflow = ""; }
+
+  var SIGNUP_DATA_KEY = "mediaKitBuilder.signupData.v1";
+
+  function autofillFromSignup(su){
+    if (!su) return;
+    if (!els.name.value.trim() && su.name) els.name.value = su.name;
+    if (!els.handle.value.trim() && su.handle_main) els.handle.value = su.handle_main;
+    if (!els.contact.value.trim() && su.contact && su.contact.indexOf("@") !== -1) els.contact.value = su.contact;
+    render();
+    save();
+  }
+
+  function initSignupGate(){
+    return new Promise(function(resolve){
+      if (hasSignedUp()){
+        try { autofillFromSignup(JSON.parse(localStorage.getItem(SIGNUP_DATA_KEY) || "null")); } catch(e){}
+        resolve();
+        return;
+      }
+      showSignup();
+      var errorEl = document.getElementById("suError");
+      document.getElementById("suSubmitBtn").addEventListener("click", function(){
+        var name = document.getElementById("suName").value.trim();
+        var contact = document.getElementById("suContact").value.trim();
+        var age = document.getElementById("suAge").value.trim();
+        var handleMain = document.getElementById("suHandleMain").value.trim();
+        var handleContent = document.getElementById("suHandleContent").value.trim();
+        if (!name || !contact || !age || !handleMain){
+          errorEl.className = "pw-error";
+          errorEl.textContent = "Please fill all required fields.";
+          return;
+        }
+        errorEl.className = "pw-error";
+        errorEl.textContent = "Saving…";
+        fetch(API_BASE + "/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: name, contact: contact, age: age, handle_main: handleMain, handle_content: handleContent })
+        }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, body: j }; }); })
+          .then(function(res){
+            if (res.ok && res.body && res.body.ok){
+              var suData = { name: name, contact: contact, age: age, handle_main: handleMain, handle_content: handleContent };
+              try {
+                localStorage.setItem(SIGNUP_KEY, "1");
+                localStorage.setItem(SIGNUP_DATA_KEY, JSON.stringify(suData));
+              } catch(e){}
+              errorEl.className = "pw-error ok";
+              errorEl.textContent = "Thanks! Loading…";
+              setTimeout(function(){
+                hideSignup();
+                autofillFromSignup(suData);
+                resolve();
+              }, 400);
+            } else {
+              errorEl.className = "pw-error";
+              errorEl.textContent = (res.body && res.body.error) || "Something went wrong. Try again.";
+            }
+          }).catch(function(){
+            errorEl.className = "pw-error";
+            errorEl.textContent = "Couldn't reach the server. Check your connection and try again.";
+          });
+      });
+    });
+  }
+
+  function fetchPaidConfig(){
+    return fetch(API_BASE + "/config").then(function(r){ return r.json(); }).then(function(cfg){
+      PAY_CONFIG.ENFORCE = !!cfg.paid_enforce;
+      PAY_CONFIG.ADSENSE_ENABLED = !!cfg.adsense_enabled;
+      PAY_CONFIG.ADSENSE_PUBLISHER_ID = cfg.adsense_publisher_id || "";
+      PAY_CONFIG.ADSENSE_SLOT_ID = cfg.adsense_slot_id || "";
+      document.getElementById("priceBadge").style.display = PAY_CONFIG.ENFORCE ? "" : "none";
+    }).catch(function(){
+      PAY_CONFIG.ENFORCE = false; // backend unreachable — fail open, don't lock out legit users
+      PAY_CONFIG.ADSENSE_ENABLED = false;
+    });
+  }
+
+  initSignupGate().then(fetchPaidConfig).then(updateLockUI);
+})();
+</script>
+
+</body>
+</html>
