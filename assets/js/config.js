@@ -17,7 +17,7 @@
 const SITE = {
   brand: "DiGiHub",
   logo: "assets/img/logo.jpg",                // shown in nav; "" = 🤖 emoji fallback
-  tagline: "Telegram bot platforms, built to scale.",
+  tagline: "Telegram bot platforms and creator tools, built to scale.",
   telegram: "https://t.me/DigiHubProBot",           // "Open/Try in Telegram" CTAs — the actual product bot
   supportChannel: "https://t.me/DigiHubSupportBot", // footer "Support on Telegram" link
   email: "contact@digihubhmax.com",                 // footer contact — general inquiries
@@ -103,7 +103,7 @@ const PROJECTS = [
       features: [
         { icon: "🤖", title: "Your own clone bot", desc: "Connect a bot token and get a fully branded bot under your name — not ours. Your community only ever sees your brand." },
         { icon: "🛍️", title: "Shop & Stars payments", desc: "Sell digital products with native Telegram Stars — files stay in your channel, buyers get instant delivery." },
-        { icon: "📱", title: "Mini App storefront", desc: "Give buyers a full app-like storefront inside Telegram — browse, buy and re-download without leaving chat. Silver plan and up." },
+        { icon: "📱", title: "Mini App storefront", desc: "Give buyers a full app-like storefront inside Telegram — browse, buy and re-download without leaving chat. Buyers can theme it their way: light or dark, their own background image, and a grid density that suits their screen. Silver plan and up." },
         { icon: "🧭", title: "Menu builder", desc: "Build custom navigation pages with buttons linking to your shop, forms, links or channels — no coding required." },
         { icon: "📝", title: "Forms", desc: "Create conversational, multi-step forms. Customers can pause and resume anytime, with a visible progress bar." },
         { icon: "💬", title: "Auto-replies", desc: "Set keyword-triggered replies so common questions get answered instantly, day or night." },
@@ -114,12 +114,13 @@ const PROJECTS = [
         { icon: "📦", title: "Channel-based storage", desc: "Products are stored in your private channel. We keep only message IDs — your files never sit on our servers." },
         { icon: "📊", title: "Dashboard & notifications", desc: "Track orders, revenue and audience growth inside the bot, and choose which events ping you." },
         { icon: "🔐", title: "Encrypted tokens", desc: "Bot tokens are encrypted at rest with Fernet. Nobody — including us — can read them in plain text." },
-        { icon: "🎉", title: "Giveaways", desc: "Run join-to-enter giveaways with automatic winner picking and full entry analytics." },
+        { icon: "🎉", title: "Giveaways", desc: "Run join-to-enter giveaways with automatic winner picking and full entry analytics. Entrants can earn bonus entries by sharing your giveaway, turning every participant into a channel for reach — Gold plan and up." },
         { icon: "🗨️", title: "Live chat", desc: "Customers message you straight through the bot, with instant reply relay and owner-defined spam-keyword filtering." },
         { icon: "⚙️", title: "Automation & drip sequences", desc: "Fire welcome messages, coupons or credit rewards on join or purchase — or build multi-step drip sequences." },
         { icon: "🏆", title: "Achievements", desc: "Unlock badges as your store grows — always visible in your creator portfolio, even while the bot sleeps." },
         { icon: "🎁", title: "Referrals & Credits", desc: "Earn DigiHub Credits by referring other creators — spend them on upgrades or convert to customer credits." },
-        { icon: "🌍", title: "Built for every market", desc: "New users pick their country and language on first launch — pricing and text adapt automatically." },
+        { icon: "🌍", title: "23 languages, fully translated", desc: "Every screen, button and error message is translated across 23 languages — complete, not half-finished. New users pick their country and language on first launch, and pricing and text adapt automatically." },
+        { icon: "🗣️", title: "Every buyer, their own language", desc: "Your customers each choose the language they read your store in, independently of the language you run the bot in — so one store serves a global audience properly." },
         { icon: "👥", title: "Team access", desc: "Delegate store management to trusted admins with granular, revocable, fully audited permissions." },
       ],
 
@@ -161,13 +162,13 @@ const PROJECTS = [
     name: "Request Accepter Pro",
     emoji: "✅",
     status: "live",
-    short: "Auto-approve join requests on private channels with smart delays. Clone your own approval bot in one minute.",
+    short: "Auto-approve join requests with smart delays and captcha screening, welcome every member from your own branded bot, and run it all in 28 languages.",
     details: {
       botUsername: "@RequestAccepterPro_Bot",
       botLink: "https://t.me/RequestAccepterPro_Bot",
       eyebrow: "// Request Accepter Pro · live",
       headline: "Join requests, approved on autopilot.",
-      sub: "Stop approving members by hand. Request Accepter Pro watches your private channels and groups, approves join requests with smart delays, and welcomes every new member — from your own branded bot.",
+      sub: "Stop approving members by hand. Request Accepter Pro watches your private channels and groups, screens and approves join requests on your schedule, and welcomes every new member — from your own branded bot, in any of 28 languages.",
       ctaLabel: "Try it on Telegram",
 
       chat: {
@@ -181,10 +182,16 @@ const PROJECTS = [
       },
 
       features: [
-        { icon: "⚡", title: "Instant or delayed approval", desc: "Approve immediately, or use randomized smart delays so growth looks organic and stays within Telegram limits." },
-        { icon: "🤖", title: "Your own clone bot", desc: "Connect a token from @BotFather and the approval bot runs under your brand, not ours." },
+        { icon: "⚡", title: "Instant or delayed approval", desc: "Approve immediately, or hold requests behind a delay of up to 48 hours so growth looks organic and stays well inside Telegram's limits." },
+        { icon: "🛡️", title: "Captcha screening", desc: "Make every requester tap a verify button before they're let in. Bots and drive-by joins never make it through, and you choose what happens to anyone who doesn't verify in time." },
+        { icon: "🤖", title: "Your own clone bot", desc: "Connect a token from @BotFather and the approval bot runs under your brand, not ours — up to 3 bots on Pro, 8 on Diamond." },
         { icon: "📢", title: "Multiple channels & groups", desc: "One bot manages join requests across all your private channels and groups from a single dashboard." },
-        { icon: "👋", title: "Welcome messages", desc: "Automatically DM every approved member with your custom welcome text, links or rules." },
+        { icon: "👋", title: "Welcome page builder", desc: "Design what every approved member sees: your own poster image, your text, and link buttons you lay out yourself — with colour styling and premium emoji icons on paid tiers." },
+        { icon: "🔒", title: "Force-join channels", desc: "Require new members to join your other channels first — up to 2 on Pro and 4 on Diamond — so one channel's growth feeds the rest." },
+        { icon: "📣", title: "Broadcast to members", desc: "Message everyone who joined through your bot, straight from the dashboard — no separate mailing tool needed." },
+        { icon: "🌐", title: "28 languages", desc: "The whole bot speaks 28 languages, and the picker shows each one by its flag and its native name — so members choose in a language they can actually read." },
+        { icon: "🚫", title: "Block troublesome users", desc: "Ban a specific user from your bot outright, and send a custom decline message to anyone you turn away." },
+        { icon: "⏰", title: "Expiry reminders", desc: "Get told before your subscription lapses, so approvals never quietly stop in the middle of a growth push." },
         { icon: "📊", title: "Growth stats", desc: "See how many requests were approved today, this week and all-time — right inside the bot." },
         { icon: "🧹", title: "Zero spam setup", desc: "Fully inline setup flow. Tokens and setup messages are auto-deleted after use." },
       ],
@@ -196,17 +203,134 @@ const PROJECTS = [
         { title: "Relax", desc: "Requests get approved 24/7 and every member gets your welcome message." },
       ],
 
-      tiers: [],   // no public pricing yet — section auto-hides
+      tiersNote: "Every new owner gets a 28-day free trial — delays up to 48 hours included, no card needed. After that the Free plan keeps running with instant approval.",
+
+      tiers: [
+        { name: "Free",    price: "0",   unit: "⭐ / mo", tag: "",             perks: ["Instant approval", "Run from the main bot", "28-day free trial", "Growth stats"] },
+        { name: "Pro",     price: "75",  unit: "⭐ / mo", tag: "Most popular", perks: ["3 clone bots", "Delays up to 24 hours", "Captcha screening", "2 force-join channels", "4 welcome buttons"] },
+        { name: "Diamond", price: "150", unit: "⭐ / mo", tag: "",             perks: ["8 clone bots", "Delays up to 48 hours", "Captcha screening", "4 force-join channels", "8 welcome buttons"] },
+      ],
 
       faq: [
-        { q: "Is auto-approving allowed by Telegram?", a: "Yes — bots with admin rights can approve join requests via the official Bot API. Smart delays keep the pattern natural." },
+        { q: "Is auto-approving allowed by Telegram?", a: "Yes — bots with admin rights can approve join requests via the official Bot API. Delays keep the pattern natural rather than approving hundreds of people in the same second." },
         { q: "Does the bot need access to my messages?", a: "No. It only needs the admin right to manage join requests in the channels you add it to." },
+        { q: "Do I have to pay to try it?", a: "No. Every new owner gets a 28-day free trial including delays of up to 48 hours. When it ends nothing is deleted — you drop to the Free plan with instant approval and can upgrade whenever you want." },
+        { q: "What does the captcha actually do?", a: "Before anyone is approved, the bot asks them to tap a verify button. They get five minutes to do it, and you decide what happens to people who never verify — so automated join floods don't reach your channel." },
+        { q: "Can I run more than one channel?", a: "Yes. One bot handles join requests across all your private channels and groups. Paid tiers also let you run several clone bots — 3 on Pro, 8 on Diamond — each under its own brand." },
+        { q: "Which languages does it support?", a: "28, including Arabic, Bengali, Burmese, Farsi, Hebrew, Hindi, Indonesian, Japanese, Korean, Thai, Urdu, Vietnamese and both Simplified and Traditional Chinese. Members pick their own from a list showing each language's flag and native name." },
       ],
 
       cta: {
         title: "Approve your next 1,000 members automatically",
         text: "Set up takes about a minute. Connect a token, add the bot to your channel, done.",
         btnLabel: "Start on Telegram",
+      },
+    },
+  },
+
+  {
+    id: "flashprepareai",
+    name: "FlashPrepareAI",
+    emoji: "🎓",
+    status: "live",
+    short: "AI interview preparation for students — mock interviews, coding practice and coaching that actually knows your resume. Billed by the minute, not by subscription.",
+    details: {
+      botLink: "https://flashprepareai.digihubhmax.com",
+      linkLabel: "Open FlashPrepareAI",
+      eyebrow: "// FlashPrepareAI · live",
+      headline: "Practise the interview before you sit it.",
+      sub: "FlashPrepareAI is a preparation tool. Run mock interviews, work through coding and system-design questions, and get coaching that reads from your real resume instead of inventing a career for you. Practice mode only — it is built for getting ready, not for use during a live interview.",
+      ctaLabel: "Open FlashPrepareAI",
+
+      chat: {
+        avatar: "🎓",
+        botName: "FlashPrepareAI",
+        messages: [
+          { side: "out", html: "Explain database indexing like you are asking me in an interview", time: "20:14" },
+          { side: "in",  html: "📚 <b>Deep-dive mode</b><br />Let us start where an interviewer would: <i>what problem does an index actually solve?</i>", time: "20:14",
+            buttons: ["Answer out loud", "Show model answer"] },
+          { side: "out", html: "It speeds up lookups so you do not scan every row", time: "20:15" },
+          { side: "in",  html: "✅ Right idea. Now tighten it — name the data structure and the write cost.<br /><span class='star'>Calibrated to: 2 yrs experience</span>", time: "20:15" },
+        ],
+      },
+
+      features: [
+        { icon: "🎯", title: "Answers shaped by question type", desc: "A coding question, a deep-dive design question, a definition, a syntax lookup and a SQL query each need a different answer. The tool detects which one you asked and responds in that shape." },
+        { icon: "📄", title: "Coaching from your real resume", desc: "Attach your resume and answers are grounded in your actual projects and history. With no resume attached it refuses to invent one — no fabricated projects to get caught out on." },
+        { icon: "📏", title: "Calibrated to your experience", desc: "A fresher and someone with five years in should not get the same answer. Set your level and the depth, vocabulary and expectations move with it." },
+        { icon: "💻", title: "Coding and deep-dive practice", desc: "Work through coding problems and system-design questions with follow-ups that push on the parts an interviewer would actually probe." },
+        { icon: "☕", title: "Version-aware for Java", desc: "Answers know which Java version you are targeting, so you do not rehearse an approach that your interviewer stack does not support." },
+        { icon: "📱", title: "Android app", desc: "Practise from your phone with the companion Android app, including a paired second-device mode for hands-free sessions." },
+        { icon: "⏱️", title: "Pay by the minute", desc: "No monthly subscription. You are billed for the minutes you actually practise, so a short revision session costs like a short revision session." },
+        { icon: "🎁", title: "Referrals", desc: "Invite classmates and earn practice credit — useful when a whole batch is preparing for the same placement season." },
+      ],
+
+      steps: [
+        { title: "Sign in", desc: "Create an account at flashprepareai.digihubhmax.com — no card needed to look around." },
+        { title: "Attach your resume", desc: "Optional, but it is what turns generic answers into answers about your own projects." },
+        { title: "Pick your level and mode", desc: "Set your experience level, then practise coding, deep-dive, SQL or rapid definitions." },
+        { title: "Practise out loud", desc: "Answer, get corrected, and go again — with session feedback at the end." },
+      ],
+
+      tiers: [],   // per-minute billing, not tiers — section auto-hides
+
+      faq: [
+        { q: "Is this for use during a real interview?", a: "No. FlashPrepareAI is a practice and preparation tool, and that is the only way it is meant to be used. Use it to get ready beforehand." },
+        { q: "How does billing work?", a: "Per minute of practice, rather than a monthly plan. You top up and spend it on the sessions you actually run." },
+        { q: "What happens if I do not attach a resume?", a: "It will still coach you, but it will not pretend to know your background. It is built to refuse to invent projects or experience you never had." },
+        { q: "Is there a mobile version?", a: "Yes — an Android app, with a paired-device mode so you can practise hands-free." },
+      ],
+
+      cta: {
+        title: "Start practising tonight",
+        text: "Set your experience level, attach your resume and run your first mock interview in a few minutes.",
+        btnLabel: "Open FlashPrepareAI",
+      },
+    },
+  },
+
+  {
+    id: "mediakit",
+    name: "Media Kit Builder",
+    emoji: "📸",
+    status: "live",
+    short: "Build the Instagram media kit and rate card brands ask for — enter your numbers, pick a theme, export a polished PDF.",
+    details: {
+      botLink: "https://digihubhmax.com/media-kit.html",
+      linkLabel: "Open the builder",
+      eyebrow: "// Media Kit Builder · live",
+      headline: "The rate card brands ask for, built in minutes.",
+      sub: "Every brand deal starts with the same request: send us your media kit. This builds one — your audience numbers, who follows you, what you charge and your payment terms — and exports it as a clean page you can send straight back. No design tool, no template hunting.",
+      ctaLabel: "Open the builder",
+
+      features: [
+        { icon: "📈", title: "Your real numbers, laid out properly", desc: "Followers, engagement rate, average reel views, story views, likes and comments — presented the way a brand marketing team expects to read them." },
+        { icon: "👥", title: "Audience breakdown", desc: "Gender split, main age range and top locations, so a brand can see at a glance whether your audience is the one they are trying to reach." },
+        { icon: "💰", title: "Rate card and terms", desc: "Set your rate per 1,000 followers in your own currency, and spell out payment terms — like 50% advance, balance within 15 days of going live — so the awkward conversation is already handled." },
+        { icon: "🤝", title: "Brands you have worked with", desc: "List past collaborations to build credibility with the brand reading it." },
+        { icon: "🎨", title: "Make it look like you", desc: "Choose a card theme, accent colour and font, drop in your own background image and tune its blur, and set text colour for legibility over any photo." },
+        { icon: "📥", title: "Export and send", desc: "Render the finished kit and download it, ready to attach to an email or DM. Nothing to install." },
+      ],
+
+      steps: [
+        { title: "Open the builder", desc: "It runs in the browser — phone or laptop, no app to install." },
+        { title: "Fill in your numbers", desc: "Handle, followers, engagement and the audience breakdown from your Instagram insights." },
+        { title: "Set your rates", desc: "Rate per 1,000 followers, currency and the payment terms you work on." },
+        { title: "Style it and export", desc: "Pick a theme and background, then download your finished media kit." },
+      ],
+
+      tiers: [],   // free tool — section auto-hides
+
+      faq: [
+        { q: "Do I need a design tool?", a: "No. You fill in a form and the layout is done for you — theme, colours, fonts and background are all pickers." },
+        { q: "What do I actually get at the end?", a: "A finished media kit page you can render and download, covering your audience stats, demographics, past brand work and your rate card." },
+        { q: "Does it work on a phone?", a: "Yes — it is built mobile-first and can be added to your home screen like an app." },
+      ],
+
+      cta: {
+        title: "Stop rebuilding your media kit from scratch",
+        text: "Enter your numbers once, style it your way, and export a rate card you can send to the next brand that asks.",
+        btnLabel: "Open the builder",
       },
     },
   },

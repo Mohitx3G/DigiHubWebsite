@@ -202,7 +202,7 @@ function renderBotPanel(id) {
   const actions = d ? `
     <div class="actions">
       <a class="btn btn-primary" href="project.html?id=${encodeURIComponent(p.id)}">View full details</a>
-      ${d.botLink ? `<a class="btn btn-ghost" href="${esc(d.botLink)}" target="_blank" rel="noopener">Try on Telegram</a>` : ""}
+      ${d.botLink ? `<a class="btn btn-ghost" href="${esc(d.botLink)}" target="_blank" rel="noopener">${esc(d.linkLabel || "Try on Telegram")}</a>` : ""}
     </div>` : "";
 
   $("#bots-panel").innerHTML = `
