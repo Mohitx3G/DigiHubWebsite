@@ -634,12 +634,21 @@ class Handler(BaseHTTPRequestHandler):
         return session_email(self.headers.get("X-Session-Token", ""))
 
     def _client_ip(self):
-        """Everything arrives from nginx on 127.0.0.1, so the forwarded header
-        is the only thing that distinguishes callers. It is spoofable, which is
-        why it only ever feeds a rate-limit counter, never an auth decision."""
-        fwd = self.headers.get("X-Forwarded-For", "")
-        if fwd:
-            return fwd.split(",")[0].strip()[:64]
+        """Everything arrives from nginx on 127.0.0.1, so a proxy header is the
+        only thing that tells callers apart.
+
+        Use X-Real-IP, NOT X-Forwarded-For. Our nginx sets
+        `proxy_set_header X-Real-IP $remote_addr`, which overwrites whatever the
+        caller sent, so it is trustworthy. It does not set X-Forwarded-For at
+        all, so that header arrives exactly as the client wrote it — trusting it
+        would let anyone bypass the per-IP limit by sending a random value, and
+        falling back to client_address would put every visitor behind the proxy
+        into a single shared bucket and lock real people out.
+        """
+        real = self.headers.get("X-Real-IP", "").strip()
+        if real:
+            return real[:64]
+        # Direct connection (local testing, or nginx misconfigured).
         return self.client_address[0] if self.client_address else ""
 
     def do_GET(self):
