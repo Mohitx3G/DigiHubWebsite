@@ -1,0 +1,53 @@
+# Media Kit API — systemd unit.
+#
+# Replaces the `nohup` + `@reboot` crontab arrangement this service started on.
+# That form does not survive the SSH session it was launched from, so a restart
+# over ssh could silently leave the API down, and nothing brought it back.
+#
+# Install (needs root, once):
+#   sudo cp /home/digihub/mediakit/backend/mediakit-api.service \
+#           /etc/systemd/system/mediakit-api.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now mediakit-api
+#   crontab -e     # then delete the old "@reboot ... nohup python3 app.py" line
+#
+# Afterwards: sudo systemctl restart mediakit-api   (a real, supervised restart)
+#             systemctl status mediakit-api
+#             journalctl -u mediakit-api -n 50
+
+[Unit]
+Description=Media Kit API (signups, share links, admin dashboard)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=digihub
+Group=digihub
+WorkingDirectory=/home/digihub/mediakit/backend
+ExecStart=/usr/bin/python3 /home/digihub/mediakit/backend/app.py
+
+# Keep it alive. This is the whole point of moving off nohup.
+Restart=always
+RestartSec=3
+
+# Log to the journal rather than an ever-growing app.log.
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=mediakit-api
+
+# Modest hardening. The service only ever needs to read its own directory,
+# write mediakit.db beside app.py, and make outbound SMTP connections.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/digihub/mediakit/backend
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

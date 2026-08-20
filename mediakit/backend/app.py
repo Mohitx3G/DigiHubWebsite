@@ -19,6 +19,7 @@ import smtplib
 import sqlite3
 import ssl
 import sys
+import threading
 import time
 from email.message import EmailMessage
 from email.utils import formataddr
@@ -58,6 +59,16 @@ SESSION_TTL_SECONDS = 90 * 86400  # a verified device stays signed in for 90 day
 MAX_EMAIL_LEN = 160
 MAX_PHONE_LEN = 40
 SMTP_TIMEOUT = 15
+
+# Per-IP write limits, as (max_requests, window_seconds). These sit in front of
+# the endpoints that create rows, so a flood cannot bloat the database or fill
+# the disk. Deliberately generous -- a real person trips none of them.
+WRITE_LIMITS = {
+    "signup": (10, 3600),   # a person signs up once; 10/hour covers retries
+    "share": (20, 3600),    # making share links
+    "event": (60, 3600),    # download/telemetry pings
+}
+RATE_BUCKET_CAP = 20000  # most tracked IPs before the oldest are evicted
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]{2,}$")
 
 
@@ -75,6 +86,45 @@ def valid_email(value):
 
 def valid_phone(value):
     return len(re.sub(r"\D", "", value or "")) >= 7
+
+
+class RateLimiter:
+    """Fixed-memory per-IP sliding window.
+
+    Deliberately in-process rather than a table: these limits guard against
+    floods, and writing a row per request to count requests would hand an
+    attacker the very disk growth the limit exists to prevent. State resetting
+    on restart is an acceptable trade for that.
+    """
+
+    def __init__(self, cap=RATE_BUCKET_CAP):
+        self._hits = {}
+        self._lock = threading.Lock()
+        self._cap = cap
+
+    def allow(self, bucket, ip, limit, window):
+        if not ip:
+            return True  # cannot attribute it; do not punish everyone
+        now = time.time()
+        key = (bucket, ip)
+        with self._lock:
+            stamps = [t for t in self._hits.get(key, ()) if t > now - window]
+            if len(stamps) >= limit:
+                self._hits[key] = stamps
+                return False
+            stamps.append(now)
+            self._hits[key] = stamps
+            if len(self._hits) > self._cap:
+                self._evict(now)
+            return True
+
+    def _evict(self, now):
+        """Drop entries whose newest hit is oldest. Called under the lock."""
+        for key in sorted(self._hits, key=lambda k: self._hits[k][-1])[: self._cap // 4]:
+            self._hits.pop(key, None)
+
+
+RATE_LIMITER = RateLimiter()
 
 
 def get_admin_key():
@@ -633,6 +683,14 @@ class Handler(BaseHTTPRequestHandler):
     def _session_email(self):
         return session_email(self.headers.get("X-Session-Token", ""))
 
+    def _rate_ok(self, bucket):
+        """False (and the 429 already sent) when this caller is over the limit."""
+        limit, window = WRITE_LIMITS[bucket]
+        if RATE_LIMITER.allow(bucket, self._client_ip(), limit, window):
+            return True
+        self._send_json(429, {"error": "Too many requests. Try again later."})
+        return False
+
     def _client_ip(self):
         """Everything arrives from nginx on 127.0.0.1, so a proxy header is the
         only thing that tells callers apart.
@@ -736,6 +794,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         if self.path == "/signup":
+            if not self._rate_ok("signup"):
+                return
             data = self._read_json()
             if not data:
                 self._send_json(400, {"error": "invalid body"})
@@ -853,6 +913,8 @@ class Handler(BaseHTTPRequestHandler):
             drop_session(self.headers.get("X-Session-Token", ""))
             self._send_json(200, {"ok": True})
         elif self.path == "/share":
+            if not self._rate_ok("share"):
+                return
             data = self._read_json(MAX_SHARE_BODY)
             if not isinstance(data, dict):
                 self._send_json(400, {"error": "invalid body"})
@@ -878,6 +940,8 @@ class Handler(BaseHTTPRequestHandler):
                 pass
             self._send_json(200, {"id": share_id, "expires_days": SHARE_RETENTION_DAYS})
         elif self.path == "/event":
+            if not self._rate_ok("event"):
+                return
             data = self._read_json()
             if not data:
                 self._send_json(400, {"error": "invalid body"})
