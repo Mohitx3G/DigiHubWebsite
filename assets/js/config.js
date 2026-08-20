@@ -103,7 +103,7 @@ const PROJECTS = [
       features: [
         { icon: "🤖", title: "Your own clone bot", desc: "Connect a bot token and get a fully branded bot under your name — not ours. Your community only ever sees your brand." },
         { icon: "🛍️", title: "Shop & Stars payments", desc: "Sell digital products with native Telegram Stars — files stay in your channel, buyers get instant delivery." },
-        { icon: "📱", title: "Mini App storefront", desc: "Give buyers a full app-like storefront inside Telegram — browse, buy and re-download without leaving chat. Buyers can theme it their way: light or dark, their own background image, and a grid density that suits their screen. Silver plan and up." },
+        { icon: "📱", title: "Mini App storefront", desc: "Give buyers a full app-like storefront inside Telegram — browse, buy and re-download without leaving chat. You style it to your brand with a store theme and your own background image; buyers just pick how densely the product grid packs onto their screen. Silver plan and up." },
         { icon: "🧭", title: "Menu builder", desc: "Build custom navigation pages with buttons linking to your shop, forms, links or channels — no coding required." },
         { icon: "📝", title: "Forms", desc: "Create conversational, multi-step forms. Customers can pause and resume anytime, with a visible progress bar." },
         { icon: "💬", title: "Auto-replies", desc: "Set keyword-triggered replies so common questions get answered instantly, day or night." },
@@ -248,7 +248,7 @@ const PROJECTS = [
         messages: [
           { side: "out", html: "Explain database indexing like you are asking me in an interview", time: "20:14" },
           { side: "in",  html: "📚 <b>Deep-dive mode</b><br />Let us start where an interviewer would: <i>what problem does an index actually solve?</i>", time: "20:14",
-            buttons: ["Answer out loud", "Show model answer"] },
+            buttons: ["Show model answer", "Next question"] },
           { side: "out", html: "It speeds up lookups so you do not scan every row", time: "20:15" },
           { side: "in",  html: "✅ Right idea. Now tighten it — name the data structure and the write cost.<br /><span class='star'>Calibrated to: 2 yrs experience</span>", time: "20:15" },
         ],
@@ -260,7 +260,7 @@ const PROJECTS = [
         { icon: "📏", title: "Calibrated to your experience", desc: "A fresher and someone with five years in should not get the same answer. Set your level and the depth, vocabulary and expectations move with it." },
         { icon: "💻", title: "Coding and deep-dive practice", desc: "Work through coding problems and system-design questions with follow-ups that push on the parts an interviewer would actually probe." },
         { icon: "☕", title: "Version-aware for Java", desc: "Answers know which Java version you are targeting, so you do not rehearse an approach that your interviewer stack does not support." },
-        { icon: "📱", title: "Android app", desc: "Practise from your phone with the companion Android app, including a paired second-device mode for hands-free sessions." },
+        { icon: "📱", title: "Android app", desc: "Practise from your phone with the companion Android app, including a paired second-device mode." },
         { icon: "⏱️", title: "Pay by the minute", desc: "No monthly subscription. You are billed for the minutes you actually practise, so a short revision session costs like a short revision session." },
         { icon: "🎁", title: "Referrals", desc: "Invite classmates and earn practice credit — useful when a whole batch is preparing for the same placement season." },
       ],
@@ -269,7 +269,7 @@ const PROJECTS = [
         { title: "Sign in", desc: "Create an account at flashprepareai.digihubhmax.com — no card needed to look around." },
         { title: "Attach your resume", desc: "Optional, but it is what turns generic answers into answers about your own projects." },
         { title: "Pick your level and mode", desc: "Set your experience level, then practise coding, deep-dive, SQL or rapid definitions." },
-        { title: "Practise out loud", desc: "Answer, get corrected, and go again — with session feedback at the end." },
+        { title: "Work through it", desc: "Type your answer, compare it against the model answer, and go again — with session feedback at the end." },
       ],
 
       tiers: [],   // per-minute billing, not tiers — section auto-hides
@@ -278,7 +278,7 @@ const PROJECTS = [
         { q: "Is this for use during a real interview?", a: "No. FlashPrepareAI is a practice and preparation tool, and that is the only way it is meant to be used. Use it to get ready beforehand." },
         { q: "How does billing work?", a: "Per minute of practice, rather than a monthly plan. You top up and spend it on the sessions you actually run." },
         { q: "What happens if I do not attach a resume?", a: "It will still coach you, but it will not pretend to know your background. It is built to refuse to invent projects or experience you never had." },
-        { q: "Is there a mobile version?", a: "Yes — an Android app, with a paired-device mode so you can practise hands-free." },
+        { q: "Is there a mobile version?", a: "Yes — an Android app, with a paired second-device mode." },
       ],
 
       cta: {
@@ -617,6 +617,38 @@ const LEGAL = [
    the page shows "Full guide coming soon" instead.
    ============================================================ */
 const GUIDES = [
+  { id: "miniapp", title: "Mini App Shop Guide", icon: "📱",
+    summary: "A full storefront that opens inside Telegram — customers browse a real product grid, buy, and re-download past purchases, instead of tapping through chat menus. Silver plan and up.",
+    media: null,
+    quickAnswers: [
+      { q: "How do I turn it on?", a: "Settings → Mini App Shop → Enable Mini App Shop. You need a storage channel set up first, and a Silver plan or higher — below Silver the button shows as locked." },
+      { q: "Do customers need to install anything?", a: "No. It opens inside Telegram itself, on the same account they already use. There is nothing to download and no separate login." },
+      { q: "Can I see it as a customer would?", a: "Yes — opening it as the store owner shows a Preview Mode banner. Purchases are deliberately disabled while you are previewing, so you cannot accidentally buy your own product." },
+    ],
+    sections: [
+      { h: "Turning it on", body: [
+        { list: [
+          "Set up your storage channel first — the Mini App will not open without one, since that is where every product file lives.",
+          "Go to Settings → Mini App Shop and enable it. On Free tier the button is locked and shows Silver+.",
+          "Customers now get a storefront button alongside the normal chat menus. Both keep working — the Mini App is an addition, not a replacement.",
+        ] },
+        { type: "tip", text: "Force-join still applies. A customer who has not joined your required channel(s) is asked to join and reopen the shop." },
+      ] },
+      { h: "Making it look like your brand", body: [
+        "Appearance is managed from inside the Mini App itself — open it and use the Settings tab, or tap Manage in Mini App from the bot.",
+        { list: [
+          "Store Theme — sets the button and link colours for your storefront.",
+          "Store Background — upload your own image. It is compressed and resized automatically, must be under 15MB, and can be changed once every 48 hours.",
+          "Premium Emoji — when on, premium and custom emoji in your product descriptions render as real animated emoji rather than plain fallbacks.",
+          "Reset Appearance — puts theme, background and emoji back to defaults in one step.",
+        ] },
+        { type: "tip", text: "The 48-hour background cooldown only limits uploading a new image. You can still remove the current background at any time." },
+      ] },
+      { h: "What your customers control", body: [
+        "Customers do not change your theme or background — that is your storefront and stays on your brand. What they do control is how densely the product grid packs onto their screen, which is remembered for their next visit.",
+        "They also get a Purchases tab: everything they have bought stays there for re-download, so nobody has to message you asking for a file again.",
+      ] },
+    ] },
   { id: "shop", title: "Shop Guide", icon: "🛍️",
     summary: "Sell digital products with Telegram Stars. Products stay in your private storage channel — buyers get instant delivery after payment.",
     media: null,
