@@ -43,11 +43,11 @@
   }
   .panel h2{font-size:1.1rem; margin-bottom:12px;}
 
-  .field input{
+  .field input, .field select{
     width:100%; background:var(--ink-3); border:1px solid var(--rule); color:var(--chalk);
     border-radius:var(--radius-sm); padding:11px 12px; font-family:var(--font-body); font-size:1rem;
   }
-  .field input:focus{ outline:none; border-color:var(--marigold); }
+  .field input:focus, .field select:focus{ outline:none; border-color:var(--marigold); }
 
   .btn{
     display:inline-flex; align-items:center; justify-content:center; gap:8px;
@@ -179,18 +179,73 @@
     </div>
 
     <div class="panel">
+      <div class="toggle-row" style="margin-bottom:14px;">
+        <div>
+          <h2 style="margin-bottom:2px;">Email code login</h2>
+          <p class="sub" style="margin-bottom:0;">When on, a new signup has to confirm its email with a 6-digit code before the tool unlocks, and a returning visitor can restore their account on any device the same way. Needs the SMTP settings below to be working — test them first.</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="otpToggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="field" style="margin-bottom:10px;">
+        <label for="smtpHost" style="display:block; font-size:0.8rem; color:var(--slate); margin-bottom:4px;">SMTP host</label>
+        <input type="text" id="smtpHost" placeholder="smtp.gmail.com" />
+      </div>
+      <div class="field" style="margin-bottom:10px;">
+        <label for="smtpPort" style="display:block; font-size:0.8rem; color:var(--slate); margin-bottom:4px;">Port</label>
+        <input type="number" id="smtpPort" placeholder="587" />
+      </div>
+      <div class="field" style="margin-bottom:10px;">
+        <label for="smtpSecurity" style="display:block; font-size:0.8rem; color:var(--slate); margin-bottom:4px;">Encryption</label>
+        <select id="smtpSecurity">
+          <option value="starttls">STARTTLS (port 587)</option>
+          <option value="ssl">SSL/TLS (port 465)</option>
+          <option value="none">None</option>
+        </select>
+      </div>
+      <div class="field" style="margin-bottom:10px;">
+        <label for="smtpUser" style="display:block; font-size:0.8rem; color:var(--slate); margin-bottom:4px;">Username</label>
+        <input type="text" id="smtpUser" placeholder="you@gmail.com" autocomplete="off" />
+      </div>
+      <div class="field" style="margin-bottom:10px;">
+        <label for="smtpPass" style="display:block; font-size:0.8rem; color:var(--slate); margin-bottom:4px;">Password <span id="smtpPassState" class="sub" style="display:inline;"></span></label>
+        <input type="password" id="smtpPass" placeholder="app password" autocomplete="new-password" />
+      </div>
+      <div class="field" style="margin-bottom:10px;">
+        <label for="smtpFrom" style="display:block; font-size:0.8rem; color:var(--slate); margin-bottom:4px;">Send from (address)</label>
+        <input type="text" id="smtpFrom" placeholder="noreply@digihubhmax.com" />
+      </div>
+      <div class="field">
+        <label for="smtpFromName" style="display:block; font-size:0.8rem; color:var(--slate); margin-bottom:4px;">Send from (name)</label>
+        <input type="text" id="smtpFromName" placeholder="DigiHub Media Kit" />
+      </div>
+      <div class="field" style="margin-top:14px;">
+        <label for="testEmailTo" style="display:block; font-size:0.8rem; color:var(--slate); margin-bottom:4px;">Test address — send yourself a code to prove the settings work</label>
+        <input type="text" id="testEmailTo" placeholder="you@example.com" />
+      </div>
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn secondary" id="saveSmtpBtn" type="button">Save</button>
+        <button class="btn teal" id="testEmailBtn" type="button">Send test email</button>
+      </div>
+      <p class="err" id="smtpMsg" style="color:var(--teal);"></p>
+    </div>
+
+    <div class="panel">
       <div class="stat-row" id="statRow"></div>
     </div>
 
     <div class="panel">
       <h2>Signups</h2>
-      <p class="sub" style="margin-top:-6px;">One row per person — name, contact, age and both handles, exactly as entered at signup. Tap a contact to mail or call it.</p>
+      <p class="sub" style="margin-top:-6px;">One row per person — name, email, mobile, age and both handles, exactly as entered at signup. Tap an email or number to mail or call it. “Verified” means they proved the address with an emailed code.</p>
       <div class="btn-row">
         <button class="btn secondary" id="refreshSignupsBtn" type="button">Refresh</button>
         <button class="btn teal" id="downloadSignupsBtn" type="button">Download CSV</button>
       </div>
       <div class="table-wrap"><table id="signupsTable"><thead><tr>
-        <th>ID</th><th>Date</th><th>Name</th><th>Contact</th><th>Age</th><th>Main handle</th><th>Content handle</th>
+        <th>ID</th><th>Date</th><th>Name</th><th>Email</th><th>Mobile</th><th>Age</th><th>Verified</th><th>Main handle</th><th>Content handle</th>
       </tr></thead><tbody></tbody></table></div>
       <p class="empty" id="signupsEmpty" style="display:none;">No signups yet.</p>
     </div>
@@ -277,6 +332,18 @@
     return '<a href="' + esc(href) + '">' + esc(c) + '</a>';
   }
 
+  // Rows from before email and mobile were split have only `contact`; the
+  // backend backfills those on startup, so this is just belt-and-braces for a
+  // page held open across the upgrade.
+  function signupEmail(s){
+    if (s.email) return s.email;
+    return (s.contact && s.contact.indexOf("@") !== -1) ? s.contact : "";
+  }
+  function signupPhone(s){
+    if (s.phone) return s.phone;
+    return (s.contact && s.contact.indexOf("@") === -1) ? s.contact : "";
+  }
+
   // data-label drives the mobile card layout (see the max-width:760px block).
   function rawCell(label, html){
     return '<td data-label="' + esc(label) + '"><span>' + html + "</span></td>";
@@ -294,8 +361,10 @@
           cell("ID", s.id) +
           cell("Date", fmtDate(s.created_at)) +
           cell("Name", s.name) +
-          rawCell("Contact", contactHtml(s.contact)) +
+          rawCell("Email", contactHtml(signupEmail(s))) +
+          rawCell("Mobile", contactHtml(signupPhone(s))) +
           cell("Age", s.age) +
+          cell("Verified", s.email_verified ? "✓ yes" : "no") +
           cell("Main handle", s.handle_main ? "@" + s.handle_main : "") +
           cell("Content handle", s.handle_content ? "@" + s.handle_content : "") +
           "</tr>";
@@ -473,9 +542,102 @@
     });
   });
 
+  // ---- email code login + SMTP -------------------------------------------
+  // Reads /admin/config, not the public /config: the SMTP settings are only
+  // ever served to a request carrying the admin key.
+  var otpToggle = document.getElementById("otpToggle");
+  var otpToggleReady = false;
+  var smtpFields = {
+    smtp_host: document.getElementById("smtpHost"),
+    smtp_port: document.getElementById("smtpPort"),
+    smtp_security: document.getElementById("smtpSecurity"),
+    smtp_user: document.getElementById("smtpUser"),
+    smtp_from: document.getElementById("smtpFrom"),
+    smtp_from_name: document.getElementById("smtpFromName")
+  };
+  var smtpPass = document.getElementById("smtpPass");
+
+  function applyAdminConfig(cfg){
+    otpToggle.checked = !!cfg.otp_login_enabled;
+    otpToggleReady = true;
+    Object.keys(smtpFields).forEach(function(k){
+      smtpFields[k].value = cfg[k] === undefined || cfg[k] === null ? "" : cfg[k];
+    });
+    // The password is never sent back — only whether one is stored.
+    smtpPass.value = "";
+    smtpPass.placeholder = cfg.smtp_pass_set ? "•••••••• (leave blank to keep)" : "app password";
+    document.getElementById("smtpPassState").textContent = cfg.smtp_pass_set ? "— saved" : "— not set yet";
+  }
+
+  function loadAdminConfig(){
+    return authedFetch("/admin/config").then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(cfg){ if (cfg) applyAdminConfig(cfg); });
+  }
+
+  var smtpMsgTimer = null;
+  function smtpMsg(text, isError, clearAfter){
+    var el = document.getElementById("smtpMsg");
+    // Cancel any pending auto-clear first — otherwise a "Saved." timer set a
+    // moment ago wipes the test-email result that replaced it.
+    if (smtpMsgTimer){ clearTimeout(smtpMsgTimer); smtpMsgTimer = null; }
+    el.textContent = text || "";
+    el.style.color = isError ? "#c0392b" : "var(--teal)";
+    if (text && clearAfter){
+      smtpMsgTimer = setTimeout(function(){ el.textContent = ""; smtpMsgTimer = null; }, clearAfter);
+    }
+  }
+
+  otpToggle.addEventListener("change", function(){
+    if (!otpToggleReady) return;
+    authedFetch("/admin/config", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ otp_login_enabled: otpToggle.checked })
+    }).then(function(r){ return r.ok ? r.json() : null; }).then(function(cfg){
+      if (cfg) applyAdminConfig(cfg);
+      smtpMsg(otpToggle.checked
+        ? "Email code login is ON. Send yourself a test email if you haven't yet."
+        : "Email code login is OFF — signups go through without verification.", false, 5000);
+    });
+  });
+
+  document.getElementById("saveSmtpBtn").addEventListener("click", function(){
+    var patch = {};
+    Object.keys(smtpFields).forEach(function(k){ patch[k] = smtpFields[k].value.trim(); });
+    // Blank means "keep the stored one" — the server treats it that way too.
+    if (smtpPass.value) patch.smtp_pass = smtpPass.value;
+    smtpMsg("Saving…");
+    authedFetch("/admin/config", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch)
+    }).then(function(r){ return r.ok ? r.json() : null; }).then(function(cfg){
+      if (!cfg){ smtpMsg("Could not save.", true); return; }
+      applyAdminConfig(cfg);
+      smtpMsg("Saved.", false, 2500);
+    }).catch(function(){ smtpMsg("Could not save.", true); });
+  });
+
+  document.getElementById("testEmailBtn").addEventListener("click", function(){
+    var to = document.getElementById("testEmailTo").value.trim();
+    if (!to){ smtpMsg("Enter an address to send the test to.", true); return; }
+    smtpMsg("Sending…");
+    authedFetch("/admin/test-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ to: to })
+    }).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(j){ return { ok: r.ok, body: j }; });
+    }).then(function(res){
+      if (res.ok && res.body.ok) smtpMsg("Sent — check " + to + ".");
+      else smtpMsg(res.body.error || "Could not send.", true);
+    }).catch(function(){ smtpMsg("Could not reach the server.", true); });
+  });
+
   function loadAll(){
     loadSignups();
     loadEvents();
+    loadAdminConfig();
   }
 
   if (getKey()){

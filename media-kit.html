@@ -397,6 +397,17 @@
   .overlay .pw-error.ok{ color:var(--teal); }
   @media (prefers-color-scheme: dark){ .overlay .pw-error.ok{ color:var(--teal-bright); } }
   .overlay .field{ margin-bottom:12px; }
+  .overlay input.otp{
+    letter-spacing:0.42em; text-align:center; font-size:1.35rem; font-weight:600;
+    font-family:var(--font-display);
+  }
+  .overlay .su-alt{ font-size:0.82rem; color:var(--slate); margin-top:14px; text-align:center; }
+  .linkbtn{
+    background:none; border:0; padding:0; font:inherit; color:var(--teal);
+    text-decoration:underline; cursor:pointer;
+  }
+  @media (prefers-color-scheme: dark){ .linkbtn{ color:var(--teal-bright); } }
+  .acct{ font-size:0.8rem; color:var(--slate); margin-top:8px; }
   .overlay .row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width:420px){ .overlay .row2{ grid-template-columns:1fr; } }
 </style>
@@ -412,6 +423,7 @@
       <h1>Media Kit Builder</h1>
       <p>Fill in your details, then download the card as a PDF — plus a built-in rate calculator for brand deal terms.</p>
       <button class="btn secondary" id="shareBtn" type="button" style="margin-top:10px;">Share this tool</button>
+      <p class="acct" id="acctBar" style="display:none;"></p>
     </header>
 
     <div class="layout">
@@ -738,37 +750,93 @@
   <!-- ================= SIGNUP GATE ================= -->
   <div id="signupGate" class="overlay" style="display:none;">
     <div class="pw-card">
-      <span class="badge">Quick signup</span>
-      <h2>Before you start…</h2>
-      <p class="desc">Tell us a bit about you — takes 20 seconds, stored securely, never shown publicly.</p>
 
-      <div class="field">
-        <label for="suName">Name *</label>
-        <input type="text" id="suName" placeholder="Your name" />
-      </div>
-      <div class="row2">
+      <!-- step 1: the signup form -->
+      <div id="suStepForm">
+        <span class="badge">Quick signup</span>
+        <h2>Before you start…</h2>
+        <p class="desc">Tell us a bit about you — takes 20 seconds, stored securely, never shown publicly.</p>
+
         <div class="field">
-          <label for="suContact">Email or mobile *</label>
-          <input type="text" id="suContact" placeholder="you@example.com" />
+          <label for="suName">Name *</label>
+          <input type="text" id="suName" placeholder="Your name" autocomplete="name" />
         </div>
         <div class="field">
-          <label for="suAge">Age *</label>
-          <input type="number" id="suAge" placeholder="e.g. 22" min="5" max="120" />
+          <label for="suEmail">Email *</label>
+          <input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"
+                 inputmode="email" />
         </div>
-      </div>
-      <div class="row2">
-        <div class="field">
-          <label for="suHandleMain">Main Instagram handle *</label>
-          <input type="text" id="suHandleMain" placeholder="yourhandle" />
+        <div class="row2">
+          <div class="field">
+            <label for="suPhone">Mobile number *</label>
+            <input type="tel" id="suPhone" placeholder="+91 98765 43210" autocomplete="tel"
+                   inputmode="tel" />
+          </div>
+          <div class="field">
+            <label for="suAge">Age *</label>
+            <input type="number" id="suAge" placeholder="e.g. 22" min="5" max="120" />
+          </div>
         </div>
-        <div class="field">
-          <label for="suHandleContent">Content handle</label>
-          <input type="text" id="suHandleContent" placeholder="if different" />
+        <div class="row2">
+          <div class="field">
+            <label for="suHandleMain">Main Instagram handle *</label>
+            <input type="text" id="suHandleMain" placeholder="yourhandle" />
+          </div>
+          <div class="field">
+            <label for="suHandleContent">Content handle</label>
+            <input type="text" id="suHandleContent" placeholder="if different" />
+          </div>
         </div>
+
+        <button class="btn block" id="suSubmitBtn" type="button" style="margin-top:6px;">Continue</button>
+        <p class="pw-error" id="suError"></p>
+        <p class="su-alt" id="suToLoginRow" style="display:none;">
+          Already signed up?
+          <button type="button" class="linkbtn" id="suGoLogin">Log in with your email</button>
+        </p>
       </div>
 
-      <button class="btn block" id="suSubmitBtn" type="button" style="margin-top:6px;">Continue</button>
-      <p class="pw-error" id="suError"></p>
+      <!-- step 2: the emailed code -->
+      <div id="suStepCode" style="display:none;">
+        <span class="badge">Check your email</span>
+        <h2>Enter your code</h2>
+        <p class="desc">We sent a 6-digit code to <strong id="suCodeTarget"></strong>. It expires in 10 minutes.</p>
+
+        <div class="field">
+          <label for="suCode">6-digit code</label>
+          <input type="text" id="suCode" class="otp" maxlength="6" placeholder="000000"
+                 inputmode="numeric" autocomplete="one-time-code" />
+        </div>
+
+        <button class="btn block" id="suVerifyBtn" type="button" style="margin-top:6px;">Verify &amp; continue</button>
+        <p class="pw-error" id="suCodeError"></p>
+        <p class="su-alt">
+          <button type="button" class="linkbtn" id="suResendBtn">Send a new code</button>
+          &nbsp;·&nbsp;
+          <button type="button" class="linkbtn" id="suCodeBack">Use a different email</button>
+        </p>
+      </div>
+
+      <!-- step 3: returning visitor -->
+      <div id="suStepLogin" style="display:none;">
+        <span class="badge">Log in</span>
+        <h2>Welcome back</h2>
+        <p class="desc" id="suLoginDesc">Enter the email you signed up with and we’ll send you a one-time code.</p>
+
+        <div class="field">
+          <label for="suLoginEmail">Email</label>
+          <input type="email" id="suLoginEmail" placeholder="you@example.com" autocomplete="email"
+                 inputmode="email" />
+        </div>
+
+        <button class="btn block" id="suLoginBtn" type="button" style="margin-top:6px;">Send me a code</button>
+        <p class="pw-error" id="suLoginError"></p>
+        <p class="su-alt">
+          New here?
+          <button type="button" class="linkbtn" id="suGoSignup">Create an account</button>
+        </p>
+      </div>
+
     </div>
   </div>
 
@@ -849,7 +917,10 @@
     var parts = [su.name || "Unnamed"];
     if (su.handle_main) parts.push("@" + su.handle_main.replace(/^@/, ""));
     if (su.handle_content && su.handle_content !== su.handle_main) parts.push("content: @" + su.handle_content.replace(/^@/, ""));
-    if (su.contact) parts.push(su.contact);
+    // Older stored accounts have a single `contact`; newer ones have both.
+    if (su.email) parts.push(su.email);
+    if (su.phone) parts.push(su.phone);
+    if (!su.email && !su.phone && su.contact) parts.push(su.contact);
     if (su.age) parts.push("age " + su.age);
     return parts.join(" · ");
   }
@@ -857,6 +928,7 @@
   // ============ PAYWALL CONFIG — edit these, then redeploy ============
   var PAY_CONFIG = {
     ENFORCE: false,                // overwritten by /api/mediakit/config (admin dashboard toggle) once it loads
+    OTP_LOGIN: false,              // overwritten by /api/mediakit/config (admin dashboard toggle)
     ADSENSE_ENABLED: false,        // overwritten by /api/mediakit/config
     ADSENSE_PUBLISHER_ID: "",
     ADSENSE_SLOT_ID: "",
@@ -2039,76 +2111,328 @@
   });
 
   // ============================= SIGNUP GATE =============================
+  // Two shapes live here. With OTP login off (the default) this is the same
+  // one-shot signup form it always was. With it on, the email has to be proved
+  // by a code before an account exists, and a returning visitor can restore
+  // theirs on a new device the same way.
   var SIGNUP_KEY = "mediaKitBuilder.signup.v1";
+  var SIGNUP_DATA_KEY = "mediaKitBuilder.signupData.v1";
+  var SESSION_KEY = "mediaKitBuilder.session.v1";
   var signupEl = document.getElementById("signupGate");
 
-  function hasSignedUp(){
-    try { return !!localStorage.getItem(SIGNUP_KEY); } catch(e){ return false; }
-  }
+  function lsGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+  function lsSet(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+  function lsDel(k){ try { localStorage.removeItem(k); } catch(e){} }
+
+  function hasSignedUp(){ return !!lsGet(SIGNUP_KEY); }
+  function sessionToken(){ return lsGet(SESSION_KEY) || ""; }
   function showSignup(){ signupEl.style.display = "flex"; document.body.style.overflow = "hidden"; }
   function hideSignup(){ signupEl.style.display = "none"; document.body.style.overflow = ""; }
 
-  var SIGNUP_DATA_KEY = "mediaKitBuilder.signupData.v1";
+  function storedSignup(){
+    try { return JSON.parse(lsGet(SIGNUP_DATA_KEY) || "null"); } catch(e){ return null; }
+  }
+
+  // An account saved before email and mobile were split has one `contact`.
+  function accountEmail(su){
+    if (!su) return "";
+    if (su.email) return su.email;
+    return (su.contact && su.contact.indexOf("@") !== -1) ? su.contact : "";
+  }
 
   function autofillFromSignup(su){
     if (!su) return;
     if (!els.name.value.trim() && su.name) els.name.value = su.name;
     if (!els.handle.value.trim() && su.handle_main) els.handle.value = su.handle_main;
-    if (!els.contact.value.trim() && su.contact && su.contact.indexOf("@") !== -1) els.contact.value = su.contact;
+    var mail = accountEmail(su);
+    if (!els.contact.value.trim() && mail) els.contact.value = mail;
     render();
     save();
   }
 
+  function saveAccount(su){
+    lsSet(SIGNUP_KEY, "1");
+    lsSet(SIGNUP_DATA_KEY, JSON.stringify(su));
+  }
+
+  // --- the little "signed in as …" line under the header -------------------
+  function renderAcctBar(){
+    var bar = document.getElementById("acctBar");
+    var mail = accountEmail(storedSignup());
+    if (!PAY_CONFIG.OTP_LOGIN || !sessionToken() || !mail){
+      bar.style.display = "none";
+      return;
+    }
+    bar.textContent = "";
+    bar.appendChild(document.createTextNode("Signed in as " + mail + " \u00b7 "));
+    var out = document.createElement("button");
+    out.type = "button";
+    out.className = "linkbtn";
+    out.textContent = "Log out";
+    out.addEventListener("click", function(){
+      var token = sessionToken();
+      lsDel(SESSION_KEY); lsDel(SIGNUP_KEY); lsDel(SIGNUP_DATA_KEY);
+      // Fire-and-forget: the device is signed out either way, and a failed
+      // call must not leave someone stuck on a page that says otherwise.
+      fetch(API_BASE + "/auth/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Session-Token": token },
+        body: "{}"
+      }).catch(function(){});
+      location.reload();
+    });
+    bar.appendChild(out);
+    bar.style.display = "";
+  }
+
+  // --- step switching ------------------------------------------------------
+  var SU_STEPS = ["suStepForm", "suStepCode", "suStepLogin"];
+  function suStep(id){
+    SU_STEPS.forEach(function(s){
+      document.getElementById(s).style.display = (s === id) ? "" : "none";
+    });
+    var focusable = { suStepForm: "suName", suStepCode: "suCode", suStepLogin: "suLoginEmail" };
+    var el = document.getElementById(focusable[id]);
+    if (el) { try { el.focus(); } catch(e){} }
+  }
+
+  function setMsg(elId, text, ok){
+    var el = document.getElementById(elId);
+    el.className = ok ? "pw-error ok" : "pw-error";
+    el.textContent = text || "";
+  }
+
+  function postJson(path, body, token){
+    var headers = { "Content-Type": "application/json" };
+    if (token) headers["X-Session-Token"] = token;
+    return fetch(API_BASE + path, {
+      method: "POST", headers: headers, body: JSON.stringify(body || {})
+    }).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(j){
+        return { ok: r.ok, status: r.status, body: j };
+      });
+    });
+  }
+
+  function looksLikeEmail(v){ return /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(v || ""); }
+  function looksLikePhone(v){ return String(v || "").replace(/\D/g, "").length >= 7; }
+
   function initSignupGate(){
     return new Promise(function(resolve){
-      if (hasSignedUp()){
-        try { autofillFromSignup(JSON.parse(localStorage.getItem(SIGNUP_DATA_KEY) || "null")); } catch(e){}
+      var otp = !!PAY_CONFIG.OTP_LOGIN;
+      var done = false;
+      function finish(su){
+        if (done) return;
+        done = true;
+        hideSignup();
+        if (su) autofillFromSignup(su);
+        renderAcctBar();
         resolve();
+      }
+
+      // Form values held between "Continue" and the code coming back.
+      var pending = null;
+
+      function readForm(){
+        return {
+          name: document.getElementById("suName").value.trim(),
+          email: document.getElementById("suEmail").value.trim(),
+          phone: document.getElementById("suPhone").value.trim(),
+          age: document.getElementById("suAge").value.trim(),
+          handle_main: document.getElementById("suHandleMain").value.trim(),
+          handle_content: document.getElementById("suHandleContent").value.trim()
+        };
+      }
+
+      function submitSignup(form, token, errId){
+        setMsg(errId, "Saving\u2026", true);
+        return postJson("/signup", form, token).then(function(res){
+          if (res.ok && res.body && res.body.ok){
+            var su = res.body.signup || form;
+            saveAccount(su);
+            setMsg(errId, "Thanks! Loading\u2026", true);
+            setTimeout(function(){ finish(su); }, 400);
+            return true;
+          }
+          setMsg(errId, (res.body && res.body.error) || "Something went wrong. Try again.");
+          return false;
+        }).catch(function(){
+          setMsg(errId, "Couldn't reach the server. Check your connection and try again.");
+          return false;
+        });
+      }
+
+      function requestCode(email, errId, onSent){
+        setMsg(errId, "Sending your code\u2026", true);
+        return postJson("/auth/request-otp", { email: email }).then(function(res){
+          if (res.ok && res.body && res.body.ok){
+            setMsg(errId, "");
+            document.getElementById("suCodeTarget").textContent = email;
+            document.getElementById("suCode").value = "";
+            setMsg("suCodeError", "");
+            suStep("suStepCode");
+            if (onSent) onSent(res.body);
+            return true;
+          }
+          setMsg(errId, (res.body && res.body.error) || "Couldn't send the code. Try again.");
+          return false;
+        }).catch(function(){
+          setMsg(errId, "Couldn't reach the server. Check your connection and try again.");
+          return false;
+        });
+      }
+
+      // ---- already have an account on this device? ------------------------
+      var stored = storedSignup();
+      if (hasSignedUp() && !otp){
+        finish(stored);
         return;
       }
-      showSignup();
-      var errorEl = document.getElementById("suError");
-      document.getElementById("suSubmitBtn").addEventListener("click", function(){
-        var name = document.getElementById("suName").value.trim();
-        var contact = document.getElementById("suContact").value.trim();
-        var age = document.getElementById("suAge").value.trim();
-        var handleMain = document.getElementById("suHandleMain").value.trim();
-        var handleContent = document.getElementById("suHandleContent").value.trim();
-        if (!name || !contact || !age || !handleMain){
-          errorEl.className = "pw-error";
-          errorEl.textContent = "Please fill all required fields.";
-          return;
-        }
-        errorEl.className = "pw-error";
-        errorEl.textContent = "Saving…";
-        fetch(API_BASE + "/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: name, contact: contact, age: age, handle_main: handleMain, handle_content: handleContent })
-        }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, body: j }; }); })
-          .then(function(res){
-            if (res.ok && res.body && res.body.ok){
-              var suData = { name: name, contact: contact, age: age, handle_main: handleMain, handle_content: handleContent };
-              try {
-                localStorage.setItem(SIGNUP_KEY, "1");
-                localStorage.setItem(SIGNUP_DATA_KEY, JSON.stringify(suData));
-              } catch(e){}
-              errorEl.className = "pw-error ok";
-              errorEl.textContent = "Thanks! Loading…";
-              setTimeout(function(){
-                hideSignup();
-                autofillFromSignup(suData);
-                resolve();
-              }, 400);
+      if (hasSignedUp() && otp && sessionToken()){
+        // Confirm the session is still good before trusting the local flag.
+        fetch(API_BASE + "/auth/me", { headers: { "X-Session-Token": sessionToken() } })
+          .then(function(r){ return r.ok ? r.json() : null; })
+          .then(function(me){
+            if (me && me.signup){
+              saveAccount(me.signup);
+              finish(me.signup);
             } else {
-              errorEl.className = "pw-error";
-              errorEl.textContent = (res.body && res.body.error) || "Something went wrong. Try again.";
+              lsDel(SESSION_KEY);
+              startGate();
             }
           }).catch(function(){
-            errorEl.className = "pw-error";
-            errorEl.textContent = "Couldn't reach the server. Check your connection and try again.";
+            // Backend unreachable — don't lock out someone who already signed
+            // up on this device just because the network blipped.
+            finish(stored);
           });
-      });
+        return;
+      }
+      startGate();
+
+      function startGate(){
+        showSignup();
+        document.getElementById("suToLoginRow").style.display = otp ? "" : "none";
+
+        var known = accountEmail(storedSignup());
+        if (otp && hasSignedUp() && known){
+          // Signed up here before, but the OTP requirement is new (or the
+          // session lapsed) — ask them to confirm the address, don't re-ask
+          // for the whole form.
+          document.getElementById("suLoginEmail").value = known;
+          document.getElementById("suLoginDesc").textContent =
+            "Confirm your email to carry on \u2014 we'll send a one-time code to " + known + ".";
+          suStep("suStepLogin");
+        } else {
+          suStep("suStepForm");
+        }
+
+        // ---- step 1: signup form ----
+        document.getElementById("suSubmitBtn").addEventListener("click", function(){
+          var form = readForm();
+          if (!form.name || !form.email || !form.phone || !form.age || !form.handle_main){
+            setMsg("suError", "Please fill all required fields.");
+            return;
+          }
+          if (!looksLikeEmail(form.email)){
+            setMsg("suError", "That email address doesn't look right.");
+            return;
+          }
+          if (!looksLikePhone(form.phone)){
+            setMsg("suError", "That mobile number doesn't look right.");
+            return;
+          }
+          if (!otp){
+            submitSignup(form, "", "suError");
+            return;
+          }
+          // Already proved this exact address in this browser? Skip the code.
+          var tok = sessionToken();
+          if (tok && (lsGet("mediaKitBuilder.sessionEmail.v1") || "").toLowerCase() === form.email.toLowerCase()){
+            submitSignup(form, tok, "suError");
+            return;
+          }
+          pending = form;
+          requestCode(form.email, "suError");
+        });
+
+        // ---- step 2: the code ----
+        document.getElementById("suVerifyBtn").addEventListener("click", function(){
+          var email = document.getElementById("suCodeTarget").textContent.trim();
+          var code = document.getElementById("suCode").value.replace(/\D/g, "");
+          if (code.length !== 6){
+            setMsg("suCodeError", "Enter the 6-digit code from your email.");
+            return;
+          }
+          setMsg("suCodeError", "Checking\u2026", true);
+          postJson("/auth/verify-otp", { email: email, code: code }).then(function(res){
+            if (!res.ok || !res.body || !res.body.token){
+              setMsg("suCodeError", (res.body && res.body.error) || "That didn't work. Try again.");
+              return;
+            }
+            lsSet(SESSION_KEY, res.body.token);
+            lsSet("mediaKitBuilder.sessionEmail.v1", res.body.email || email);
+            if (res.body.signup){
+              // Returning visitor — their account came back with the code.
+              saveAccount(res.body.signup);
+              setMsg("suCodeError", "Welcome back! Loading\u2026", true);
+              setTimeout(function(){ finish(res.body.signup); }, 400);
+              return;
+            }
+            if (pending){
+              submitSignup(pending, res.body.token, "suCodeError");
+              return;
+            }
+            // Verified, but nothing signed up under this address yet.
+            document.getElementById("suEmail").value = email;
+            suStep("suStepForm");
+            setMsg("suError", "Email confirmed \u2014 just finish these details.", true);
+          }).catch(function(){
+            setMsg("suCodeError", "Couldn't reach the server. Check your connection and try again.");
+          });
+        });
+
+        document.getElementById("suResendBtn").addEventListener("click", function(){
+          var email = document.getElementById("suCodeTarget").textContent.trim();
+          requestCode(email, "suCodeError");
+        });
+
+        document.getElementById("suCodeBack").addEventListener("click", function(){
+          setMsg("suCodeError", "");
+          suStep(pending ? "suStepForm" : "suStepLogin");
+        });
+
+        // ---- step 3: log in ----
+        document.getElementById("suGoLogin").addEventListener("click", function(){
+          setMsg("suLoginError", "");
+          document.getElementById("suLoginEmail").value =
+            document.getElementById("suEmail").value.trim() || document.getElementById("suLoginEmail").value;
+          suStep("suStepLogin");
+        });
+
+        document.getElementById("suGoSignup").addEventListener("click", function(){
+          pending = null;
+          setMsg("suError", "");
+          suStep("suStepForm");
+        });
+
+        document.getElementById("suLoginBtn").addEventListener("click", function(){
+          var email = document.getElementById("suLoginEmail").value.trim();
+          if (!looksLikeEmail(email)){
+            setMsg("suLoginError", "That email address doesn't look right.");
+            return;
+          }
+          pending = null;  // a login has no form waiting behind it
+          requestCode(email, "suLoginError");
+        });
+
+        // Enter submits whichever step is on screen.
+        [["suCode", "suVerifyBtn"], ["suLoginEmail", "suLoginBtn"],
+         ["suHandleContent", "suSubmitBtn"]].forEach(function(pair){
+          document.getElementById(pair[0]).addEventListener("keydown", function(e){
+            if (e.key === "Enter"){ e.preventDefault(); document.getElementById(pair[1]).click(); }
+          });
+        });
+      }
     });
   }
 
@@ -2118,14 +2442,18 @@
       PAY_CONFIG.ADSENSE_ENABLED = !!cfg.adsense_enabled;
       PAY_CONFIG.ADSENSE_PUBLISHER_ID = cfg.adsense_publisher_id || "";
       PAY_CONFIG.ADSENSE_SLOT_ID = cfg.adsense_slot_id || "";
+      PAY_CONFIG.OTP_LOGIN = !!cfg.otp_login_enabled;
       document.getElementById("priceBadge").style.display = PAY_CONFIG.ENFORCE ? "" : "none";
     }).catch(function(){
       PAY_CONFIG.ENFORCE = false; // backend unreachable — fail open, don't lock out legit users
       PAY_CONFIG.ADSENSE_ENABLED = false;
+      PAY_CONFIG.OTP_LOGIN = false;
     });
   }
 
-  initSignupGate().then(fetchPaidConfig).then(updateLockUI);
+  // Config first now: the gate has to know whether email verification is on
+  // before it decides which step to show.
+  fetchPaidConfig().then(initSignupGate).then(updateLockUI);
 })();
 </script>
 
