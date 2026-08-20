@@ -695,14 +695,28 @@ class Handler(BaseHTTPRequestHandler):
         """Everything arrives from nginx on 127.0.0.1, so a proxy header is the
         only thing that tells callers apart.
 
-        Use X-Real-IP, NOT X-Forwarded-For. Our nginx sets
-        `proxy_set_header X-Real-IP $remote_addr`, which overwrites whatever the
-        caller sent, so it is trustworthy. It does not set X-Forwarded-For at
-        all, so that header arrives exactly as the client wrote it — trusting it
-        would let anyone bypass the per-IP limit by sending a random value, and
-        falling back to client_address would put every visitor behind the proxy
-        into a single shared bucket and lock real people out.
+        Order is CF-Connecting-IP, then X-Real-IP, then the socket.
+
+        Never X-Forwarded-For: our nginx does not set it, so it arrives exactly
+        as the caller wrote it and anyone could land in a fresh bucket every
+        request. X-Real-IP nginx does set, from $remote_addr, overwriting what
+        the caller sent -- but behind Cloudflare that is an edge IP, not the
+        visitor. CF-Connecting-IP is set by Cloudflare and is the real one.
+
+        A caller who reaches the origin directly, bypassing Cloudflare, could
+        still spoof CF-Connecting-IP. That only evades a rate limit, never an
+        auth decision. The robust fix is nginx `set_real_ip_from <cloudflare
+        ranges>` + `real_ip_header CF-Connecting-IP`, which makes $remote_addr
+        itself the true client IP and cannot be forged -- see
+        deploy/nginx-admin-auth.snippet.conf.
         """
+        # The site sits behind Cloudflare, so nginx's $remote_addr -- and
+        # therefore the X-Real-IP it derives from it -- is a Cloudflare edge
+        # address that varies between requests. Bucketing on it silently
+        # defeats the limit. CF-Connecting-IP is the actual visitor.
+        cf = self.headers.get("CF-Connecting-IP", "").strip()
+        if cf:
+            return cf[:64]
         real = self.headers.get("X-Real-IP", "").strip()
         if real:
             return real[:64]
