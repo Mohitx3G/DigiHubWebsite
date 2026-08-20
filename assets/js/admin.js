@@ -16,7 +16,7 @@ const ADMIN = {
   email: "mohitrp4412@gmail.com",
   // SHA-256 of "username:password" — regenerate with:
   // node -e "console.log(require('crypto').createHash('sha256').update('user:pass').digest('hex'))"
-  passHash: "3c1966b7a5562888d057a142408df5eda89a96dc1423cf351ab14dba174be366",
+  passHash: "9b7903970eea2d23c920cccac7b98264312bea255e3570db2180da43e4b5a937",
 };
 
 const DRAFT_KEY = "digihub_draft_v1";
