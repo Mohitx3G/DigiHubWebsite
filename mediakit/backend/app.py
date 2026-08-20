@@ -25,10 +25,14 @@ PORT = 8787
 MAX_BODY = 10_000  # bytes — signup payloads are tiny; reject anything else
 MAX_SHARE_BODY = 40_000  # a saved kit is text-only (no images) but has many fields
 EVENT_RETENTION_DAYS = 10  # usage logs self-purge — never grows unbounded on the VPS
-EVENT_TYPES = {"pdf_download", "image_download"}
+EVENT_TYPES = {"pdf_download", "image_download", "share_created"}
 SHARE_RETENTION_DAYS = 90  # shared links expire so the table can't grow forever
 SHARE_ID_ALPHABET = "abcdefghijkmnopqrstuvwxyz23456789"  # no look-alikes (l/1, o/0)
 SHARE_ID_LEN = 8
+MAX_WHO_LEN = 300  # creator identity attached to a share_created activity entry
+# Only used to expand a stored share id into a full link in the events CSV —
+# the admin page builds the same URL from its own origin for the on-screen list.
+SHARE_URL_BASE = "https://digihubhmax.com/media-kit.html?s="
 
 
 def get_admin_key():
@@ -145,6 +149,22 @@ def insert_event(event_type, detail):
     )
     conn.commit()
     conn.close()
+
+
+def event_export_fields(detail):
+    """(who, share_url) pulled out of an event's detail blob for the CSV export.
+    Detail is JSON: a bare string for download events, an object carrying who +
+    share_id for share_created. Anything unparseable falls through as-is."""
+    if not detail:
+        return "", ""
+    try:
+        parsed = json.loads(detail)
+    except Exception:
+        return detail, ""
+    if isinstance(parsed, dict):
+        share_id = parsed.get("share_id") or ""
+        return parsed.get("who") or "", (SHARE_URL_BASE + share_id if share_id else "")
+    return str(parsed), ""
 
 
 def all_events():
@@ -293,9 +313,10 @@ class Handler(BaseHTTPRequestHandler):
             rows = all_events()
             buf = io.StringIO()
             writer = csv.writer(buf)
-            writer.writerow(["id", "created_at", "event_type", "detail"])
+            writer.writerow(["id", "created_at", "event_type", "who", "share_url", "detail"])
             for r in rows:
-                writer.writerow([r["id"], r["created_at"], r["event_type"], r["detail"]])
+                who, share_url = event_export_fields(r["detail"])
+                writer.writerow([r["id"], r["created_at"], r["event_type"], who, share_url, r["detail"]])
             body = buf.getvalue().encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/csv; charset=utf-8")
@@ -340,11 +361,21 @@ class Handler(BaseHTTPRequestHandler):
             # device, and they're what made the old inline links enormous.
             data.pop("photo", None)
             data.pop("bgImage", None)
+            # Creator identity for the activity log — popped so it never
+            # becomes part of the saved kit that the link hands to viewers.
+            who = str(data.pop("_who", "") or "").strip()[:MAX_WHO_LEN]
             try:
                 share_id = insert_share(json.dumps(data))
             except Exception:
                 self._send_json(500, {"error": "could not save"})
                 return
+            # Logged server-side rather than by the client so a link can never
+            # exist without an activity row for it. Never let a logging failure
+            # cost the caller the link it just created.
+            try:
+                insert_event("share_created", json.dumps({"who": who, "share_id": share_id}))
+            except Exception:
+                pass
             self._send_json(200, {"id": share_id, "expires_days": SHARE_RETENTION_DAYS})
         elif self.path == "/event":
             data = self._read_json()
@@ -356,6 +387,10 @@ class Handler(BaseHTTPRequestHandler):
                 self._send_json(400, {"error": "unknown event type"})
                 return
             detail = data.get("detail")
+            # Truncate the value, not the JSON — slicing the encoded form could
+            # cut mid-string and leave the admin page an unparseable blob.
+            if isinstance(detail, str):
+                detail = detail[:MAX_WHO_LEN]
             detail_str = json.dumps(detail)[:500] if detail is not None else None
             insert_event(event_type, detail_str)
             self._send_json(200, {"ok": True})
