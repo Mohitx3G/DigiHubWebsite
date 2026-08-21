@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Pages are rendered client-side from assets/js/config.js, so the project
+     and legal URLs below carry a query string. Keep this list in sync with
+     PROJECTS and LEGAL in that file when either changes. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://digihubhmax.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://digihubhmax.com/project.html?id=digihub</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://digihubhmax.com/project.html?id=requestaccepter</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://digihubhmax.com/project.html?id=flashprepareai</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://digihubhmax.com/project.html?id=mediakit</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://digihubhmax.com/project.html?id=groupmanager</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://digihubhmax.com/media-kit.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://digihubhmax.com/docs.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://digihubhmax.com/legal.html?doc=privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://digihubhmax.com/legal.html?doc=terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+</urlset>
