@@ -586,7 +586,14 @@ a:focus-visible, .btn:focus-visible, summary:focus-visible {
   .hero .actions { margin-top: 36px; }
   .grid.cols-3, .steps, .tiers { grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 760px) {
+/* Collapse to the hamburger at 920px, not 760px. The desktop nav needs ~908px
+   to sit on one row (brand 81 + links 636 + CTA 111 + padding), so between
+   761px and 907px the links wrapped onto four rows inside a fixed 63px bar and
+   spilled out over the brand -- "DiGiHub" and "Projects" rendered on top of
+   each other. That band is every iPad in landscape, small laptops and any
+   half-screen window. Measured in-browser 2026-08-21; if nav items are ever
+   added, re-measure and raise this again. */
+@media (max-width: 920px) {
   .nav-toggle { display: flex; }
   .nav-links {
     position: absolute; top: 62px; left: 0; right: 0;
